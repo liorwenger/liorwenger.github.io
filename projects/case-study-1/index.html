@@ -133,7 +133,7 @@
 
     /* ─── Hero ─── */
     .hero {
-      background: #111;
+      background: #450A80;
       padding: 80px 0 0 0;
       border-bottom: none;
       overflow: hidden;
@@ -526,19 +526,36 @@
 
     /* ─── Design Principles ─── */
     .principles {
-      background: #f7f8fa;
+      background: #f6f7f9;
     }
 
     .principles-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
+      gap: 16px;
       margin-top: 48px;
     }
 
     .principle {
-      border-top: 3px solid #1a1a1a;
-      padding-top: 20px;
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 32px 28px;
+    }
+
+    .principle-icon {
+      width: 69px;
+      height: 69px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .principle-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .principle-number {
@@ -550,7 +567,7 @@
     }
 
     .principle h3 {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
       color: #1a1a1a;
       margin-bottom: 12px;
@@ -991,7 +1008,7 @@
 
       .principles-grid {
         grid-template-columns: 1fr;
-        gap: 32px;
+        gap: 12px;
       }
 
       .research-methods {
@@ -1055,7 +1072,7 @@
         <p class="label">B2B SaaS Platform | Legal Tech</p>
       </div>
       <div class="hero-image">
-        <img src="assets/hero-dashboard.png" alt="Associate Network Dashboard - final design">
+        <img src="assets/final-crop.png" alt="Associate Network Dashboard - final design">
       </div>
     </div>
   </section>
@@ -1245,29 +1262,6 @@
     </div>
   </section>
 
-  <!-- ─── Key Insights: Jobs to be done ─── -->
-  <section class="jtbd">
-    <div class="container">
-      <p class="label">Key Insights</p>
-      <h2 class="section-title">Jobs to be done</h2>
-
-      <table class="jtbd-table">
-        <tr>
-          <td><span class="jtbd-label">When</span></td>
-          <td class="jtbd-text">I'm evaluating our global associate network,</td>
-        </tr>
-        <tr>
-          <td><span class="jtbd-label">I want to</span></td>
-          <td class="jtbd-text"><strong>compare quality, reciprocity, and responsiveness with data,</strong></td>
-        </tr>
-        <tr>
-          <td><span class="jtbd-label">So I can</span></td>
-          <td class="jtbd-text">make confident decisions and justify our network investment to firm leadership.</td>
-        </tr>
-      </table>
-    </div>
-  </section>
-
   <!-- ─── Design Principles ─── -->
   <section class="principles">
     <div class="container">
@@ -1276,20 +1270,28 @@
 
       <div class="principles-grid">
         <div class="principle">
+          <div class="principle-icon">
+            <img src="assets/icon1.png" alt="">
+          </div>
           <p class="principle-number">01</p>
           <h3>Actionable over informational</h3>
           <p>Every metric should answer "so what?" - not just show a number, but tell the user what it means and what to do about it.</p>
         </div>
         <div class="principle">
+          <div class="principle-icon">
+            <img src="assets/icon2.png" alt="">
+          </div>
           <p class="principle-number">02</p>
           <h3>Network-level view first</h3>
           <p>Start with the big picture health of the entire network, then let users drill into individual associates. Strategic before operational.</p>
         </div>
         <div class="principle">
+          <div class="principle-icon">
+            <img src="assets/icon3.png" alt="">
+          </div>
           <p class="principle-number">03</p>
           <h3>Surface what's urgent</h3>
           <p>Don't make partners hunt for problems. Proactively flag deadlines at risk, imbalanced relationships, and declining performance.</p>
-          <!-- [PLACEHOLDER] Confirm these are the actual principles you worked with, or replace with the real ones -->
         </div>
       </div>
     </div>

@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מכין לראיון</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e10;
+      --surface: #1a1a1e;
+      --surface-2: #242428;
+      --border: #2e2e34;
+      --text: #e8e8ec;
+      --text-muted: #8888a0;
+      --user-bg: #2563eb;
+      --user-text: #ffffff;
+      --bot-bg: #1e1e24;
+      --bot-text: #dddde8;
+      --accent: #3b82f6;
+      --green: #22c55e;
+      --yellow: #f59e0b;
+      --blue: #60a5fa;
+      --radius: 16px;
+      --radius-sm: 8px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ─── SETUP SCREEN ─── */
+    #setup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .setup-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .logo {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .setup-title {
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .setup-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: monospace;
+      outline: none;
+      transition: border-color 0.15s;
+      direction: ltr;
+      text-align: left;
+    }
+
+    input[type="password"]:focus, input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    .key-row {
+      margin-bottom: 28px;
+    }
+
+    .key-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-family: inherit;
+      direction: rtl;
+    }
+
+    .type-label {
+      margin-bottom: 12px;
+    }
+
+    .type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .type-option {
+      cursor: pointer;
+    }
+
+    .type-option input[type="radio"] {
+      display: none;
+    }
+
+    .type-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 16px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-2);
+      transition: border-color 0.15s, background 0.15s;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .type-option input:checked + .type-box {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    .type-box:hover {
+      border-color: var(--accent);
+    }
+
+    .type-emoji { font-size: 22px; }
+
+    .type-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .type-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .role-row {
+      margin-bottom: 28px;
+    }
+
+    .role-input {
+      font-family: inherit !important;
+      direction: rtl !important;
+      text-align: right !important;
+    }
+
+    .start-btn {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      font-family: inherit;
+    }
+
+    .start-btn:hover { opacity: 0.9; }
+    .start-btn:active { transform: scale(0.98); }
+    .start-btn:disabled { opacity: 0.4; cursor: default; }
+
+    /* ─── CHAT SCREEN ─── */
+    #chat {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--blue);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+
+    .header-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .new-session-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .new-session-btn:hover {
+      color: var(--text);
+      border-color: var(--text-muted);
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .messages::-webkit-scrollbar { width: 4px; }
+    .messages::-webkit-scrollbar-track { background: transparent; }
+    .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      max-width: 78%;
+    }
+
+    .message.user {
+      align-self: flex-start;
+    }
+
+    .message.bot {
+      align-self: flex-end;
+    }
+
+    .bubble {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .message.user .bubble {
+      background: var(--user-bg);
+      color: var(--user-text);
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.bot .bubble {
+      background: var(--bot-bg);
+      color: var(--bot-text);
+      border-bottom-left-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .message.bot .bubble .feedback-section {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 14px 18px;
+    }
+
+    .typing-indicator span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      animation: bounce 1.2s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    .input-area {
+      padding: 16px 20px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      transition: border-color 0.15s;
+    }
+
+    .input-row:focus-within {
+      border-color: var(--accent);
+    }
+
+    #user-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      max-height: 160px;
+      overflow-y: auto;
+      line-height: 1.5;
+      min-height: 24px;
+    }
+
+    #user-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .send-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: opacity 0.15s;
+    }
+
+    .send-btn:hover { opacity: 0.85; }
+    .send-btn:disabled { opacity: 0.35; cursor: default; }
+
+    .send-btn svg {
+      transform: rotate(180deg);
+    }
+
+    .input-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* feedback formatting */
+    .fb-good { color: var(--green); }
+    .fb-improve { color: var(--yellow); }
+    .fb-example { color: var(--blue); }
+
+    .ollama-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .status-dot.ok { background: var(--green); }
+    .status-dot.err { background: #ef4444; }
+    .status-dot.checking { animation: pulse 1s infinite; background: var(--yellow); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .ollama-instructions {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      line-height: 1.6;
+      direction: rtl;
+    }
+
+    .ollama-instructions code {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--blue);
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .error-msg {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #f87171;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      align-self: center;
+      max-width: 90%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── SETUP ─── -->
+<div id="setup">
+  <div class="setup-card">
+    <div class="logo">🎯</div>
+    <div class="setup-title">מכין לראיון</div>
+    <div class="setup-subtitle">סימולציית ראיון עבודה עם משוב בזמן אמת</div>
+
+    <div class="key-row">
+      <label for="api-key">Groq API Key</label>
+      <input type="password" id="api-key" placeholder="gsk_..." autocomplete="off">
+      <div class="key-hint">חינם לגמרי · console.groq.com · ללא כרטיס אשראי</div>
+    </div>
+
+    <div class="role-row">
+      <label for="role-input">תפקיד / חברה (אופציונלי)</label>
+      <input type="text" id="role-input" class="role-input" placeholder="למשל: Product Designer בסטארטאפ B2B">
+    </div>
+
+    <div class="type-label">
+      <label>סוג ראיון</label>
+    </div>
+    <div class="type-grid">
+      <label class="type-option">
+        <input type="radio" name="interview-type" value="behavioral" checked>
+        <div class="type-box">
+          <div class="type-emoji">💬</div>
+          <div class="type-name">התנהגותיות</div>
+          <div class="type-desc">שאלות STAR על ניסיון עבר</div>
+        </div>
+      </label>
+      <label class="type-option">
+        <input type="radio" name="interview-type" value="portfolio">
+        <div class="type-box">
+          <div class="type-emoji">🖼</div>
+          <div class="type-name">פורטפוליו</div>
+          <div class="type-desc">הצגת פרויקטים ותהליך עיצוב</div>
+        </div>
+      </label>
+      <label class="type-option">
+        <input type="radio" name="interview-type" value="process">
+        <div class="type-box">
+          <div class="type-emoji">⚙️</div>
+          <div class="type-name">תהליך עיצוב</div>
+          <div class="type-desc">design challenges ופתרון בעיות</div>
+        </div>
+      </label>
+      <label class="type-option">
+        <input type="radio" name="interview-type" value="full">
+        <div class="type-box">
+          <div class="type-emoji">🔀</div>
+          <div class="type-name">ראיון מלא</div>
+          <div class="type-desc">שילוב של כל הסוגים</div>
+        </div>
+      </label>
+    </div>
+
+    <button class="start-btn" id="start-btn" onclick="startInterview()">התחל ראיון</button>
+  </div>
+</div>
+
+<!-- ─── CHAT ─── -->
+<div id="chat">
+  <div class="chat-header">
+    <button class="new-session-btn" onclick="newSession()">ראיון חדש</button>
+    <div class="header-title">מכין לראיון 🎯</div>
+    <div class="header-right">
+      <div class="header-badge" id="type-badge">-</div>
+    </div>
+  </div>
+
+  <div class="messages" id="messages"></div>
+
+  <div class="input-area">
+    <div class="input-row">
+      <button class="send-btn" id="send-btn" onclick="sendMessage()" title="שלח">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+      <textarea id="user-input" rows="1" placeholder="כתוב את תשובתך כאן..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    </div>
+    <div class="input-hint">Enter לשליחה · Shift+Enter לשורה חדשה</div>
+  </div>
+</div>
+
+<script>
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
+
+const SYSTEM_PROMPTS = {
+  behavioral: `אתה מראיין מנוסה ומאמן קריירה בתעשיית הטק הישראלית, המתמחה בראיונות לתפקידי Product Designer ו-UX Designer.
+
+סוג הראיון: שאלות התנהגותיות (STAR)
+
+המטרה שלך: לנהל סימולציה של ראיון אמיתי עם משוב בונה ומפורט.
+
+כיצד לנהל:
+1. פתח בהצגה של עצמך כמגייס/ת בחברת טק ישראלית (תמציא שם חברה ותפקיד ריאליים)
+2. שאל שאלה התנהגותית אחת בכל פעם - שאלות בסגנון STAR על ניסיון עבר
+3. לאחר כל תשובה של המועמד, תן משוב מובנה בפורמט:
+   ✅ מה עבד טוב: [פירוט ספציפי]
+   🔧 מה אפשר לשפר: [פירוט ספציפי]
+   💡 ניסוח חזק יותר: [דוגמה קונקרטית]
+4. לאחר המשוב, שאל את השאלה הבאה
+5. לאחר 5 שאלות תן סיכום כולל של הראיון עם ציון מ-10
+
+כללים:
+- דבר בעברית בלבד
+- היה ישיר, מקצועי, ובונה
+- שאלות ריאליות שנשאלות בחברות כמו Wix, monday, Fiverr, Papaya, Fundbox
+- המשוב חייב להיות ספציפי - לא "כל הכבוד" אלא מה בדיוק עבד`,
+
+  portfolio: `אתה מראיין מנוסה ומאמן קריירה בתעשיית הטק הישראלית, המתמחה בראיונות לתפקידי Product Designer ו-UX Designer.
+
+סוג הראיון: הצגת פורטפוליו
+
+המטרה שלך: לנהל סימולציה של ראיון פורטפוליו אמיתי עם משוב בונה ומפורט.
+
+כיצד לנהל:
+1. פתח בהצגה של עצמך כ-Design Lead בחברת טק ישראלית (תמציא שם ותפקיד ריאליים)
+2. בקש מהמועמד לתאר פרויקט מרכזי מהפורטפוליו שלו
+3. שאל שאלות מחקר ספציפיות על הפרויקט: תהליך, החלטות עיצוב, מדידת הצלחה, אתגרים
+4. לאחר כל תשובה תן משוב:
+   ✅ מה עבד טוב: [פירוט]
+   🔧 מה אפשר לשפר: [פירוט]
+   💡 ניסוח / זווית חזקה יותר: [דוגמה]
+5. לאחר שסיימתם דיון על פרויקט אחד, עבור לשאלות כלליות על תהליך העיצוב
+6. לאחר 5-6 שאלות תן סיכום כולל עם ציון מ-10
+
+כללים:
+- דבר בעברית בלבד
+- חקור לעומק - "ספר לי יותר", "מה הייתה ההחלטה הקשה ביותר?"
+- המשוב חייב להיות ספציפי ומעשי`,
+
+  process: `אתה מראיין מנוסה ומאמן קריירה בתעשיית הטק הישראלית, המתמחה בראיונות לתפקידי Product Designer ו-UX Designer.
+
+סוג הראיון: design challenge ותהליך עיצוב
+
+המטרה שלך: לבחון חשיבה עיצובית ותהליך פתרון בעיות.
+
+כיצד לנהל:
+1. פתח בהצגה של עצמך כ-Head of Design בחברת טק ישראלית
+2. הצג Design Challenge ריאלי (למשל: "עצב מחדש את onboarding של אפליקציית B2B")
+3. שאל שאלות שחושפות תהליך חשיבה: גישה ראשונית, מחקר, פתרונות אלטרנטיביים, trade-offs
+4. לאחר כל תשובה תן משוב:
+   ✅ מה עבד טוב: [פירוט]
+   🔧 מה אפשר לשפר: [פירוט]
+   💡 גישה / זווית שחסרה: [דוגמה]
+5. לאחר 5-6 שאלות תן סיכום כולל עם ציון מ-10
+
+כללים:
+- דבר בעברית בלבד
+- חקור את התהליך, לא רק את הפתרון
+- בדוק: user research, constraints, iterations, metrics`,
+
+  full: `אתה מראיין מנוסה ומאמן קריירה בתעשיית הטק הישראלית, המתמחה בראיונות לתפקידי Product Designer ו-UX Designer.
+
+סוג הראיון: ראיון מלא (behavioral + portfolio + design process)
+
+המטרה שלך: לנהל ראיון מקיף ואמיתי שמכסה את כל הממדים.
+
+כיצד לנהל:
+1. פתח בהצגה ושיחת פתיחה קצרה ("ספר לי על עצמך")
+2. המשך לשאלה התנהגותית אחת
+3. בקש לשמוע על פרויקט מהפורטפוליו - שאל 2-3 שאלות עליו
+4. הצג Design Challenge קצר
+5. סיים עם שאלות "מה השאלות שלך אלינו?" ו-salary expectations
+6. לאחר כל תשובה תן משוב:
+   ✅ מה עבד טוב
+   🔧 מה אפשר לשפר
+   💡 ניסוח / גישה חזקה יותר
+7. בסוף תן סיכום כולל עם ציון מ-10 וטיפים לשיפור
+
+כללים:
+- דבר בעברית בלבד
+- נהל כמו ראיון אמיתי - יש flow טבעי
+- היה ישיר ובונה`
+};
+
+const TYPE_LABELS = {
+  behavioral: 'התנהגותיות',
+  portfolio: 'פורטפוליו',
+  process: 'תהליך עיצוב',
+  full: 'ראיון מלא'
+};
+
+let apiKey = '';
+let interviewType = 'behavioral';
+let conversationHistory = [];
+let isLoading = false;
+
+// ─── INIT ───
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('groq_api_key');
+  if (saved) document.getElementById('api-key').value = saved;
+});
+
+// ─── START ───
+async function startInterview() {
+  const keyInput = document.getElementById('api-key').value.trim();
+  if (!keyInput || !keyInput.startsWith('gsk_')) {
+    alert('נא להזין Groq API Key תקין (מתחיל ב-gsk_)\n\nקבל חינם ב-console.groq.com');
+    return;
+  }
+  apiKey = keyInput;
+  localStorage.setItem('groq_api_key', apiKey);
+
+  interviewType = document.querySelector('input[name="interview-type"]:checked').value;
+  const role = document.getElementById('role-input').value.trim();
+
+  let systemPrompt = SYSTEM_PROMPTS[interviewType];
+  if (role) {
+    systemPrompt += `\n\nהתפקיד הספציפי שהמועמד מתכונן אליו: ${role}. התאם את השאלות לתפקיד זה.`;
+  }
+
+  conversationHistory = [];
+
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('chat').style.display = 'flex';
+  document.getElementById('type-badge').textContent = TYPE_LABELS[interviewType];
+
+  window._systemPrompt = systemPrompt;
+
+  // Kick off the interview
+  await getBotResponse([], true);
+}
+
+function newSession() {
+  conversationHistory = [];
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('chat').style.display = 'none';
+  document.getElementById('setup').style.display = 'flex';
+}
+
+// ─── MESSAGING ───
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('user-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+
+  appendMessage('user', text);
+  conversationHistory.push({ role: 'user', content: text });
+
+  await getBotResponse(conversationHistory);
+}
+
+async function getBotResponse(messages, isFirst = false) {
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('user-input').disabled = true;
+
+  const typingEl = appendTyping();
+
+  try {
+    const msgs = isFirst
+      ? [{ role: 'user', content: 'בוא נתחיל את הראיון.' }]
+      : conversationHistory;
+
+    const response = await fetch(GROQ_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        stream: true,
+        max_tokens: 1500,
+        messages: [
+          { role: 'system', content: window._systemPrompt },
+          ...msgs
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error?.message || `שגיאה ${response.status}`);
+    }
+
+    typingEl.remove();
+    const botBubble = appendMessage('bot', '');
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let fullText = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]' || !data) continue;
+        try {
+          const parsed = JSON.parse(data);
+          const chunk = parsed.choices?.[0]?.delta?.content;
+          if (chunk) {
+            fullText += chunk;
+            botBubble.textContent = fullText;
+            scrollToBottom();
+          }
+        } catch (_) {}
+      }
+    }
+
+    if (!isFirst) {
+      conversationHistory.push({ role: 'assistant', content: fullText });
+    } else {
+      conversationHistory = [
+        { role: 'user', content: 'בוא נתחיל את הראיון.' },
+        { role: 'assistant', content: fullText }
+      ];
+    }
+
+  } catch (err) {
+    typingEl?.remove();
+    appendError(err.message);
+  } finally {
+    isLoading = false;
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('user-input').disabled = false;
+    document.getElementById('user-input').focus();
+  }
+}
+
+// ─── DOM HELPERS ───
+function appendMessage(role, text) {
+  const messages = document.getElementById('messages');
+  const wrapper = document.createElement('div');
+  wrapper.className = `message ${role}`;
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.textContent = text;
+
+  wrapper.appendChild(bubble);
+  messages.appendChild(wrapper);
+  scrollToBottom();
+  return bubble;
+}
+
+function appendTyping() {
+  const messages = document.getElementById('messages');
+  const wrapper = document.createElement('div');
+  wrapper.className = 'message bot';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+
+  const indicator = document.createElement('div');
+  indicator.className = 'typing-indicator';
+  indicator.innerHTML = '<span></span><span></span><span></span>';
+
+  bubble.appendChild(indicator);
+  wrapper.appendChild(bubble);
+  messages.appendChild(wrapper);
+  scrollToBottom();
+  return wrapper;
+}
+
+function appendError(msg) {
+  const messages = document.getElementById('messages');
+  const el = document.createElement('div');
+  el.className = 'error-msg';
+  el.textContent = `שגיאה: ${msg}`;
+  messages.appendChild(el);
+  scrollToBottom();
+}
+
+function scrollToBottom() {
+  const messages = document.getElementById('messages');
+  messages.scrollTop = messages.scrollHeight;
+}
+</script>
+</body>
+</html>

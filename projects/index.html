@@ -367,26 +367,37 @@
       .header-inner,
       .projects-inner,
       .footer-inner {
-        padding: 0 24px;
+        padding: 0 20px;
       }
 
-      .project {
-        margin-bottom: 80px;
-      }
+      .projects { padding: 80px 0; }
+
+      .project { margin-bottom: 64px; }
 
       .project-content,
       .project-content--reverse {
         grid-template-columns: 1fr;
-        gap: 32px;
+        gap: 24px;
       }
 
-      .project-content--reverse .project-info {
-        order: 1;
+      .project-content--reverse .project-info { order: 1; }
+      .project-content--reverse .project-image { order: 2; }
+
+      .project-image--large {
+        margin-left: 0;
+        margin-right: 0;
       }
 
-      .project-content--reverse .project-image {
-        order: 2;
+      .project-content:not(.project-content--reverse) .project-image--large {
+        margin-left: 0;
+        margin-right: 0;
       }
+
+      .project-title { font-size: 18px; }
+      .project-description { font-size: 16px; margin-bottom: 20px; }
+      .project-number-line { margin-bottom: 16px; }
+
+      .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
     }
   </style>
 </head>
@@ -461,25 +472,25 @@
 
       <!-- Project 3 -->
       <article class="project">
-        <div class="project-link" style="cursor: default; pointer-events: none;">
+        <a href="case-study-3/index.html" class="project-link">
           <div class="project-content">
             <div class="project-info">
               <div class="project-number-line">
                 <span class="project-number">03/03</span>
               </div>
               <div class="project-brand">
-                <img src="assets/azami-logo.webp" alt="Azami" class="project-logo">
+                <span style="display:inline-flex;align-items:center;justify-content:center;background:#fff;padding:4px 8px;border-radius:5px;"><img src="case-study-3/wix-logo.svg" alt="Wix" style="height:16px;width:auto;display:block;"></span>
                 <span class="project-separator">|</span>
-                <h3 class="project-title">The Quote Builder</h3>
+                <h3 class="project-title">New Domain Tool</h3>
               </div>
-              <p class="project-description">Allow users compare partners side-by-side on quality, responsiveness, expertise, and cost.</p>
-              <span class="project-cta" style="opacity: 0.35; cursor: default;">Coming soon</span>
+              <p class="project-description">Redesigning Wix's domain acquisition flow to lift conversion - validated by a 16-day A/B test.</p>
+              <span class="project-cta">View case study</span>
             </div>
             <div class="project-image project-image--large">
-              <img src="case-study-3/Case%20Study3-HP-Pic.png" alt="Case Study 3">
+              <img src="case-study-3/New%20Strategy%20-%2011/projects%20-%20image%20.png" alt="Wix New Domain Tool">
             </div>
           </div>
-        </div>
+        </a>
       </article>
 
     </div>
@@ -722,6 +733,15 @@
       animate();
     });
   </script>
+
+
+  <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+  <style>
+    .scroll-top { position: fixed; bottom: 40px; right: 40px; width: 48px; height: 48px; border-radius: 50%; border: 2px solid #1a1a1a; background: #fff; color: #1a1a1a; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity 0.2s; z-index: 200; }
+    .scroll-top:hover { opacity: 0.6; }
+  </style>
 
 </body>
 </html>

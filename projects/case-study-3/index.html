@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wix New Domain Tool - Case Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fff;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ─── Header ─── */
+    .header {
+      padding: 32px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .header-name a:hover { opacity: 0.6; }
+
+    .header-nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    .header-nav a {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #666;
+      transition: color 0.2s;
+    }
+
+    .header-nav a:hover { color: #1a1a1a; }
+
+    /* ─── Layout ─── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .container--wide {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section { padding: 120px 0; }
+
+    /* ─── Typography ─── */
+    .label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+      margin-bottom: 24px;
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      background: #90324C;
+      padding: 80px 0 0 0;
+      overflow: hidden;
+      position: relative;
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 80px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 100px 0 100px 80px;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 280px;
+    }
+
+    .hero .label {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      margin-top: 24px;
+    }
+
+    .hero-title {
+      font-size: 80px;
+      white-space: nowrap;
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: 0;
+    }
+
+    .hero-company {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .wix-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+
+    .wix-badge img {
+      height: 20px;
+      width: auto;
+      display: block;
+    }
+
+    .hero-company-label {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero-image {
+      border-radius: 10px 0 0 10px;
+      overflow: hidden;
+      margin-right: 0;
+    }
+
+    .hero-image img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ─── Overview ─── */
+    .overview {
+      padding: 80px 0 80px;
+      background: #fff;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .overview-summary p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #555;
+      margin-bottom: 16px;
+    }
+
+    .overview-summary {
+      padding-bottom: 40px;
+    }
+
+    .overview-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px 48px;
+    }
+
+    .meta-item {
+      border-top: 2px solid #1a1a1a;
+      padding-top: 12px;
+    }
+
+    .meta-item dt {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #999;
+      margin-bottom: 6px;
+    }
+
+    .meta-item dd {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a1a;
+      line-height: 1.5;
+    }
+
+    /* ─── Background ─── */
+    .background-section {
+      background: #f5f5f5;
+      padding: 100px 0 0;
+    }
+
+    .background-title {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      color: #1a1a1a;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+    }
+
+    .background-body {
+      font-size: 17px;
+      line-height: 1.75;
+      color: #444;
+      max-width: 760px;
+    }
+
+    .background-body strong {
+      color: #1a1a1a;
+      font-weight: 600;
+    }
+
+    .background-image-wrap {
+      margin-top: 64px;
+      padding: 0 60px 100px;
+      max-width: 1120px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .background-image-wrap img {
+      width: 100%;
+      display: block;
+      border-radius: 12px 12px 0 0;
+    }
+
+    /* ─── Problem ─── */
+    .problem {
+      background: #fafafa;
+      padding: 120px 0;
+    }
+
+    .problem-intro {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #555;
+      max-width: 720px;
+      margin-top: 20px;
+      margin-bottom: 56px;
+    }
+
+    .problem-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      margin-top: 0;
+    }
+
+    .problem-card-img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .problem-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .problem-card h4 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    .problem-card p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #666;
+    }
+
+    /* ─── Research (tension styles reused inside decisions) ─── */
+
+    .tension-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .tension {
+      border: 1px solid #ebebeb;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .tension-top {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 0;
+    }
+
+    .tension-num {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 36px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ccc;
+      letter-spacing: 0.06em;
+      border-right: 1px solid #ebebeb;
+    }
+
+    .tension-main {
+      padding: 36px 40px;
+    }
+
+    .tension-question {
+      font-size: clamp(18px, 2.5vw, 22px);
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      margin-bottom: 28px;
+    }
+
+    .tension-sides {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .tension-side {
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .tension-side--concern {
+      background: #FFF5F5;
+    }
+
+    .tension-side--finding {
+      background: #F5F9FF;
+    }
+
+    .tension-side-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .tension-side--concern .tension-side-label { color: #DC2626; }
+    .tension-side--finding .tension-side-label { color: #116DFF; }
+
+    .tension-side p {
+      font-size: 14px;
+      line-height: 1.65;
+      color: #555;
+    }
+
+    .tension-resolution {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding-top: 24px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .tension-resolution-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .tension-resolution p {
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.6;
+      color: #1a1a1a;
+    }
+
+    /* ─── Design Decisions ─── */
+    .decisions {
+      background: #fff;
+      padding: 120px 0;
+    }
+
+    .decisions-intro {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #555;
+      max-width: 720px;
+      margin-top: 20px;
+      margin-bottom: 80px;
+    }
+
+    .decision-wrap {
+      margin-bottom: 120px;
+    }
+
+    .decision-wrap:last-child { margin-bottom: 0; }
+
+    .decision-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 16px;
+      background: #f0f0f0;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .decision-wrap h3 {
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .decision-wrap > p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #555;
+      margin-bottom: 28px;
+      max-width: 760px;
+    }
+
+    .compare-outer {
+      margin-top: 48px;
+      margin-left: calc(-40vw + 50%);
+      width: 80vw;
+    }
+
+    .compare-outer--a {
+      width: 50vw;
+      margin-left: calc(-25vw + 50%);
+    }
+
+    .compare-outer--d {
+      width: 92vw;
+      margin-left: calc(-46vw + 50%);
+    }
+
+    .compare-labels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .compare-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 22px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .compare-badge--before {
+      background: #EF4444;
+      color: #fff;
+    }
+
+    .compare-badge--after {
+      background: #22C55E;
+      color: #fff;
+    }
+
+    .compare-wrap {
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .compare-wrap img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ─── A/B Test ─── */
+    .ab-test {
+      background: #fafafa;
+      padding: 120px 0;
+    }
+
+    .ab-test-intro {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #555;
+      max-width: 720px;
+      margin-top: 20px;
+      margin-bottom: 56px;
+    }
+
+    .ab-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 48px;
+    }
+
+    .ab-panel {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid #e5e5e5;
+    }
+
+    .ab-panel--b {
+      border: 2px solid #116DFF;
+      background: #F0F7FF;
+    }
+
+    .ab-panel-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #eee;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .ab-panel--b .ab-panel-tag {
+      background: #116DFF;
+      color: #fff;
+    }
+
+    .ab-panel h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+    }
+
+    .ab-panel p {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #555;
+    }
+
+    .ab-cards {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .ab-card-version {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 16px;
+    }
+
+    .ab-card-inner {
+      border: 1px solid #e0e0e0;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .ab-card-inner--b {
+      border: 2px solid #116DFF;
+      background: #F0F7FF;
+    }
+
+    .ab-card-visual {
+      padding: 32px 32px 0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ab-card-inner--b .ab-card-visual {
+      background: #fff;
+    }
+
+    .ab-card-visual img {
+      width: 100%;
+      display: block;
+    }
+
+    .ab-card-text {
+      padding: 24px 28px 28px;
+    }
+
+    .ab-card-text h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 12px 0 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .ab-card-text p {
+      font-size: 14px;
+      line-height: 1.65;
+      color: #555;
+    }
+
+    .ab-panel-tag--b {
+      background: #116DFF;
+      color: #fff;
+    }
+
+    .ab-duration {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid #e5e5e5;
+      font-size: 15px;
+      line-height: 1.65;
+      color: #555;
+    }
+
+    .ab-duration strong { color: #1a1a1a; }
+
+    /* ─── KPIs ─── */
+    .kpis {
+      background: #fff;
+      padding: 120px 0;
+    }
+
+    .kpis-intro {
+      font-size: 17px;
+      line-height: 1.65;
+      color: #555;
+      max-width: 720px;
+      margin-top: 20px;
+    }
+
+    .kpis-categories { margin-top: 64px; }
+
+    .kpis-category + .kpis-category { margin-top: 56px; }
+
+    .kpis-category-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .kpis-category-label::before {
+      content: '';
+      width: 28px;
+      height: 1.5px;
+      background: #1a1a1a;
+    }
+
+    .kpis-subgrid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: 40px;
+      row-gap: 40px;
+    }
+
+    .kpis-subgrid--3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .kpi-tile {
+      display: flex;
+      align-items: stretch;
+      gap: 14px;
+      align-self: start;
+    }
+
+    .kpi-bar {
+      width: 4px;
+      background: #116DFF;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .kpi-body {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .kpi-number {
+      font-size: 52px;
+      font-weight: 700;
+      color: #116DFF;
+      line-height: 1;
+      letter-spacing: -0.025em;
+    }
+
+    .kpi-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: -0.005em;
+      line-height: 1.35;
+    }
+
+    .kpi-detail {
+      font-size: 13px;
+      line-height: 1.45;
+      color: #aaa;
+      margin-top: 2px;
+    }
+
+    /* ─── Reflections ─── */
+    .reflections {
+      background: #fafafa;
+      padding: 120px 0 140px;
+    }
+
+    .reflections-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-top: 48px;
+    }
+
+    .reflection-column h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 16px;
+    }
+
+    .reflection-column ul {
+      list-style: none;
+    }
+
+    .reflection-column ul li {
+      font-size: 16px;
+      line-height: 1.65;
+      color: #555;
+      padding-left: 20px;
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .reflection-column ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 6px;
+      height: 6px;
+      background: #ccc;
+      border-radius: 50%;
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding: 40px 0;
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: center;
+    }
+
+    .footer-nav-item {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: opacity 0.2s;
+      text-decoration: none;
+    }
+
+    .footer-nav-item:hover { opacity: 0.5; }
+
+    .footer-nav-item--center {
+      justify-content: center;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .footer-nav-item--right { justify-content: flex-end; }
+
+    .footer-nav-item--disabled {
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      /* Header */
+      .header-inner { padding: 0 20px; }
+
+      /* Container */
+      .container, .container--wide { padding: 0 20px; }
+
+      /* Sections - reduce padding */
+      section { padding: 64px 0; }
+      .decisions, .kpis, .ab-test, .problem { padding: 64px 0; }
+      .background-section { padding: 64px 0 0; }
+
+      /* Hero */
+      .hero-grid { grid-template-columns: 1fr; padding: 100px 20px 48px; }
+      .hero-image { display: none; }
+      .hero-title { font-size: 44px; }
+      .hero-content { min-height: unset; padding: 0; }
+
+      /* Overview */
+      .overview { padding: 48px 0 0; }
+      .overview-grid { grid-template-columns: 1fr; gap: 32px; }
+      .overview-meta { grid-template-columns: 1fr 1fr; gap: 20px 32px; }
+
+      /* Background */
+      .background-image-wrap { padding: 0 0 0; margin-top: 32px; }
+
+      /* Problem */
+      .problem-cards { grid-template-columns: 1fr; gap: 24px; }
+
+      /* Design Decisions */
+      .decisions-intro { font-size: 16px; margin-bottom: 48px; }
+      .decision-wrap { margin-bottom: 72px; }
+
+      .tension-sides { grid-template-columns: 1fr; gap: 12px; }
+
+      .compare-outer,
+      .compare-outer--a,
+      .compare-outer--d {
+        width: calc(100% + 40px);
+        margin-left: -20px;
+        margin-right: -20px;
+        margin-top: 32px;
+      }
+      .compare-wrap { border-radius: 0; }
+
+      /* A/B Test */
+      .ab-cards { grid-template-columns: 1fr; gap: 16px; }
+
+      /* KPIs */
+      .kpis-subgrid,
+      .kpis-subgrid--3 { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+      .kpi-number { font-size: 36px; }
+
+      /* Footer */
+      .footer-inner { padding: 0 20px; flex-direction: column; gap: 12px; text-align: center; }
+
+      /* Scroll to top */
+      .scroll-top { bottom: 20px; right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Header ─── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-name"><a href="../index.html">Lior Wenger</a></div>
+      <nav class="header-nav">
+        <a href="../index.html#projects">Projects</a>
+        <a href="../about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── Hero ─── -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <div class="hero-company">
+          <span class="wix-badge"><img src="wix-logo.svg" alt="Wix"></span>
+          <span class="hero-company-label">Product Design</span>
+        </div>
+        <h1 class="hero-title">New Domain Tool</h1>
+        <p class="label">Conversion / UX / A/B Testing</p>
+      </div>
+      <div class="hero-image">
+        <img src="New Strategy - 11/header-image%20.png" alt="Wix New Domain Tool - search results page">
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Overview ─── -->
+  <section class="overview">
+    <div class="container">
+      <div class="overview-grid">
+        <div class="overview-summary">
+          <p class="label">Overview</p>
+          <p>Redesigning Wix's domain search tool to lift conversion - from a cluttered inline experience to a dedicated results page, validated by an A/B test.</p>
+        </div>
+        <dl class="overview-meta">
+          <div class="meta-item">
+            <dt>Company</dt>
+            <dd>Wix.com</dd>
+          </div>
+          <div class="meta-item">
+            <dt>My Role</dt>
+            <dd>UX/UI Design</dd>
+          </div>
+          <div class="meta-item">
+            <dt>Duration</dt>
+            <dd>2 months</dd>
+          </div>
+          <div class="meta-item">
+            <dt>Year</dt>
+            <dd>2023</dd>
+          </div>
+          <div class="meta-item">
+            <dt>Team</dt>
+            <dd>PM, UX/UI Designer, SEO, Content, Developer</dd>
+          </div>
+          <div class="meta-item">
+            <dt>Platform</dt>
+            <dd>Web (Desktop + Mobile)</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Background ─── -->
+  <section class="background-section">
+    <div class="container">
+      <h2 class="background-title">Background</h2>
+      <p class="background-body"><strong>Visitors, not exclusively Wix users, have the opportunity to directly acquire a domain name through Wix.</strong> Wix enables visitors to explore and acquire a personalized domain for their websites. Through the Wix domain tool, visitors can search for available domain names, make purchases, and connect them not only to their Wix websites but also to any other website.</p>
+    </div>
+    <div class="background-image-wrap">
+      <img src="New Strategy - 11/background.png" alt="Wix domain tool - existing experience">
+    </div>
+  </section>
+
+  <!-- ─── Problem ─── -->
+  <section class="problem">
+    <div class="container">
+      <p class="label">The Problem</p>
+      <h2 class="section-title">A tool that wasn't keeping up</h2>
+      <p class="problem-intro">The domain tool was generating revenue but leaving significant conversion on the table. Three compounding issues were holding it back.</p>
+      <div class="problem-cards">
+        <div class="problem-card">
+          <div class="problem-card-img">
+            <img src="icon1.png" alt="Low conversion - domain purchase rate chart">
+          </div>
+          <h4>Low conversion &amp; funnel drop-off</h4>
+          <p>The search results were displayed inline on the same page in collapsed mode, creating a cluttered, hard-to-navigate experience that pushed users away before they committed to a purchase.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-img">
+            <img src="icon2.png" alt="Development bugs and security gaps">
+          </div>
+          <h4>Development bugs &amp; security gaps</h4>
+          <p>Accumulated technical debt had introduced multiple bugs. A recent security incident added urgency - the redesign had to include a new security layer without disrupting the user journey.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-img">
+            <img src="icon3.png" alt="Below competitive standard">
+          </div>
+          <h4>Below competitive standard</h4>
+          <p>Competitors displayed pricing upfront, offered prominent domain suggestions, and dedicated full pages to search results. Wix did none of these - a gap that was costing market share.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Design Decisions ─── -->
+  <section class="decisions">
+    <div class="container">
+      <p class="label">Design Decisions</p>
+      <h2 class="section-title">Four changes that moved the needle</h2>
+      <p class="decisions-intro">Not every call was obvious. Each decision had a real internal debate behind it - here's the question, what we found, and what we shipped.</p>
+
+      <!-- Decision 1 -->
+      <div class="decision-wrap">
+        <span class="decision-badge">#1 Improvement</span>
+        <h3>Dedicated search results page</h3>
+        <p>On the original page, results appeared collapsed inline - pushing the hero down and leaving the experience feeling unresolved. The question was whether a separate page would actually help, or just add a navigation step users would drop off on.</p>
+        <div class="tension-sides">
+          <div class="tension-side tension-side--concern">
+            <div class="tension-side-label">The concern</div>
+            <p>Introducing a navigation step creates a moment of drop-off. The inline approach, despite being cluttered, kept everything on one surface.</p>
+          </div>
+          <div class="tension-side tension-side--finding">
+            <div class="tension-side-label">What the data showed</div>
+            <p>Users were already abandoning the inline experience - the collapsed results were competing with hero content and impossible to parse. The friction of a new page was lower than the cost of an unreadable state.</p>
+          </div>
+        </div>
+        <div class="tension-resolution">
+          <span class="tension-resolution-label">The call</span>
+          <p>Route users to a dedicated results page. Give search results the full focus and space they need to work.</p>
+        </div>
+        <div class="compare-outer compare-outer--a">
+          <div class="compare-wrap">
+            <img src="New Strategy - 11/before%26afterA.png" alt="Before and after: dedicated results page">
+          </div>
+        </div>
+      </div>
+
+      <!-- Decision 2 -->
+      <div class="decision-wrap">
+        <span class="decision-badge">#2 Improvement</span>
+        <h3>Spotlight on suggestions</h3>
+        <p>Users searching for domains often start with a narrow, single-term query. If that exact domain is taken, most stop - not because there's nothing available, but because nothing else was surfaced prominently enough to explore.</p>
+        <p>The redesign surfaces recommended and suggested domain names at the top of results, visually differentiated and immediately actionable. The goal: shift behavior from single-query searches to exploratory ones, increasing the chance a user finds something worth buying.</p>
+        <div class="compare-outer">
+          <div class="compare-wrap">
+            <img src="New Strategy - 11/before%26afterB.png" alt="Before and after: spotlight on suggestions">
+          </div>
+        </div>
+      </div>
+
+      <!-- Decision 3 -->
+      <div class="decision-wrap">
+        <span class="decision-badge">#3 Improvement</span>
+        <h3>Alternatives even when the domain is available</h3>
+        <p>Previously, if the desired domain was available, we showed it and stopped. The debate: would showing alternatives at that moment introduce doubt and pull users away from a purchase they were already ready to make?</p>
+        <div class="tension-sides">
+          <div class="tension-side tension-side--concern">
+            <div class="tension-side-label">The concern</div>
+            <p>A user who found their ideal domain is one click from converting. Alternatives introduce comparison and doubt at the worst possible moment.</p>
+          </div>
+          <div class="tension-side tension-side--finding">
+            <div class="tension-side-label">What the data showed</div>
+            <p>Users who engaged with alternatives had higher purchase completion rates, not lower. Options created confidence in the choice - not paralysis. Users shown only their primary domain had a higher rate of leaving without buying.</p>
+          </div>
+        </div>
+        <div class="tension-resolution">
+          <span class="tension-resolution-label">The call</span>
+          <p>Show alternatives always - but frame them as supporting the decision. The primary domain stays visually dominant; alternatives are "also consider," not competing choices.</p>
+        </div>
+        <div class="compare-outer">
+          <div class="compare-wrap">
+            <img src="New Strategy - 11/before%26afterC.png" alt="Before and after: alternatives shown">
+          </div>
+        </div>
+      </div>
+
+      <!-- Decision 4 -->
+      <div class="decision-wrap">
+        <span class="decision-badge">#4 Improvement</span>
+        <h3>Prices upfront</h3>
+        <p>Wix's domain prices were higher than some competitors. The deliberate call was to hide them - hoping users would reach checkout before comparing. But hiding prices was becoming a liability.</p>
+        <div class="tension-sides">
+          <div class="tension-side tension-side--concern">
+            <div class="tension-side-label">The concern</div>
+            <p>Showing prices early invites direct comparison with cheaper alternatives before users experience any of Wix's added value.</p>
+          </div>
+          <div class="tension-side tension-side--finding">
+            <div class="tension-side-label">What pushed the change</div>
+            <p>Every major competitor showed prices upfront - not showing them looked suspicious. Checkout abandonment was costly. And users who saw the price and stayed were more committed buyers, not fewer.</p>
+          </div>
+        </div>
+        <div class="tension-resolution">
+          <span class="tension-resolution-label">The call</span>
+          <p>Show prices inline. Losing price-sensitive users early is cheaper than losing them at checkout - and transparency builds more trust than the price difference loses.</p>
+        </div>
+        <div class="compare-outer compare-outer--d">
+          <div class="compare-wrap">
+            <img src="New Strategy - 11/before%26afterD.png" alt="Before and after: prices upfront">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── Final Design ─── -->
+  <section class="final-design">
+    <div class="container">
+      <p class="label">Final Design</p>
+      <h2 class="section-title">The redesigned experience</h2>
+      <p class="final-design-sub">The full flow - from domain search to results - as shipped.</p>
+      <div class="final-design-video">
+        <video src="final-design.mov" autoplay loop muted playsinline></video>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .final-design {
+      background: #fafafa;
+      padding: 120px 0;
+    }
+    .final-design-sub {
+      font-size: 17px;
+      line-height: 1.65;
+      color: #555;
+      margin-top: 8px;
+      margin-bottom: 48px;
+    }
+    .final-design-video {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+    }
+    .final-design-video video {
+      width: 100%;
+      display: block;
+    }
+  </style>
+
+  <!-- ─── A/B Test ─── -->
+  <section class="ab-test">
+    <div class="container">
+      <p class="label">Validation</p>
+      <h2 class="section-title">A 16-day A/B test</h2>
+      <p class="ab-test-intro">We ran a controlled test comparing the original experience (Version A) against the redesigned flow (Version B) across a live sample of users.</p>
+      <div class="ab-cards">
+        <div class="ab-card">
+          <div class="ab-card-inner">
+            <div class="ab-card-visual">
+              <img src="New Strategy - 11/ab-new.gif" alt="Version A - inline results">
+            </div>
+            <div class="ab-card-text">
+              <div class="ab-panel-tag">Version A &mdash; Control</div>
+              <h3>Original experience</h3>
+              <p>Search results appear collapsed inline on the landing page. The hero image shifts down. No upfront pricing. No prominent domain suggestions. Single result focus.</p>
+            </div>
+          </div>
+        </div>
+        <div class="ab-card ab-card--b">
+          <div class="ab-card-inner ab-card-inner--b">
+            <div class="ab-card-visual">
+              <img src="New Strategy - 11/ab13.png" alt="Version B - dedicated results page">
+            </div>
+            <div class="ab-card-text">
+              <div class="ab-panel-tag ab-panel-tag--b">Version B &mdash; New Design</div>
+              <h3>Redesigned experience</h3>
+              <p>Dedicated search results page with prominent suggestions, alternative domain options surfaced even when the primary domain is available, and prices shown upfront throughout the flow.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="ab-duration">Every primary metric moved in the same direction. <strong>We shipped Version B.</strong></p>
+    </div>
+  </section>
+
+  <!-- ─── KPIs ─── -->
+  <section class="kpis">
+    <div class="container">
+      <p class="label">Impact</p>
+      <h2 class="section-title">Results after switching to Version B</h2>
+      <p class="kpis-intro">Measured against the control (Version A) over the test period. All metrics improved.</p>
+
+      <div class="kpis-categories">
+        <div class="kpis-category">
+          <div class="kpis-category-label">Purchase metrics</div>
+          <div class="kpis-subgrid">
+            <div class="kpi-tile">
+              <div class="kpi-bar"></div>
+              <div class="kpi-body">
+                <div class="kpi-number">+16%</div>
+                <div class="kpi-label">Domain purchase rate</div>
+                <div class="kpi-detail">Completed domain purchases vs. control</div>
+              </div>
+            </div>
+            <div class="kpi-tile">
+              <div class="kpi-bar"></div>
+              <div class="kpi-body">
+                <div class="kpi-number">+21.8%</div>
+                <div class="kpi-label">"Get it" clicks</div>
+                <div class="kpi-detail">Intent-to-purchase clicks on domain listings</div>
+              </div>
+            </div>
+            <div class="kpi-tile">
+              <div class="kpi-bar"></div>
+              <div class="kpi-body">
+                <div class="kpi-number">+11%</div>
+                <div class="kpi-label">Signup success</div>
+                <div class="kpi-detail">Users completing account creation through the flow</div>
+              </div>
+            </div>
+            <div class="kpi-tile">
+              <div class="kpi-bar"></div>
+              <div class="kpi-body">
+                <div class="kpi-number">+7.5%</div>
+                <div class="kpi-label">Sign-up form completions</div>
+                <div class="kpi-detail">Form submissions through the domain gate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpis-category">
+          <div class="kpis-category-label">Top-funnel metrics</div>
+          <div class="kpis-subgrid kpis-subgrid--3">
+            <div class="kpi-tile">
+              <div class="kpi-bar" style="background:#0EA5E9;"></div>
+              <div class="kpi-body">
+                <div class="kpi-number" style="color:#0EA5E9;">+23.2%</div>
+                <div class="kpi-label">Sites created</div>
+                <div class="kpi-detail">Users who went on to create a Wix site</div>
+              </div>
+            </div>
+            <div class="kpi-tile">
+              <div class="kpi-bar" style="background:#0EA5E9;"></div>
+              <div class="kpi-body">
+                <div class="kpi-number" style="color:#0EA5E9;">+38.8%</div>
+                <div class="kpi-label">Sites published</div>
+                <div class="kpi-detail">Users who published their site after the domain flow</div>
+              </div>
+            </div>
+            <div class="kpi-tile">
+              <div class="kpi-bar" style="background:#0EA5E9;"></div>
+              <div class="kpi-body">
+                <div class="kpi-number" style="color:#0EA5E9;">+7.5%</div>
+                <div class="kpi-label">Sign-up form</div>
+                <div class="kpi-detail">Top-funnel sign-up completions via domain entry</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="../case-study-2/index.html" class="footer-nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Previous project
+      </a>
+      <button class="footer-nav-item footer-nav-item--center" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        Top of the page
+      </button>
+      <span class="footer-nav-item footer-nav-item--right footer-nav-item--disabled">
+        Next project
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </span>
+    </div>
+  </footer>
+
+  <!-- ─── Scroll to top ─── -->
+  <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+
+  <style>
+    .scroll-top {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid #1a1a1a;
+      background: #fff;
+      color: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 200;
+    }
+    .scroll-top:hover { opacity: 0.6; }
+  </style>
+
+</body>
+</html>

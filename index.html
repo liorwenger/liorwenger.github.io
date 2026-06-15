@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lior Wenger - Product Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kaisei+Tokumin&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    button { font-size: inherit; }
+
+    :root {
+      --accent: #FF03B8;
+      --bg: #111;
+      --text: #fff;
+      --text-muted: rgba(255,255,255,0.35);
+      --header-scrolled-bg: rgba(17,17,17,0.95);
+      --header-scrolled-border: rgba(255,255,255,0.06);
+      --overlay: rgba(0,0,0,0.70);
+      --toggle-bg: rgba(255,255,255,0.18);
+      --toggle-border: rgba(255,255,255,0.25);
+      --toggle-knob: #fff;
+      --swatch-active-ring: rgba(255,255,255,0.9);
+    }
+
+    [data-mode="light"] {
+      --bg: #f0efeb;
+      --text: #111;
+      --text-muted: rgba(0,0,0,0.35);
+      --header-scrolled-bg: rgba(240,239,235,0.95);
+      --header-scrolled-border: rgba(0,0,0,0.06);
+      --overlay: rgba(255,255,255,0.68);
+      --toggle-bg: rgba(0,0,0,0.12);
+      --toggle-border: rgba(0,0,0,0.2);
+      --toggle-knob: #111;
+      --swatch-active-ring: rgba(0,0,0,0.7);
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── Header ─── */
+    .header {
+      padding: 32px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: transparent;
+      z-index: 100;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .header.scrolled {
+      background: var(--header-scrolled-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--header-scrolled-border);
+    }
+
+    .header-inner {
+      width: 100%;
+      padding: 0 clamp(24px, 8vw, 120px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+      transition: color 0.3s;
+    }
+
+    .header-name a:hover { opacity: 0.6; }
+
+    .header-nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    .header-nav a {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color 0.3s;
+    }
+
+    .header-nav a:hover { color: var(--text); }
+
+    /* ─── Interactive Hero ─── */
+    .interactive-hero {
+      width: 100%;
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      font-size: clamp(32px, 6.4vw, 130px);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      will-change: opacity;
+      transform: translateZ(0);
+    }
+
+    .hero-bg.active {
+      opacity: 1;
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--overlay);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 clamp(24px, 8vw, 120px);
+      width: 100%;
+    }
+
+    .hero-line {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 0.28em;
+      line-height: 1;
+      margin-bottom: 0.12em;
+    }
+
+    .hero-serif {
+      font-family: 'Kaisei Tokumin', serif;
+      font-size: 1em;
+      font-weight: 400;
+      color: var(--text);
+      white-space: nowrap;
+      line-height: 1.65;
+    }
+
+    .accent {
+      color: var(--accent);
+    }
+
+    /* ─── Dark/Light Toggle ─── */
+    .mode-toggle {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      width: 1.47em;
+      height: 1em;
+      border-radius: 999px;
+      background: #3a3a3a;
+      border: 0.02em solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      position: relative;
+      vertical-align: middle;
+      margin: 0 0.25em;
+      transition: background 0.25s, border-color 0.25s;
+      padding: 0;
+    }
+
+    [data-mode="light"] .mode-toggle {
+      background: #d0d0d0;
+      border-color: #bbb;
+    }
+
+    .mode-toggle:hover { opacity: 0.85; }
+
+    .toggle-knob {
+      position: absolute;
+      width: 0.82em;
+      height: 0.82em;
+      border-radius: 50%;
+      background: #fff;
+      right: 0.09em;
+      transition: right 0.25s cubic-bezier(.4,0,.2,1), left 0.25s cubic-bezier(.4,0,.2,1), background 0.25s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+    }
+
+    [data-mode="light"] .toggle-knob {
+      background: #111;
+      right: auto;
+      left: 0.09em;
+    }
+
+    /* ─── Lior + swatches group (wraps together on mobile) ─── */
+    .lior-group {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      gap: 0.3em;
+    }
+
+    /* ─── Color Swatches ─── */
+    .color-swatches {
+      display: inline-flex;
+      align-items: stretch;
+      margin-left: 0.22em;
+      vertical-align: middle;
+      gap: 0;
+      flex-shrink: 0;
+    }
+
+    .swatch {
+      width: 70px;
+      height: 1em;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0;
+      background: var(--swatch-bg);
+      transition: transform 0.15s;
+    }
+
+    .swatch:hover { transform: translateY(-4px) scale(1.08); z-index: 1; }
+
+    .swatch-code {
+      font-family: 'Inter', monospace;
+      font-size: 0.13em;
+      font-weight: 500;
+      color: rgba(0,0,0,0.65);
+      transform: rotate(-90deg);
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+      user-select: none;
+    }
+
+    .swatch.active::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 0 0 0 2.5px var(--swatch-active-ring);
+      pointer-events: none;
+    }
+
+    /* set swatch background from custom property */
+    .swatch { background: var(--swatch-bg); }
+
+    /* ─── Word Cycling ─── */
+    .word-wrap {
+      display: inline-block;
+      overflow: hidden;
+      font-size: 1em;
+      height: 1.65em;
+      vertical-align: bottom;
+    }
+
+    .word-slot {
+      font-family: 'Kaisei Tokumin', serif;
+      font-size: 1em;
+      font-weight: 400;
+      display: inline-block;
+      white-space: nowrap;
+      line-height: 1.65;
+      will-change: transform, opacity;
+    }
+
+    .word-slot.anim-out {
+      animation: wordOut 0.55s cubic-bezier(.4,0,1,1) forwards;
+    }
+
+    .word-slot.anim-in {
+      animation: wordIn 0.6s cubic-bezier(0,0,.2,1) forwards;
+    }
+
+    @keyframes wordOut {
+      from { transform: translateY(0); opacity: 1; }
+      to   { transform: translateY(-110%); opacity: 0; }
+    }
+
+    @keyframes wordIn {
+      from { transform: translateY(110%); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ─── Pattern Swatches ─── */
+    .pattern-swatches {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.07em;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    .pattern-swatch {
+      width: 0.92em;
+      height: 1em;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      overflow: hidden;
+      border-radius: 3px;
+      flex-shrink: 0;
+      position: relative;
+      transition: transform 0.15s;
+    }
+
+    .pattern-swatch:hover { transform: translateY(-5px) scale(1.1); box-shadow: 0 12px 28px rgba(255,3,184,0.25); z-index: 1; }
+
+    .pattern-swatch img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    .pattern-swatch.active::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 0 0 0 2.5px var(--text);
+      pointer-events: none;
+      border-radius: 3px;
+      transition: box-shadow 0.25s;
+    }
+
+    .pattern-swatch--none {
+      background: transparent;
+      border: 0.018em solid rgba(255,255,255,0.35);
+      color: rgba(255,255,255,0.35);
+    }
+
+    .pattern-swatch--none.active::after {
+      box-shadow: inset 0 0 0 2.5px var(--text);
+    }
+
+    [data-mode="light"] .pattern-swatch--none {
+      border-color: rgba(0,0,0,0.25);
+      color: rgba(0,0,0,0.25);
+    }
+
+    /* ─── Click sparkle ─── */
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      transform: translate(-50%, -50%) scale(0);
+      animation: sparkle-pop 0.5s ease forwards;
+      z-index: 999;
+    }
+    @keyframes sparkle-pop {
+      0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+      60%  { transform: translate(-50%, -50%) scale(1.8); opacity: 0.7; }
+      100% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+    }
+
+    /* ─── Color-copy toast ─── */
+    .copied-toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Inter', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 16px;
+      border-radius: 20px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 1000;
+    }
+    .copied-toast.show { opacity: 1; }
+
+    /* ─── Scroll hint ─── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      animation: fadeInUp 1s ease 1.5s both;
+      transition: color 0.4s;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* ─── Projects ─── */
+    .projects {
+      padding: 120px 0;
+      overflow: hidden;
+    }
+
+    .projects-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+
+    .project { margin-bottom: 48px; }
+    .project:last-child { margin-bottom: 0; }
+    .project + .project { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 48px; }
+    .project-link { display: block; }
+    .project-link:hover .project-image img { transform: scale(1.02); }
+
+    .project-number-line {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .project-number-line::before {
+      content: '';
+      width: 48px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .project-number {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    .project-content {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .project-image { order: 1; }
+    .project-info { order: 2; }
+
+    .project-info { display: flex; flex-direction: column; }
+
+    .project-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .project-logo { width: 32px; height: 32px; object-fit: contain; display: block; }
+
+    .project-separator {
+      color: rgba(255,255,255,0.25);
+      font-weight: 300;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    [data-mode="light"] .project-separator { color: rgba(0,0,0,0.2); }
+
+    .project-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+      letter-spacing: -0.005em;
+      line-height: 1.2;
+    }
+
+    .project-description {
+      font-size: 19px;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 32px;
+    }
+
+    .project-cta {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 24px;
+      transition: all 0.2s;
+      align-self: flex-start;
+    }
+
+    [data-mode="light"] .project-cta { border-color: rgba(0,0,0,0.2); }
+    .project-link:hover .project-cta { background: var(--text); color: var(--bg); }
+
+    .project-image { overflow: visible; }
+
+    .project-image--large { margin-left: -57%; margin-right: -10%; }
+    .project-image--large img { width: 100%; }
+
+    .laptop-mockup {
+      position: relative;
+      padding: 2.5% 4% 0 4%;
+      background: #1a1a1a;
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .laptop-mockup::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      background: #444;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+    }
+
+    .laptop-mockup img { display: block; width: 100%; height: auto; border-radius: 2px 2px 0 0; }
+
+    .laptop-base {
+      width: 110%;
+      margin-left: -5%;
+      height: 14px;
+      background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+      border-radius: 0 0 8px 8px;
+      position: relative;
+    }
+
+    .laptop-base::before {
+      content: '';
+      display: block;
+      width: 18%;
+      height: 4px;
+      background: #333;
+      border-radius: 0 0 4px 4px;
+      margin: 0 auto;
+    }
+
+    .project-image img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    /* ─── Footer ─── */
+    .footer { border-top: 1px solid rgba(255,255,255,0.1); padding: 40px 0; }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copyright { font-size: 13px; color: var(--text-muted); }
+
+    .footer-links { display: flex; gap: 24px; }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    /* ─── Scroll-to-top ─── */
+    .scroll-top {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.15);
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      z-index: 200;
+    }
+
+    [data-mode="light"] .scroll-top { border-color: rgba(0,0,0,0.15); }
+    .scroll-top:hover { opacity: 0.6; }
+
+    /* ─── Projects + Footer always dark ─── */
+    .projects, .footer {
+      background: #111;
+    }
+
+    [data-mode="light"] .projects .project-title { color: #fff; }
+    [data-mode="light"] .projects .project-description { color: rgba(255,255,255,0.35); }
+    [data-mode="light"] .projects .project-separator { color: rgba(255,255,255,0.25); }
+    [data-mode="light"] .projects .project-cta { color: #fff; border-color: rgba(255,255,255,0.3); }
+    [data-mode="light"] .project-link:hover .project-cta { background: #fff; color: #111; }
+    [data-mode="light"] .footer { border-top-color: rgba(255,255,255,0.1); }
+    [data-mode="light"] .footer-copyright,
+    [data-mode="light"] .footer-links a { color: rgba(255,255,255,0.35); }
+    [data-mode="light"] .footer-links a:hover { color: #fff; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      /* Pure proportional scaling — no min/max clamp */
+      .interactive-hero { font-size: 9vw; align-items: flex-start; }
+      .hero-content { padding-top: 100px; }
+      .hero-line { flex-wrap: wrap; margin-bottom: 0.4em; }
+      .hero-serif { white-space: normal; }
+
+      /* Color swatches: narrower strips on mobile */
+      .color-swatches { display: inline-flex; }
+      .swatch { width: 48px; }
+
+      /* Pattern swatches: show below 'I love to [word]' */
+      .pattern-swatches {
+        display: inline-flex;
+        order: 2;
+        margin-right: 0;
+        margin-top: 0.35em;
+        width: 100%;
+      }
+      .pattern-swatch { width: 1.4em; height: 1.5em; }
+
+      .header-inner, .projects-inner, .footer-inner { padding: 0 20px; }
+      .projects { padding: 80px 0; }
+      .project { margin-bottom: 64px; }
+      .project-content { grid-template-columns: 1fr; gap: 24px; }
+      .project-image--large { margin-left: 0; margin-right: 0; }
+      .project-title { font-size: 18px; }
+      .project-description { font-size: 16px; margin-bottom: 20px; }
+      .project-number-line { margin-bottom: 16px; }
+      .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
+      .swatch-code { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Header ─── -->
+  <header class="header" id="siteHeader">
+    <div class="header-inner">
+      <div class="header-name"><a href="index.html">Lior Wenger</a></div>
+      <nav class="header-nav">
+        <a href="#projects">Projects</a>
+        <a href="about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── Interactive Hero ─── -->
+  <section class="interactive-hero" id="hero">
+    <div class="hero-bg" id="heroBg"></div>
+
+    <div class="hero-content">
+
+      <!-- Line 1: Hi, [toggle] I'm | Lior. [color swatches] -->
+      <div class="hero-line">
+        <span class="hero-serif">Hi,</span>
+        <button class="mode-toggle" id="modeToggle" aria-label="Toggle dark/light mode">
+          <span class="toggle-knob"></span>
+        </button>
+        <span class="hero-serif">I'm</span>
+        <span class="lior-group">
+          <span class="hero-serif accent" style="font-style:italic;">Lior.</span>
+          <span class="color-swatches" id="colorSwatches">
+            <button class="swatch active" data-color="#FF03B8" style="--swatch-bg:#FF03B8;"><span class="swatch-code">#FF03B8</span>
+              
+            </button>
+            <button class="swatch" data-color="#BDF521" style="--swatch-bg:#BDF521;"><span class="swatch-code">#BDF521</span>
+              
+            </button>
+            <button class="swatch" data-color="#7B46F8" style="--swatch-bg:#7B46F8;"><span class="swatch-code">#7B46F8</span>
+              
+            </button>
+            <button class="swatch" data-color="#EB4C15" style="--swatch-bg:#EB4C15;"><span class="swatch-code">#EB4C15</span>
+              
+            </button>
+          </span>
+        </span>
+      </div>
+
+      <!-- Line 2: I'm a product designer. -->
+      <div class="hero-line">
+        <span class="hero-serif">I'm a&nbsp;<span class="accent">product designer.</span></span>
+      </div>
+
+      <!-- Line 3: [pattern swatches] I love to [word] -->
+      <div class="hero-line">
+        <span class="pattern-swatches" id="patternSwatches">
+          <button class="pattern-swatch pattern-swatch--none active" data-idx="none" title="No background">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" width="100%" height="100%">
+              <line x1="0" y1="100" x2="100" y2="0" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"/>
+            </svg>
+          </button>
+          <button class="pattern-swatch" data-idx="0" title="Pattern 5">
+            <img src="assets/patterns/pattern-5.jpg" alt="">
+          </button>
+          <button class="pattern-swatch" data-idx="1" title="Pattern 6">
+            <img src="assets/patterns/pattern-6.jpg" alt="">
+          </button>
+          <button class="pattern-swatch" data-idx="2" title="Pattern 7">
+            <img src="assets/patterns/pattern-7.jpg" alt="">
+          </button>
+          <button class="pattern-swatch" data-idx="3" title="Pattern 8">
+            <img src="assets/patterns/pattern-8.jpg" alt="">
+          </button>
+        </span>
+        <span class="hero-serif">I love to</span>
+        <span class="word-wrap">
+          <span class="accent word-slot" id="heroWord">solve</span>
+        </span>
+      </div>
+
+    </div>
+
+    <div class="scroll-hint">Scroll to explore</div>
+  </section>
+
+  <!-- ─── Projects ─── -->
+  <section class="projects" id="projects">
+    <div class="projects-inner">
+
+      <!-- Project 1 -->
+      <article class="project">
+        <a href="case-study-1/index.html" class="project-link">
+          <div class="project-content">
+            <div class="project-info">
+              <div class="project-number-line">
+                <span class="project-number">01/03</span>
+              </div>
+              <div class="project-brand">
+                <img src="assets/azami-logo.webp" alt="Azami" class="project-logo">
+                <span class="project-separator">|</span>
+                <h3 class="project-title">Associate Network Dashboard</h3>
+              </div>
+              <p class="project-description">A data-heavy internal tool reframed as a strategic command center for managing partners.</p>
+              <span class="project-cta">View case study</span>
+            </div>
+            <div class="project-image project-image--large">
+              <img src="case-study-1/assets/hero-laptop.png" alt="Associate Network Dashboard">
+            </div>
+          </div>
+        </a>
+      </article>
+
+      <!-- Project 2 -->
+      <article class="project">
+        <a href="case-study-2/index.html" class="project-link">
+          <div class="project-content project-content--reverse">
+            <div class="project-info">
+              <div class="project-number-line">
+                <span class="project-number">02/03</span>
+              </div>
+              <div class="project-brand">
+                <img src="assets/azami-logo.webp" alt="Azami" class="project-logo">
+                <span class="project-separator">|</span>
+                <h3 class="project-title">Renewals System Redesign</h3>
+              </div>
+              <p class="project-description">A legacy datatable rebuilt for clarity, status visibility, and confident action at scale.</p>
+              <span class="project-cta">View case study</span>
+            </div>
+            <div class="project-image project-image--large">
+              <img src="case-study-2/assets/hero-renewals.png" alt="Renewals System Redesign">
+            </div>
+          </div>
+        </a>
+      </article>
+
+      <!-- Project 3 -->
+      <article class="project">
+        <a href="case-study-3/index.html" class="project-link">
+          <div class="project-content">
+            <div class="project-info">
+              <div class="project-number-line">
+                <span class="project-number">03/03</span>
+              </div>
+              <div class="project-brand">
+                <span style="display:inline-flex;align-items:center;justify-content:center;background:#fff;padding:4px 8px;border-radius:5px;"><img src="case-study-3/wix-logo.svg" alt="Wix" style="height:16px;width:auto;display:block;"></span>
+                <span class="project-separator">|</span>
+                <h3 class="project-title">New Domain Tool</h3>
+              </div>
+              <p class="project-description">Redesigning Wix's domain acquisition flow to lift conversion - validated by a 16-day A/B test.</p>
+              <span class="project-cta">View case study</span>
+            </div>
+            <div class="project-image project-image--large">
+              <img src="case-study-3/New%20Strategy%20-%2011/projects%20-%20image%20.png" alt="Wix New Domain Tool">
+            </div>
+          </div>
+        </a>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-copyright">&copy; 2026 Lior Wenger</p>
+      <div class="footer-links">
+        <a href="mailto:liorbetser@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/liorwenger/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── Color copy toast ─── -->
+  <div class="copied-toast" id="copiedToast"></div>
+
+  <!-- ─── Scroll-to-top ─── -->
+  <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+
+  <script>
+    // ─── Cycling words — update this list with your exact words ───
+    const WORDS = ['solve', 'build', 'think', 'create', 'iterate', 'design'];
+
+    const PATTERNS = [
+      'assets/patterns/pattern-5.jpg',
+      'assets/patterns/pattern-6.jpg',
+      'assets/patterns/pattern-7.jpg',
+      'assets/patterns/pattern-8.jpg',
+    ];
+
+    // ─── State ───
+    let currentMode = 'dark';
+    let currentColor = '#FF03B8';
+    let currentPattern = null;
+    let wordIndex = 0;
+    let wordAnimating = false;
+
+    // ─── Elements ───
+    const html = document.documentElement;
+    const modeToggle = document.getElementById('modeToggle');
+    const heroBg = document.getElementById('heroBg');
+    const heroWord = document.getElementById('heroWord');
+    const colorSwatches = document.querySelectorAll('.swatch');
+    const patternSwatches = document.querySelectorAll('.pattern-swatch');
+
+    // ─── Set accent color ───
+    function setAccent(color) {
+      currentColor = color;
+      document.documentElement.style.setProperty('--accent', color);
+      colorSwatches.forEach(s => {
+        s.classList.toggle('active', s.dataset.color === color);
+      });
+    }
+
+    // ─── Dark / Light mode toggle ───
+    modeToggle.addEventListener('click', () => {
+      currentMode = currentMode === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-mode', currentMode);
+    });
+
+    // ─── Sparkle ───
+    function spawnSparkle(e) {
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.style.left = e.clientX + 'px';
+      s.style.top = e.clientY + 'px';
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 500);
+    }
+
+    // ─── Toast ───
+    const copiedToast = document.getElementById('copiedToast');
+    let toastTimer;
+    function showToast(msg) {
+      copiedToast.textContent = msg;
+      copiedToast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => copiedToast.classList.remove('show'), 1800);
+    }
+
+    // ─── Color swatch clicks ───
+    colorSwatches.forEach(swatch => {
+      swatch.addEventListener('click', (e) => {
+        setAccent(swatch.dataset.color);
+        try { navigator.clipboard.writeText(swatch.dataset.color); } catch(_) {}
+        showToast(swatch.dataset.color + ' copied!');
+        spawnSparkle(e);
+      });
+    });
+
+    // ─── Sparkle on toggle + pattern swatches ───
+    modeToggle.addEventListener('click', (e) => spawnSparkle(e));
+    document.querySelectorAll('.pattern-swatch').forEach(s => {
+      s.addEventListener('click', (e) => spawnSparkle(e));
+    });
+
+    // ─── Pattern swatch clicks ───
+    function clearPattern() {
+      currentPattern = null;
+      heroBg.style.backgroundImage = '';
+      heroBg.classList.remove('active');
+      patternSwatches.forEach(s => s.classList.remove('active'));
+    }
+
+    patternSwatches.forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        const idx = swatch.dataset.idx;
+
+        if (idx === 'none') {
+          clearPattern();
+          swatch.classList.add('active');
+          return;
+        }
+
+        const idxNum = parseInt(idx, 10);
+        const isSame = currentPattern === idxNum;
+
+        if (isSame) {
+          clearPattern();
+        } else {
+          clearPattern();
+          currentPattern = idxNum;
+          swatch.classList.add('active');
+          heroBg.style.backgroundImage = `url('${PATTERNS[idxNum]}')`;
+          heroBg.classList.add('active');
+        }
+      });
+    });
+
+    // ─── Word cycling ───
+    function cycleWord() {
+      if (wordAnimating) return;
+      wordAnimating = true;
+
+      heroWord.classList.add('anim-out');
+
+      setTimeout(() => {
+        heroWord.classList.remove('anim-out');
+        wordIndex = (wordIndex + 1) % WORDS.length;
+        heroWord.textContent = WORDS[wordIndex];
+        heroWord.classList.add('anim-in');
+
+        setTimeout(() => {
+          heroWord.classList.remove('anim-in');
+          wordAnimating = false;
+        }, 600);
+      }, 550);
+    }
+
+    setInterval(cycleWord, 2000);
+
+    // ─── Preload all pattern images so clicks are instant ───
+    PATTERNS.forEach(src => { const img = new Image(); img.src = src; });
+
+    // ─── Lock word-wrap width to the longest word so layout never shifts ───
+    function fixWordWidth() {
+      const heroEl = document.querySelector('.interactive-hero');
+      const wrapEl = document.querySelector('.word-wrap');
+      if (!heroEl || !wrapEl) return;
+
+      const fontSize = parseFloat(getComputedStyle(heroEl).fontSize);
+      const probe = document.createElement('span');
+      probe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;white-space:nowrap;' +
+        'font-family:"Kaisei Tokumin",serif;font-weight:400;font-size:' + fontSize + 'px;';
+      document.body.appendChild(probe);
+
+      let maxWidth = 0;
+      WORDS.forEach(w => { probe.textContent = w; maxWidth = Math.max(maxWidth, probe.offsetWidth); });
+      probe.remove();
+
+      wrapEl.style.width = maxWidth + 'px';
+    }
+
+    document.fonts.ready.then(fixWordWidth);
+    window.addEventListener('resize', fixWordWidth, { passive: true });
+
+    // ─── Header scroll state ───
+    const header = document.getElementById('siteHeader');
+    const hero = document.getElementById('hero');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > hero.offsetHeight - 100) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    }, { passive: true });
+
+  </script>
+
+</body>
+</html>

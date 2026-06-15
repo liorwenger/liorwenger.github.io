@@ -1,0 +1,50 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -H \"X-Figma-Token: figd_REDACTED\" \"https://api.figma.com/v1/files/j4WBU0g1Z7o7r37dB1p2es\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({'name': d.get\\('name'\\), 'lastModified': d.get\\('lastModified'\\), 'pages': [{'name': p['name'], 'id': p['id'], 'childCount': len\\(p.get\\('children', []\\)\\)} for p in d.get\\('document', {}\\).get\\('children', []\\)]}, indent=2\\)\\)\")",
+      "Bash(python3 -c ' *)",
+      "Bash(open \"/Users/lior/Documents/Lior - Portfolio - ClaudeCode/tamar_cv.html\")",
+      "Bash(curl -s -H \"X-Figma-Token: figd_REDACTED\" \"https://api.figma.com/v1/files/j4WBU0g1Z7o7r37dB1p2es/nodes?ids=87-2\")",
+      "Bash(curl -s -H 'X-Figma-Token: figd_REDACTED' https://api.figma.com/v1/me)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d, indent=2\\)\\)\")",
+      "Bash(curl -s -H 'X-Figma-Token: figd_REDACTED' https://api.figma.com/v1/files/j4WBU0g1Z7o7r37dB1p2es)",
+      "Bash(curl -s -X POST -H 'X-Figma-Token: figd_REDACTED' -H 'Content-Type: application/json' -d '{\"name\": \"test\"}' https://api.figma.com/v1/files/j4WBU0g1Z7o7r37dB1p2es/nodes)",
+      "Bash(curl -s -X POST -H 'X-Figma-Token: figd_REDACTED' -H 'Content-Type: application/json' -d '{}' https://api.figma.com/v2/files/j4WBU0g1Z7o7r37dB1p2es/nodes)",
+      "Bash(npx create-next-app@latest job-hunt-journal --typescript --tailwind --eslint --app --no-src-dir --no-git)",
+      "Bash(npm install *)",
+      "Bash(mkdir -p \"/Users/lior/Documents/Lior - Portfolio - ClaudeCode/job-hunt-journal/lib\")",
+      "Bash(mkdir -p \"/Users/lior/Documents/Lior - Portfolio - ClaudeCode/job-hunt-journal/components\")",
+      "Bash(npm run *)",
+      "Bash(sleep 3 && cat /tmp/jhj-dev.log)",
+      "Read(//private/tmp/**)",
+      "Bash(kill 99243)",
+      "WebFetch(domain:liorwenger.github.io)",
+      "WebFetch(domain:www.hellosimply.com)",
+      "Bash(open \"/Users/lior/Documents/Lior - Portfolio - ClaudeCode/job_search_journal.html\")",
+      "Bash(gh repo *)",
+      "WebFetch(domain:github.com)",
+      "Bash(brew tap *)",
+      "Bash(/opt/homebrew/bin/brew --version)",
+      "Bash(/usr/local/bin/brew --version)",
+      "Bash(ls /opt/homebrew/bin/brew /usr/local/bin/brew 2>/dev/null; echo \"PATH: $PATH\")",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(find /opt /usr/local -name \"brew\" -type f 2>/dev/null | head -5)",
+      "Read(//opt/**)",
+      "Bash(curl -fsSL https://raw.githubusercontent.com/ronkeee/claude-code-usage-bar/main/install.sh)",
+      "Bash(bash)",
+      "Bash(launchctl list *)",
+      "Read(//Users/lior/Library/LaunchAgents/**)",
+      "Bash(grep -n \"str | None\\\\|int | None\\\\|float | None\\\\|bool | None\\\\|list | None\\\\|dict | None\" ~/.claude/menubar/claude_usage_bar.py)",
+      "Read(//Users/lior/.claude/menubar/**)",
+      "Bash(launchctl unload *)",
+      "Bash(launchctl load *)",
+      "Bash(mkdir -p ~/.claude/menubar)",
+      "Bash(echo '{\"plan\": 100}')",
+      "Bash(mkdir -p \"/Users/lior/Documents/Lior - Portfolio - ClaudeCode/job-hunt-journal/app/routine\")"
+    ],
+    "additionalDirectories": [
+      "/Users/lior/Documents/Lior - Portfolio - ClaudeCode/job-hunt-journal/app"
+    ]
+  }
+}

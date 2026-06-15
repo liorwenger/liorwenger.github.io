@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lior Wenger - Product Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fff;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ─── Header ─── */
+    .header {
+      padding: 32px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 10, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+      transition: background 0.3s, color 0.3s;
+      color: #fff;
+    }
+
+    .header.is-light {
+      background: rgba(255, 255, 255, 0.95);
+      color: #1a1a1a;
+    }
+
+    .header.is-light .header-nav a {
+      color: #666;
+    }
+
+    .header.is-light .header-nav a:hover {
+      color: #1a1a1a;
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .header-name a:hover {
+      opacity: 0.6;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    .header-nav a {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+      transition: color 0.2s;
+    }
+
+    .header-nav a:hover {
+      color: #fff;
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      position: relative;
+      background: #0a0a0a;
+      height: 100vh;
+      min-height: 640px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      pointer-events: none;
+      padding: 0 40px;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(18px, 2vw, 26px);
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 24px;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+      z-index: 1;
+      animation: heroScrollBounce 2s ease-in-out infinite;
+    }
+
+    @keyframes heroScrollBounce {
+      0%, 100% { transform: translate(-50%, 0); opacity: 0.5; }
+      50% { transform: translate(-50%, 6px); opacity: 1; }
+    }
+
+    /* ─── Projects ─── */
+    .projects {
+      padding: 40px 0 120px;
+    }
+
+    .projects-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .project {
+      margin-bottom: 120px;
+    }
+
+    .project:last-child {
+      margin-bottom: 0;
+    }
+
+    .project-link {
+      display: block;
+    }
+
+    .project-link:hover .project-image img {
+      transform: scale(1.02);
+    }
+
+    .project-link:hover .project-title {
+      opacity: 0.7;
+    }
+
+    .project-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+
+    .project-number {
+      font-size: 13px;
+      font-weight: 500;
+      color: #999;
+      letter-spacing: 0.04em;
+    }
+
+    .project-company {
+      font-size: 13px;
+      font-weight: 500;
+      color: #999;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .project-title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      transition: opacity 0.2s;
+      letter-spacing: -0.3px;
+    }
+
+    .project-description {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.6;
+      max-width: 600px;
+      margin-bottom: 32px;
+    }
+
+    .project-cta {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 32px;
+      transition: gap 0.2s;
+    }
+
+    .project-link:hover .project-cta {
+      gap: 10px;
+    }
+
+    .project-cta svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .project-image {
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f5f5f5;
+    }
+
+    .project-image img {
+      transition: transform 0.4s ease;
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      border-top: 1px solid #eee;
+      padding: 40px 0;
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copyright {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: #999;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: #1a1a1a;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      .hero {
+        min-height: 560px;
+      }
+
+      .header-inner,
+      .projects-inner,
+      .footer-inner {
+        padding: 0 24px;
+      }
+
+      .hero-inner {
+        padding: 0 24px;
+      }
+
+      .project {
+        margin-bottom: 80px;
+      }
+
+      .project-title {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Header ─── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-name"><a href="index.html">Lior Wenger</a></div>
+      <nav class="header-nav">
+        <a href="#projects">Projects</a>
+        <a href="about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── Hero ─── -->
+  <section class="hero">
+    <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+    <div class="hero-inner">
+      <h1 class="visually-hidden" style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0;">Lior Wenger - Product Designer</h1>
+      <p class="hero-subtitle">Product Designer</p>
+    </div>
+    <a href="#projects" class="hero-scroll">Scroll</a>
+  </section>
+
+  <!-- ─── Projects ─── -->
+  <section class="projects" id="projects">
+    <div class="projects-inner">
+
+      <!-- Project 1 -->
+      <article class="project">
+        <a href="case-study-1/index.html" class="project-link">
+          <div class="project-meta">
+            <span class="project-number">01/03</span>
+            <span class="project-company">Azami Global</span>
+          </div>
+          <h2 class="project-title">Associate Network Dashboard</h2>
+          <p class="project-description">Redesigning a data-heavy internal tool into an actionable command center for managing partners overseeing a global IP associate network.</p>
+          <span class="project-cta">View case study <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          <div class="project-image">
+            <img src="case-study-1/assets/hero-dashboard.png" alt="Associate Network Dashboard - final design showing performance metrics and priority associate list">
+          </div>
+        </a>
+      </article>
+
+      <!-- Project 2 -->
+      <article class="project">
+        <a href="case-study-2/index.html" class="project-link">
+          <div class="project-meta">
+            <span class="project-number">02/03</span>
+            <span class="project-company">Coming soon</span>
+          </div>
+          <h2 class="project-title">Case Study 2</h2>
+          <p class="project-description">Details coming soon.</p>
+          <span class="project-cta">View case study <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          <div class="project-image" style="aspect-ratio: 16/9; background: #eee;"></div>
+        </a>
+      </article>
+
+      <!-- Project 3 -->
+      <article class="project">
+        <a href="case-study-3/index.html" class="project-link">
+          <div class="project-meta">
+            <span class="project-number">03/03</span>
+            <span class="project-company">Coming soon</span>
+          </div>
+          <h2 class="project-title">Case Study 3</h2>
+          <p class="project-description">Details coming soon.</p>
+          <span class="project-cta">View case study <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          <div class="project-image" style="aspect-ratio: 16/9; background: #eee;"></div>
+        </a>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-copyright">&copy; 2026 Lior Wenger</p>
+      <div class="footer-links">
+        <a href="mailto:lior@example.com">Email</a>
+        <a href="https://www.linkedin.com/in/liorwenger/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const canvas = document.getElementById('heroCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const header = document.querySelector('.header');
+      const hero = document.querySelector('.hero');
+
+      const TEXT = 'Lior Wenger';
+      const BG = '#0a0a0a';
+      const DOT_COLOR = '#ffffff';
+      const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+      let W = 0, H = 0;
+      let particles = [];
+      const pointer = { x: -9999, y: -9999, active: false };
+
+      function sampleText() {
+        const off = document.createElement('canvas');
+        const octx = off.getContext('2d');
+        const cssW = canvas.clientWidth;
+        const cssH = canvas.clientHeight;
+        off.width = cssW;
+        off.height = cssH;
+        const fontSize = Math.min(cssW / 7.2, cssH / 2.2);
+        octx.fillStyle = '#fff';
+        octx.textAlign = 'center';
+        octx.textBaseline = 'middle';
+        octx.font = '700 ' + fontSize + 'px Inter, -apple-system, BlinkMacSystemFont, sans-serif';
+        octx.fillText(TEXT, cssW / 2, cssH / 2);
+        const data = octx.getImageData(0, 0, cssW, cssH).data;
+
+        const step = Math.max(3, Math.round(fontSize / 38));
+        const pts = [];
+        for (let y = 0; y < cssH; y += step) {
+          for (let x = 0; x < cssW; x += step) {
+            const idx = (y * cssW + x) * 4 + 3;
+            if (data[idx] > 128) {
+              pts.push({ x, y });
+            }
+          }
+        }
+        return pts;
+      }
+
+      function buildParticles() {
+        const targets = sampleText();
+        const cssW = canvas.clientWidth;
+        const cssH = canvas.clientHeight;
+        particles = targets.map(t => ({
+          hx: t.x,
+          hy: t.y,
+          x: Math.random() * cssW,
+          y: Math.random() * cssH,
+          vx: 0,
+          vy: 0,
+          size: 1 + Math.random() * 1.2,
+          alpha: 0.5 + Math.random() * 0.5,
+        }));
+      }
+
+      function resize() {
+        W = canvas.clientWidth;
+        H = canvas.clientHeight;
+        canvas.width = W * DPR;
+        canvas.height = H * DPR;
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        buildParticles();
+      }
+
+      function tick() {
+        ctx.fillStyle = BG;
+        ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = DOT_COLOR;
+
+        const repulseR = 90;
+        const repulseR2 = repulseR * repulseR;
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          const dhx = p.hx - p.x;
+          const dhy = p.hy - p.y;
+          p.vx += dhx * 0.012;
+          p.vy += dhy * 0.012;
+
+          if (pointer.active) {
+            const dx = p.x - pointer.x;
+            const dy = p.y - pointer.y;
+            const d2 = dx * dx + dy * dy;
+            if (d2 < repulseR2 && d2 > 0.01) {
+              const d = Math.sqrt(d2);
+              const force = (1 - d / repulseR) * 1.8;
+              p.vx += (dx / d) * force;
+              p.vy += (dy / d) * force;
+            }
+          }
+
+          p.vx *= 0.86;
+          p.vy *= 0.86;
+          p.x += p.vx;
+          p.y += p.vy;
+
+          const jitter = 0.25;
+          p.x += (Math.random() - 0.5) * jitter;
+          p.y += (Math.random() - 0.5) * jitter;
+
+          ctx.globalAlpha = p.alpha;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        }
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(tick);
+      }
+
+      function onMove(e) {
+        const rect = canvas.getBoundingClientRect();
+        const t = e.touches ? e.touches[0] : e;
+        pointer.x = t.clientX - rect.left;
+        pointer.y = t.clientY - rect.top;
+        pointer.active = true;
+      }
+      function onLeave() { pointer.active = false; pointer.x = -9999; pointer.y = -9999; }
+
+      window.addEventListener('resize', resize);
+      canvas.addEventListener('mousemove', onMove);
+      canvas.addEventListener('mouseleave', onLeave);
+      canvas.addEventListener('touchmove', onMove, { passive: true });
+      canvas.addEventListener('touchend', onLeave);
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => { resize(); });
+      }
+      resize();
+      requestAnimationFrame(tick);
+
+      function updateHeader() {
+        const heroBottom = hero.offsetTop + hero.offsetHeight;
+        if (window.scrollY > heroBottom - 80) {
+          header.classList.add('is-light');
+        } else {
+          header.classList.remove('is-light');
+        }
+      }
+      window.addEventListener('scroll', updateHeader, { passive: true });
+      updateHeader();
+    })();
+  </script>
+
+</body>
+</html>

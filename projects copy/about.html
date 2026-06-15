@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - Lior Wenger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #111;
+      color: #fff;
+      line-height: 1.6;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── Header ─── */
+    .header {
+      padding: 32px 0;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: transparent;
+      z-index: 100;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .header.scrolled {
+      background: rgba(17, 17, 17, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .header-name a:hover { opacity: 0.6; }
+
+    .header-nav { display: flex; gap: 32px; }
+
+    .header-nav a {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      transition: color 0.3s;
+    }
+
+    .header-nav a:hover,
+    .header-nav a.is-active { color: #fff; }
+
+    /* ─── About section: Figma frame 525:77 (5609×2826) ─── */
+    .about {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 40px 20px;
+      overflow: hidden;
+    }
+
+    .about-canvas {
+      position: relative;
+      width: min(1440px, calc(100vw - 80px), calc((100vh - 220px) * 5609 / 2826));
+      aspect-ratio: 5609 / 2826;
+      margin: 0 auto;
+    }
+
+    /* Text panel: Figma 525:87 (image 38) — 510, 587, 1968×1509 */
+    .about-text {
+      position: absolute;
+      left: 9.09%;       /* 510  / 5609 */
+      top: 20.77%;       /* 587  / 2826 */
+      width: 35.09%;     /* 1968 / 5609 */
+      height: 53.40%;    /* 1509 / 2826 */
+      padding: clamp(28px, 3.6vw, 64px) clamp(28px, 3.6vw, 72px) clamp(28px, 3.6vw, 64px) 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .about-title {
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: clamp(20px, 2.4vw, 40px);
+    }
+
+    .about-body p {
+      font-size: clamp(13px, 1vw, 15px);
+      line-height: 1.7;
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 1em;
+    }
+
+    .about-body p:last-child { margin-bottom: 0; }
+
+    /* Photo: Figma 525:79 (pic) — 3727, 523.33, 1346×1794.67 */
+    .about-photo {
+      position: absolute;
+      left: 66.45%;      /* 3727 / 5609 */
+      top: 18.52%;       /* 523.33 / 2826 */
+      width: 24.00%;     /* 1346 / 5609 */
+      height: 63.51%;    /* 1794.67 / 2826 */
+      object-fit: cover;
+      border-radius: 14px;
+      z-index: 3;
+    }
+
+    /* Floating elements: positions and sizes from Figma 525:77 metadata */
+    .float {
+      position: absolute;
+      pointer-events: none;
+      animation: bob 6s ease-in-out infinite;
+    }
+
+    /*
+      Each element uses the ASSET's natural dimensions (not the Figma node bbox)
+      because the user re-exported with extra padding. Position is offset so the
+      visible content centers on the Figma node's center — preserving Figma's
+      layout proportions while honouring the asset's native aspect.
+    */
+
+    /* fins behind the photo — visible above, covered where they overlap the pic */
+    .float--fins    { left: 54.43%; top: -2.20%; width: 24.05%; height: 51.76%; z-index: 1; animation-delay: 0s; }
+
+    .float--goggles { left: 51.94%; top: 27.86%; width: 21.20%; height: 33.84%; z-index: 5; animation-delay: -1.2s; }
+
+    .float--yarn    { left: 81.58%; top: 7.30%;  width: 20.47%; height: 41.02%; z-index: 6; animation-delay: -2.4s; }
+
+    /* shoes on bottom-LEFT of photo (per Figma 525:77 visual) */
+    .float--shoes   { left: 50.31%; top: 63.17%; width: 31.30%; height: 43.52%; z-index: 7; animation-delay: -4.5s; }
+
+    .float--earring { left: 77.38%; top: 61.34%; width: 23.28%; height: 32.57%; z-index: 8; animation-delay: -3s; }
+
+    .float img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-10px) rotate(1.5deg); }
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px 60px 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      color: rgba(255,255,255,0.4);
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .footer a { color: rgba(255,255,255,0.6); }
+    .footer a:hover { color: #fff; }
+
+    /* ─── Responsive: stack on mobile ─── */
+    @media (max-width: 900px) {
+      body { overflow: auto; height: auto; display: block; }
+      .about { padding: 140px 24px 80px; flex: none; overflow: visible; height: auto; }
+
+      .about-canvas {
+        aspect-ratio: auto;
+        max-width: 480px;
+        width: 100%;
+      }
+
+      .about-text {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 32px 28px;
+        margin-bottom: 60px;
+      }
+
+      .about-title { font-size: 48px; margin-bottom: 24px; }
+      .about-body p { font-size: 15px; }
+
+      /*
+        Mobile photo cluster: bbox of all visual elements (Figma frame coords).
+        Left=3124 (goggles), Right=5528 (shoes), Top=60 (fins), Bottom=2695 (shoes).
+        → 2404 wide × 2635 tall.
+      */
+      .about-cluster {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 2404 / 2635;
+      }
+
+      /* Mobile cluster bbox: x=3012–5640, y=60–2802 (asset bounds) → 2628 × 2742 */
+      .about-photo    { left: 27.21%; top: 16.89%; width: 51.22%; height: 65.45%; }
+      .float--fins    { left: 5.82%;  top: 0%;     width: 42.77%; height: 44.46%; }
+      .float--goggles { left: 0%;     top: 29.43%; width: 37.71%; height: 29.07%; }
+      .float--yarn    { left: 63.13%; top: 8.86%;  width: 36.42%; height: 35.23%; }
+      .float--shoes   { left: 0%;     top: 65.10%; width: 55.67%; height: 37.38%; }
+      .float--earring { left: 54.68%; top: 63.86%; width: 41.40%; height: 27.97%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Header ─── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-name"><a href="index.html">Lior Wenger</a></div>
+      <nav class="header-nav">
+        <a href="index.html#projects">Projects</a>
+        <a href="about.html" class="is-active">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── About (mirrors Figma 525:77) ─── -->
+  <section class="about">
+    <div class="about-canvas">
+      <div class="about-text">
+        <h1 class="about-title">About me</h1>
+        <div class="about-body">
+          <p>Hi, I'm Lior. Product designer in Israel, 12 years in.</p>
+          <p>I work on complex B2B tools - turning dense workflows into something clear and calm to use. The way I get there isn't fancy: I notice the small things and keep simplifying until the right shape shows up.</p>
+          <p>That same instinct runs through everything I make off-screen too - crocheted dolls, polymer-clay earrings, sourdough, swim laps. Different hands, same brain.</p>
+        </div>
+      </div>
+
+      <div class="about-cluster">
+        <div class="float float--fins"><img src="assets/about/fins.png" alt="Swim fins"></div>
+        <img class="about-photo" src="assets/about/me.png" alt="Lior Wenger">
+        <div class="float float--goggles"><img src="assets/about/goggles.png" alt="Swim goggles"></div>
+        <div class="float float--yarn"><img src="assets/about/yarn.png" alt="Ball of yarn with crochet hooks"></div>
+        <div class="float float--earring"><img src="assets/about/earring.png" alt="Polymer clay earrings"></div>
+        <div class="float float--shoes"><img src="assets/about/shoes.png" alt="Animal-print shoes"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer class="footer">
+    <span>© 2026 Lior Wenger</span>
+    <a href="mailto:liorbetser@gmail.com">liorbetser@gmail.com</a>
+  </footer>
+
+  <script>
+    const header = document.querySelector('.header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 12);
+    });
+  </script>
+</body>
+</html>

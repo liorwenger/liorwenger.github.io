@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lior Wenger - Product Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #111;
+      color: #fff;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ─── Header ─── */
+    .header {
+      padding: 32px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: transparent;
+      z-index: 100;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .header.scrolled {
+      background: rgba(17, 17, 17, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fff;
+      transition: color 0.3s;
+    }
+
+    .header.scrolled .header-name {
+      color: #fff;
+    }
+
+    .header-name a:hover { opacity: 0.6; }
+
+    .header-nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    .header-nav a {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      transition: color 0.3s;
+    }
+
+    .header-nav a:hover { color: #fff; }
+
+    .header.scrolled .header-nav a {
+      color: rgba(255,255,255,0.6);
+    }
+
+    .header.scrolled .header-nav a:hover {
+      color: #fff;
+    }
+
+    /* ─── Particle Hero ─── */
+    .particle-hero {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+      background: #111;
+    }
+
+    .particle-hero canvas {
+      display: block;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      animation: fadeInUp 1s ease 2s both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* ─── Projects ─── */
+    .projects {
+      padding: 120px 0;
+      overflow: hidden;
+    }
+
+    .projects-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+
+    .project {
+      margin-bottom: 220px;
+    }
+
+    .project:last-child {
+      margin-bottom: 0;
+    }
+
+    .project-link {
+      display: block;
+    }
+
+    .project-link:hover .project-image img {
+      transform: scale(1.02);
+    }
+
+    .project-number-line {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .project-number-line::before {
+      content: '';
+      width: 48px;
+      height: 1px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .project-number {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.04em;
+    }
+
+    .project-content {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .project-content--reverse {
+      grid-template-columns: 1.6fr 1fr;
+    }
+
+    .project-content--reverse .project-info {
+      order: 2;
+    }
+
+    .project-content--reverse .project-image {
+      order: 1;
+    }
+
+    .project-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-company {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 24px;
+      letter-spacing: 0.01em;
+    }
+
+    .project-company span {
+      font-weight: 400;
+      color: rgba(255,255,255,0.3);
+      margin: 0 12px;
+    }
+
+    .project-description {
+      font-size: 22px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    .project-cta {
+      font-size: 15px;
+      font-weight: 500;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 24px;
+      transition: all 0.2s;
+      align-self: flex-start;
+    }
+
+    .project-link:hover .project-cta {
+      background: #fff;
+      color: #111;
+    }
+
+    .project-image {
+      overflow: visible;
+    }
+
+    .project-image--large {
+      margin-left: -57%;
+      margin-right: -10%;
+    }
+
+    .project-content:not(.project-content--reverse) .project-image--large {
+      margin-left: -10%;
+      margin-right: -57%;
+    }
+
+    .project-image--large img {
+      width: 100%;
+    }
+
+    .laptop-mockup {
+      position: relative;
+      padding: 2.5% 4% 0 4%;
+      background: #1a1a1a;
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .laptop-mockup::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      background: #444;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+    }
+
+    .laptop-mockup img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px 2px 0 0;
+    }
+
+    .laptop-base {
+      width: 110%;
+      margin-left: -5%;
+      height: 14px;
+      background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+      border-radius: 0 0 8px 8px;
+      position: relative;
+    }
+
+    .laptop-base::before {
+      content: '';
+      display: block;
+      width: 18%;
+      height: 4px;
+      background: #333;
+      border-radius: 0 0 4px 4px;
+      margin: 0 auto;
+    }
+
+    .project-image img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 40px 0;
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copyright {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: #fff; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      .header-inner,
+      .projects-inner,
+      .footer-inner {
+        padding: 0 24px;
+      }
+
+      .project {
+        margin-bottom: 80px;
+      }
+
+      .project-content,
+      .project-content--reverse {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .project-content--reverse .project-info {
+        order: 1;
+      }
+
+      .project-content--reverse .project-image {
+        order: 2;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Header ─── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-name"><a href="index.html">Lior Wenger</a></div>
+      <nav class="header-nav">
+        <a href="#projects">Projects</a>
+        <a href="about.html">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── Particle Hero ─── -->
+  <section class="particle-hero">
+    <canvas id="particleCanvas"></canvas>
+    <div class="scroll-hint">Scroll to explore</div>
+  </section>
+
+  <!-- ─── Projects ─── -->
+  <section class="projects" id="projects">
+    <div class="projects-inner">
+
+      <!-- Project 1 -->
+      <article class="project">
+        <a href="case-study-1/index.html" class="project-link">
+          <div class="project-number-line">
+            <span class="project-number">01/03</span>
+          </div>
+          <div class="project-content">
+            <div class="project-info">
+              <p class="project-company">Azami Global <span>|</span> Associate Network Dashboard</p>
+              <p class="project-description">Redesigning a data-heavy internal tool into an actionable command center for managing partners overseeing a global IP associate network.</p>
+              <span class="project-cta">View case study</span>
+            </div>
+            <div class="project-image project-image--large">
+              <img src="case-study-1/assets/hero-laptop.png" alt="Associate Network Dashboard">
+            </div>
+          </div>
+        </a>
+      </article>
+
+      <!-- Project 2 -->
+      <article class="project">
+        <a href="case-study-2/index.html" class="project-link">
+          <div class="project-number-line">
+            <span class="project-number">02/03</span>
+          </div>
+          <div class="project-content project-content--reverse">
+            <div class="project-info">
+              <p class="project-company">Azami Global <span>|</span> Renewals System Redesign</p>
+              <p class="project-description">Redesigning a legacy datatable into a clear, actionable renewals management system - improving readability, status visibility, and action hierarchy.</p>
+              <span class="project-cta">View case study</span>
+            </div>
+            <div class="project-image project-image--large">
+              <img src="case-study-2/assets/hero-renewals.png" alt="Renewals System Redesign">
+            </div>
+          </div>
+        </a>
+      </article>
+
+      <!-- Project 3 -->
+      <article class="project">
+        <a href="case-study-3/index.html" class="project-link">
+          <div class="project-number-line">
+            <span class="project-number">03/03</span>
+          </div>
+          <div class="project-content">
+            <div class="project-info">
+              <p class="project-company">Coming soon <span>|</span> Case Study 3</p>
+              <p class="project-description">Details coming soon.</p>
+              <span class="project-cta">View case study</span>
+            </div>
+            <div class="project-image" style="aspect-ratio: 16/9; background: #1a1a1a; border-radius: 8px;"></div>
+          </div>
+        </a>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-copyright">&copy; 2026 Lior Wenger</p>
+      <div class="footer-links">
+        <a href="mailto:lior@example.com">Email</a>
+        <a href="https://www.linkedin.com/in/liorwenger/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Particle Text Effect ───
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let particles = [];
+    let mouse = { x: -9999, y: -9999, radius: 150 };
+    let canvasWidth, canvasHeight;
+    let startTime = 0;
+
+    // Particle class
+    class Particle {
+      constructor(targetX, targetY, color, delay, size) {
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.color = color;
+        this.size = size || 3;
+        this.delay = delay;
+        this.active = false;
+
+        // Start above the canvas, scattered horizontally
+        this.x = targetX + (Math.random() - 0.5) * 200;
+        this.y = -20 - Math.random() * canvasHeight * 0.6;
+
+        this.vx = 0;
+        this.vy = 0;
+        this.friction = 0.88;
+        this.springStrength = 0.025;
+        this.gravity = 0.15;
+      }
+
+      update(elapsed) {
+        // Wait for delay before activating
+        if (!this.active) {
+          if (elapsed > this.delay) {
+            this.active = true;
+          } else {
+            return;
+          }
+        }
+
+        // Mouse repulsion
+        const dx = this.x - mouse.x;
+        const dy = this.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < mouse.radius) {
+          const force = (mouse.radius - dist) / mouse.radius;
+          const angle = Math.atan2(dy, dx);
+          this.vx += Math.cos(angle) * force * 5;
+          this.vy += Math.sin(angle) * force * 5;
+        }
+
+        // Spring back to target
+        this.vx += (this.targetX - this.x) * this.springStrength;
+        this.vy += (this.targetY - this.y) * this.springStrength;
+
+        // Gentle gravity pull during fall
+        const distToTarget = Math.abs(this.y - this.targetY);
+        if (distToTarget > 50) {
+          this.vy += this.gravity;
+        }
+
+        // Apply friction
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+
+        // Update position
+        this.x += this.vx;
+        this.y += this.vy;
+      }
+
+      draw() {
+        if (!this.active) return;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Sample pixels from text drawn on offscreen canvas
+    function getTextParticles(text, fontSize, fontWeight, yOffset, color, gap, particleSize) {
+      const offscreen = document.createElement('canvas');
+      offscreen.width = canvasWidth;
+      offscreen.height = canvasHeight;
+      const offCtx = offscreen.getContext('2d');
+
+      offCtx.fillStyle = '#000';
+      offCtx.font = `${fontWeight} ${fontSize}px Inter, sans-serif`;
+      offCtx.textAlign = 'center';
+      offCtx.textBaseline = 'middle';
+      offCtx.fillText(text, canvasWidth / 2, canvasHeight / 2 + yOffset);
+
+      const imageData = offCtx.getImageData(0, 0, canvasWidth, canvasHeight);
+      const data = imageData.data;
+      const result = [];
+
+      for (let y = 0; y < canvasHeight; y += gap) {
+        for (let x = 0; x < canvasWidth; x += gap) {
+          const index = (y * canvasWidth + x) * 4;
+          if (data[index + 3] > 128) {
+            // Stagger delay: particles fall column by column with some randomness
+            const normalizedX = x / canvasWidth;
+            const delay = normalizedX * 1500 + Math.random() * 600;
+            result.push(new Particle(x, y, color, delay, particleSize));
+          }
+        }
+      }
+
+      return result;
+    }
+
+    function init() {
+      const dpr = window.devicePixelRatio || 1;
+      const section = canvas.parentElement;
+      canvasWidth = section.offsetWidth;
+      canvasHeight = section.offsetHeight;
+
+      canvas.width = canvasWidth * dpr;
+      canvas.height = canvasHeight * dpr;
+      canvas.style.width = canvasWidth + 'px';
+      canvas.style.height = canvasHeight + 'px';
+      ctx.scale(dpr, dpr);
+
+      particles = [];
+      startTime = performance.now();
+
+      // Calculate responsive font sizes - fill the screen
+      const isSmall = canvasWidth < 600;
+      const nameFontSize = isSmall ? 60 : canvasWidth * 0.13;
+      const roleFontSize = isSmall ? 28 : canvasWidth * 0.055;
+      const gap = isSmall ? 4 : 5;
+
+      // Name - bold, white
+      const nameParticles = getTextParticles(
+        'Lior Wenger',
+        nameFontSize,
+        '700',
+        -nameFontSize * 0.35,
+        '#ffffff',
+        gap,
+        3
+      );
+
+      // Role - lighter weight, muted
+      const roleParticles = getTextParticles(
+        'Product Designer',
+        roleFontSize,
+        '400',
+        nameFontSize * 0.45,
+        'rgba(255,255,255,0.45)',
+        gap,
+        3
+      );
+
+      // Add extra delay to role particles so they fall after the name
+      roleParticles.forEach(p => { p.delay += 800; });
+
+      particles = [...nameParticles, ...roleParticles];
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      const elapsed = performance.now() - startTime;
+
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update(elapsed);
+        particles[i].draw();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // Mouse tracking
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    });
+
+    // Touch support
+    canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.touches[0].clientX - rect.left;
+      mouse.y = e.touches[0].clientY - rect.top;
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', () => {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    });
+
+    // Handle resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        init();
+      }, 200);
+    });
+
+    // Header scroll state
+    const header = document.querySelector('.header');
+    const heroSection = document.querySelector('.particle-hero');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > heroSection.offsetHeight - 100) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Wait for font to load, then initialize
+    document.fonts.ready.then(() => {
+      init();
+      animate();
+    });
+  </script>
+
+</body>
+</html>

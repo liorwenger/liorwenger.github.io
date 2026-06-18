@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iPeer — Create New Quote (Before)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --border:#e3e5ea; --border-strong:#d3d6de;
+  --text:#1a1d23; --text-soft:#5b5f6a; --text-mute:#9499a3;
+  --primary:#3358f4; --primary-soft:#eaeefe;
+  --green:#1ca34c; --red:#d23a3a;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:14px;-webkit-font-smoothing:antialiased;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+button{font-family:inherit;}
+input,select{font-family:inherit;}
+
+/* ── Nav ───────────────────────────────────────── */
+.nav{height:56px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;}
+.logo{display:flex;align-items:center;gap:8px;margin-right:40px;font-size:17px;font-weight:700;}
+.logo-mark{width:24px;height:24px;border-radius:6px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+.nav-tabs{display:flex;gap:28px;}
+.nav-tab{font-size:13.5px;color:var(--text-soft);cursor:pointer;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:14px;}
+.btn-create{font-size:13px;font-weight:600;padding:9px 16px;border-radius:7px;border:1px solid var(--border-strong);background:#fff;cursor:pointer;}
+.icon-btn{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-mute);cursor:pointer;}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+
+/* ── Wizard header ─────────────────────────────── */
+.wiz-head{background:#eeeeee;padding:24px 32px;}
+.wiz-title{font-size:24px;font-weight:700;margin-bottom:20px;}
+.stepper{display:flex;align-items:center;gap:8px;}
+.step{display:flex;align-items:center;gap:8px;cursor:pointer;}
+.step-circle{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-mute);background:#fff;flex-shrink:0;}
+.step.active .step-circle{background:var(--primary);border-color:var(--primary);color:#fff;}
+.step.done .step-circle{background:#fff;border-color:var(--border-strong);color:var(--text-mute);}
+.step-label{font-size:13.5px;font-weight:600;color:var(--text-mute);white-space:nowrap;}
+.step.active .step-label{color:var(--primary);}
+.step.done .step-label{color:var(--text);}
+.step-chevron{color:var(--text-mute);margin:0 6px;}
+
+/* ── Body ──────────────────────────────────────── */
+.wiz-body{padding:48px 32px 140px;min-height:600px;}
+.step-panel{display:none;}
+.step-panel.active{display:block;}
+
+/* Step 1: Services — flat undifferentiated list */
+.svc-heading{font-size:16px;font-weight:700;margin-bottom:18px;}
+.svc-flat{display:grid;grid-template-columns:repeat(5,auto);gap:24px 40px;max-width:1180px;padding-right:24px;border-right:1px solid var(--border);}
+.svc-opt{display:flex;align-items:flex-start;gap:8px;font-size:13.5px;cursor:pointer;white-space:nowrap;}
+.svc-radio{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border-strong);flex-shrink:0;margin-top:1px;position:relative;}
+.svc-opt.sel .svc-radio{border-color:var(--primary);}
+.svc-opt.sel .svc-radio::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--primary);}
+
+/* Step 2: Identifiers — bare fields, no hints */
+.id-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px 60px;max-width:900px;}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:8px;}
+.req{color:var(--primary);}
+input[type=text],select{width:100%;max-width:340px;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-size:13px;color:var(--text);background:#fff;}
+
+/* Step 3: Regions */
+.region-layout{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+.region-pane{padding-right:24px;border-right:1px solid var(--border);}
+.region-pane + .region-pane{padding-left:24px;}
+.region-search{width:100%;max-width:340px;padding:9px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-size:13px;margin-bottom:14px;}
+.region-pane-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12.5px;color:var(--text-mute);}
+.remove-all{color:var(--primary);font-weight:600;cursor:pointer;font-size:12px;}
+.region-row{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px;}
+.region-row input{accent-color:var(--primary);}
+.region-flag{font-size:14px;}
+.region-name{flex:1;}
+.region-code{color:var(--text-mute);font-size:11.5px;}
+.sel-count{font-size:12.5px;color:var(--text-mute);margin-bottom:14px;}
+.sel-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.sel-chip{background:var(--primary);color:#fff;font-size:12.5px;font-weight:600;padding:5px 8px 5px 12px;border-radius:99px;display:flex;align-items:center;gap:6px;}
+.sel-chip .x{cursor:pointer;opacity:0.8;}
+.kb-title{font-size:13px;color:var(--text-mute);margin-bottom:6px;}
+.kb-text{font-size:13px;font-weight:600;margin-bottom:10px;}
+.kb-link{color:var(--primary);font-size:13px;font-weight:600;text-decoration:underline;display:flex;align-items:center;gap:6px;}
+
+/* Step 4: Details — ungrouped 3-col wall, zero defaults */
+.det-heading{font-size:16px;font-weight:700;margin-bottom:4px;}
+.det-sub{font-size:13px;color:var(--text-mute);margin-bottom:28px;}
+.det-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px 36px;max-width:1180px;}
+.det-field label{display:block;font-size:13px;font-weight:600;margin-bottom:7px;}
+.det-field input,.det-field select{width:100%;padding:9px 12px;border:1.5px solid var(--border-strong);border-radius:6px;font-size:13px;}
+
+/* Step 5: Agent Selection */
+.as-tabs{display:flex;gap:8px;margin-bottom:16px;font-size:12.5px;}
+.as-tab{padding:6px 12px;border-radius:6px;background:#f1f1f4;display:flex;align-items:center;gap:6px;}
+.as-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+.as-filters{font-size:12.5px;padding:7px 12px;border:1.5px solid var(--border-strong);border-radius:6px;cursor:pointer;background:#fff;}
+.qs-box{border:1px solid var(--border-strong);border-radius:8px;padding:12px 16px;text-align:right;min-width:220px;}
+.qs-label{font-size:12.5px;font-weight:700;margin-bottom:2px;}
+.qs-click{font-size:11.5px;color:var(--primary);cursor:pointer;float:left;font-weight:600;}
+.qs-sub{font-size:12px;color:var(--text-mute);margin:6px 0 2px;}
+.qs-total{font-size:20px;font-weight:800;}
+.as-cols{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.as-col{padding:0;}
+.as-col + .as-col{border-left:1px solid var(--border);}
+.as-col-head{padding:12px 16px;font-size:12.5px;font-weight:700;background:#f6f3ff;}
+.as-col-head.ext{background:#fff8ec;}
+.as-col-sub{font-size:11px;font-weight:400;color:var(--text-mute);margin-top:2px;}
+.ag-card{border-top:1px solid var(--border);padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.ag-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px;}
+.ag-meta{font-size:11px;color:var(--text-mute);margin-top:4px;}
+.ag-price{font-size:14px;font-weight:800;white-space:nowrap;}
+.ag-calc{font-size:11px;color:var(--primary);text-align:right;margin-top:2px;cursor:pointer;}
+
+/* Footer */
+.wiz-footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;gap:12px;z-index:150;}
+.btn{font-size:13px;font-weight:600;padding:10px 18px;border-radius:7px;cursor:pointer;border:1.5px solid transparent;}
+.btn-ghost{background:#fff;border-color:var(--border-strong);color:var(--text-soft);}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+.btn-text{background:none;border:none;color:var(--text-mute);}
+.footer-spacer{flex:1;}
+
+/* ── Disconnected "Instruct Region" modal ───────── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(20,20,30,.45);z-index:500;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{width:680px;max-width:92vw;max-height:86vh;overflow-y:auto;background:#fff;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal-head{background:var(--primary);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;}
+.modal-close{cursor:pointer;font-size:18px;line-height:1;opacity:.85;}
+.modal-tabs{display:flex;}
+.modal-tab{flex:1;text-align:center;padding:11px;font-size:12.5px;font-weight:600;background:#eef0f6;color:var(--text-mute);display:flex;align-items:center;justify-content:center;gap:6px;}
+.modal-tab.active{background:var(--primary);color:#fff;}
+.modal-body{padding:20px;}
+.modal-sub{font-size:13px;font-weight:600;margin-bottom:14px;}
+.modal-check-row{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:10px;}
+.modal-check-row input{accent-color:var(--primary);}
+.modal-check-row.all{font-weight:700;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.modal-upload{margin-top:16px;display:flex;align-items:center;justify-content:flex-end;}
+.btn-upload{font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:6px;background:var(--primary);color:#fff;border:none;cursor:pointer;}
+.modal-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+.modal-table th{text-align:left;color:var(--text-mute);font-weight:600;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.03em;}
+.modal-table td{padding:10px 0;border-bottom:1px solid #f1f1f4;}
+.modal-contact-h{font-size:13px;font-weight:700;margin:20px 0 14px;}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.modal-grid label{display:block;font-size:11.5px;font-weight:600;margin-bottom:6px;color:var(--text-soft);}
+.modal-grid input{width:100%;padding:8px 10px;border:1.5px solid var(--border-strong);border-radius:6px;font-size:12.5px;}
+.modal-back{color:var(--primary);font-size:12.5px;font-weight:600;cursor:pointer;}
+.modal-footer{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-top:1px solid var(--border);}
+.modal-step-panel{display:none;}
+.modal-step-panel.active{display:block;}
+
+/* Toast confirmation — small, transient */
+.toast{position:fixed;bottom:24px;right:24px;background:#1aa54a;color:#fff;padding:14px 18px;border-radius:8px;font-size:12.5px;max-width:320px;box-shadow:0 10px 30px rgba(0,0,0,.2);display:none;z-index:600;line-height:1.5;}
+.toast.show{display:block;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo"><div class="logo-mark">i</div>iPeer</div>
+  <div class="nav-tabs">
+    <div class="nav-tab">My Agents</div>
+    <div class="nav-tab">Saved Quotes</div>
+    <div class="nav-tab">Cases</div>
+  </div>
+  <div class="nav-right">
+    <button class="btn-create">Create Quote</button>
+    <div class="icon-btn">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <div class="avatar">A</div>
+  </div>
+</nav>
+
+<div class="wiz-head">
+  <div class="wiz-title">Create New Quote</div>
+  <div class="stepper" id="stepper">
+    <div class="step" data-step="0"><div class="step-circle">1</div><div class="step-label">Services</div></div>
+    <span class="step-chevron">›</span>
+    <div class="step" data-step="1"><div class="step-circle">2</div><div class="step-label">Identifiers</div></div>
+    <span class="step-chevron">›</span>
+    <div class="step" data-step="2"><div class="step-circle">3</div><div class="step-label">Regions</div></div>
+    <span class="step-chevron">›</span>
+    <div class="step" data-step="3"><div class="step-circle">4</div><div class="step-label">Details</div></div>
+    <span class="step-chevron">›</span>
+    <div class="step" data-step="4"><div class="step-circle">5</div><div class="step-label">Agent Selection</div></div>
+  </div>
+</div>
+
+<div class="wiz-body">
+
+  <!-- STEP 1: Services — flat, undifferentiated, no descriptions -->
+  <div class="step-panel active" data-panel="0">
+    <div class="svc-heading">Services</div>
+    <div class="svc-flat" id="svcFlat">
+      <label class="svc-opt sel"><span class="svc-radio"></span>PCT National Phase</label>
+      <label class="svc-opt"><span class="svc-radio"></span>Paris Convention</label>
+      <label class="svc-opt"><span class="svc-radio"></span>European Validation</label>
+      <label class="svc-opt"><span class="svc-radio"></span>Design Applications</label>
+      <label class="svc-opt"><span class="svc-radio"></span>PCT Application (International Phase)</label>
+      <label class="svc-opt"><span class="svc-radio"></span>Trademarks</label>
+      <label class="svc-opt"><span class="svc-radio"></span>Translations</label>
+      <label class="svc-opt"><span class="svc-radio"></span>Unitary Patent</label>
+      <label class="svc-opt"><span class="svc-radio"></span>Utility Model</label>
+    </div>
+  </div>
+
+  <!-- STEP 2: Identifiers — separate step, bare fields -->
+  <div class="step-panel" data-panel="1">
+    <div class="id-grid">
+      <div class="field"><label>Application Number <span class="req">*</span></label><input type="text"></div>
+      <div class="field"><label>Responsible Attorney <span class="req">*</span></label><select><option></option><option>Aaron Wexler</option><option>Priya Shah</option></select></div>
+      <div class="field"><label>Client Reference Number</label><input type="text"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Regions — full alpha list, no fees, sparse knowledgebase -->
+  <div class="step-panel" data-panel="2">
+    <div class="region-layout">
+      <div class="region-pane">
+        <input class="region-search" placeholder="Search">
+        <div class="region-pane-head"><span></span><span class="remove-all" id="removeAll">Remove All</span></div>
+        <div id="regionList"></div>
+      </div>
+      <div class="region-pane">
+        <div class="sel-count" id="selCount">3 Regions Selected</div>
+        <div class="sel-chips" id="selChips"></div>
+      </div>
+      <div class="region-pane">
+        <div class="kb-title">Knowledgebase</div>
+        <div class="kb-text">Please take a moment to review the attached links:</div>
+        <div class="kb-link" id="kbLink">🔗 Canada</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Details — ungrouped wall, zero defaults -->
+  <div class="step-panel" data-panel="3">
+    <div class="det-heading">3. Application Details</div>
+    <div class="det-sub">Provide application details to calculate accurate filing costs and requirements.</div>
+    <div class="det-grid">
+      <div class="det-field"><label>Title Of Application <span class="req">*</span></label><input type="text"></div>
+      <div class="det-field"><label>Total Number Of Word <span class="req">*</span></label><input type="number" value="0"></div>
+      <div class="det-field"><label>Entity Size</label><select><option>Select Entity Size</option></select></div>
+      <div class="det-field"><label>Applicant Name</label><input type="text"></div>
+      <div class="det-field"><label>Total Number Of Pages <span class="req">*</span></label><input type="number" value="0"></div>
+      <div class="det-field"><label>Location Of Search</label><select><option>No search report</option></select></div>
+      <div class="det-field"><label>Earliest Priority Date</label><input type="text" placeholder="dd/mm/yyyy"></div>
+      <div class="det-field"><label>Number Of Claims <span class="req">*</span></label><input type="number" value="0"></div>
+      <div class="det-field"><label>Application Language <span class="req">*</span></label><select><option>Select language</option></select></div>
+      <div class="det-field"><label>Number Of Priorities</label><input type="number" value="0"></div>
+      <div class="det-field"><label>Number Of Independent Claims <span class="req">*</span></label><input type="number" value="0"></div>
+      <div class="det-field"><label>IPC</label><input type="text"></div>
+      <div class="det-field"><label>International Filing Date</label><input type="text" placeholder="dd/mm/yyyy"></div>
+      <div class="det-field"><label>Number Of Pages Of Drawings</label><input type="number" value="0"></div>
+      <div class="det-field"></div>
+      <div class="det-field"><label>Publication Number</label><input type="text"></div>
+      <div class="det-field"><label>Number Of Pages Of Sequences</label><input type="number" value="0"></div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Agent Selection — hidden cost, unformatted price, truncated names -->
+  <div class="step-panel" data-panel="4">
+    <div class="as-top">
+      <div>
+        <div class="as-tabs">
+          <div class="as-tab">🔴 Japan ▾</div>
+          <div class="as-tab">China</div>
+          <div class="as-tab">Colombia</div>
+          <div class="as-tab">Namibia</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <button class="as-filters">▤ Filters</button>
+        <div class="qs-box">
+          <div class="qs-click">Click to view</div>
+          <div class="qs-label">Quote Summary</div>
+          <div class="qs-sub">Total (1 regions)</div>
+          <div class="qs-total">$95137.67</div>
+        </div>
+      </div>
+    </div>
+    <div class="as-cols">
+      <div class="as-col">
+        <div class="as-col-head">My Network Agents (Japan · 1)<div class="as-col-sub">Your trusted agents with verified expertise in the quoted domain</div></div>
+        <div class="ag-card">
+          <div>
+            <div class="ag-name">Takahashi & Partners</div>
+            <div class="ag-meta">☆ Not rated yet · Responds quickly · Worked with applicant · 2y ago</div>
+          </div>
+          <div>
+            <div class="ag-price">$ 95137.67</div>
+            <div class="ag-calc">Show calculation ▾</div>
+          </div>
+        </div>
+      </div>
+      <div class="as-col">
+        <div class="as-col-head ext">iPeer+ Extended Network<div class="as-col-sub">0 Cases Sent · 0 Cases Received</div></div>
+        <div class="ag-card">
+          <div>
+            <div class="ag-name">Test firm A with very lon…</div>
+            <div class="ag-meta">★ 4.9 · Responds quickly</div>
+          </div>
+          <div>
+            <div class="ag-price">$ 2081</div>
+            <div class="ag-calc">Show calculation ▾</div>
+          </div>
+        </div>
+        <div class="ag-card">
+          <div>
+            <div class="ag-name">Test firm B with very lon…</div>
+            <div class="ag-meta">★ 4.9 · Responds quickly</div>
+          </div>
+          <div>
+            <div class="ag-price">$ 2081</div>
+            <div class="ag-calc">Show calculation ▾</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="wiz-footer">
+  <button class="btn btn-text" id="btnCancel">Cancel</button>
+  <div class="footer-spacer"></div>
+  <button class="btn btn-ghost" id="btnBack">‹ Back</button>
+  <button class="btn btn-primary" id="btnNext">Next ›</button>
+  <button class="btn btn-ghost" id="btnSaveQuote" style="display:none;">Save Quote</button>
+  <button class="btn btn-primary" id="btnInstruct" style="display:none;">Instruct Cases</button>
+</div>
+
+<!-- ── Disconnected "Instruct Region" modal — a second, separate flow ── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">Instruct Region <span class="modal-close" id="modalClose">✕</span></div>
+    <div class="modal-tabs">
+      <div class="modal-tab active" data-mtab="0"><span style="width:16px;height:16px;border-radius:50%;background:#fff;color:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;">1</span> Regions &amp; Attachments</div>
+      <div class="modal-tab" data-mtab="1"><span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.3);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;">2</span> Client Regional Ref. &amp; Contact Info</div>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-step-panel active" data-mpanel="0">
+        <div class="modal-sub">Select the regions in which you want to instruct the case</div>
+        <div class="modal-check-row all"><input type="checkbox" checked> Select All Regions</div>
+        <div class="modal-check-row"><input type="checkbox" checked> 🔴 Japan</div>
+        <div class="modal-check-row"><input type="checkbox" checked> China</div>
+        <div class="modal-check-row"><input type="checkbox" checked> Colombia</div>
+        <div class="modal-check-row"><input type="checkbox" checked> Namibia</div>
+        <div class="modal-upload"><button class="btn-upload">⬆ Upload Files</button></div>
+        <table class="modal-table">
+          <tr><th>Region</th><th>File</th><th>Description</th></tr>
+        </table>
+      </div>
+
+      <div class="modal-step-panel" data-mpanel="1">
+        <table class="modal-table">
+          <tr><th>Region</th><th>Client Ref. No.</th><th>Comments for your Agent</th></tr>
+          <tr><td>🔴 Japan</td><td><input type="text" style="width:90%;padding:5px 7px;border:1.5px solid var(--border-strong);border-radius:5px;font-size:11.5px;"></td><td><input type="text" style="width:90%;padding:5px 7px;border:1.5px solid var(--border-strong);border-radius:5px;font-size:11.5px;"></td></tr>
+        </table>
+        <div class="modal-contact-h">Contact Information</div>
+        <div class="modal-grid">
+          <div><label>Case Contact Greeting Name</label><input type="text" value="Aaron"></div>
+          <div><label>Case Contact "CC" Address(es)</label><input type="text"></div>
+          <div><label>Case Contact Full Name</label><input type="text" value="Aaron Wexler"></div>
+          <div><label>Case Contact "BCC" Address(es)</label><input type="text"></div>
+          <div><label>Case Contact "To"</label><input type="text"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <span class="modal-back" id="modalBack" style="visibility:hidden;">Back</span>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-ghost" id="modalCancel">Cancel</button>
+        <button class="btn btn-primary" id="modalNext">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast confirmation — small, transient, no record kept ── -->
+<div class="toast" id="toast">✓ Congratulations! We have received your instructions to file into these regions. We have emailed your chosen associates in each region.</div>
+
+<script>
+const REGIONS = [
+  {code:'DZ',name:'Algeria',flag:'🇩🇿',days:31},{code:'AO',name:'Angola',flag:'🇦🇴',days:30},
+  {code:'AG',name:'Antigua and Barbuda',flag:'🇦🇬',days:30},{code:'KH',name:'Cambodia',flag:'🇰🇭',days:30},
+  {code:'CA',name:'Canada',flag:'🇨🇦',days:30},{code:'CL',name:'Chile',flag:'🇨🇱',days:30},
+  {code:'CN',name:'China',flag:'🇨🇳',days:30},{code:'CO',name:'Colombia',flag:'🇨🇴',days:31},
+  {code:'CR',name:'Costa Rica',flag:'🇨🇷',days:31},
+];
+let selected = ['KH','CA','CL'];
+let currentStep = 0;
+
+function renderStepper(){
+  document.querySelectorAll('.step').forEach((el,i)=>{
+    el.classList.toggle('active', i===currentStep);
+    el.classList.toggle('done', i<currentStep);
+  });
+}
+function goToStep(i){
+  currentStep = i;
+  document.querySelectorAll('.step-panel').forEach(p=>p.classList.toggle('active', +p.dataset.panel===i));
+  renderStepper();
+  document.getElementById('btnBack').style.visibility = i===0 ? 'hidden':'visible';
+  const last = i===4;
+  document.getElementById('btnNext').style.display = last ? 'none':'inline-flex';
+  document.getElementById('btnSaveQuote').style.display = last ? 'inline-flex':'none';
+  document.getElementById('btnInstruct').style.display = last ? 'inline-flex':'none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.step').forEach(el=>{
+  el.addEventListener('click',()=>{ const i=+el.dataset.step; if(i<=currentStep) goToStep(i); });
+});
+document.getElementById('btnNext').addEventListener('click',()=> goToStep(Math.min(currentStep+1,4)));
+document.getElementById('btnBack').addEventListener('click',()=> goToStep(Math.max(currentStep-1,0)));
+document.querySelectorAll('.svc-opt').forEach(o=> o.addEventListener('click',()=>{
+  document.querySelectorAll('.svc-opt').forEach(x=>x.classList.remove('sel'));
+  o.classList.add('sel');
+}));
+
+function renderRegions(){
+  const q = (document.querySelector('.region-search').value||'').toLowerCase();
+  document.getElementById('regionList').innerHTML = REGIONS.filter(r=>r.name.toLowerCase().includes(q)).map(r=>`
+    <div class="region-row">
+      <input type="checkbox" data-code="${r.code}" ${selected.includes(r.code)?'checked':''}>
+      <span class="region-flag">${r.flag}</span>
+      <span class="region-name">${r.name}</span>
+      <span class="region-code">${r.code} ${r.days}</span>
+    </div>`).join('');
+  document.querySelectorAll('#regionList input').forEach(cb=> cb.addEventListener('change',()=>{
+    const c = cb.dataset.code;
+    if(cb.checked && !selected.includes(c)) selected.push(c);
+    else if(!cb.checked) selected = selected.filter(x=>x!==c);
+    renderRegions();
+  }));
+  document.getElementById('selCount').textContent = selected.length+' Regions Selected';
+  document.getElementById('selChips').innerHTML = selected.map(c=>{
+    const r = REGIONS.find(x=>x.code===c);
+    return `<span class="sel-chip">${r.name}<span class="x" data-code="${c}">✕</span></span>`;
+  }).join('');
+  document.querySelectorAll('.sel-chip .x').forEach(x=> x.addEventListener('click',()=>{
+    selected = selected.filter(c=>c!==x.dataset.code);
+    renderRegions();
+  }));
+}
+document.querySelector('.region-search').addEventListener('input', renderRegions);
+document.getElementById('removeAll').addEventListener('click',()=>{ selected=[]; renderRegions(); });
+renderRegions();
+
+/* ── Disconnected modal logic ── */
+let mStep = 0;
+function openModal(){ document.getElementById('modalOverlay').classList.add('open'); goToModalStep(0); }
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
+function goToModalStep(i){
+  mStep = i;
+  document.querySelectorAll('.modal-tab').forEach(t=> t.classList.toggle('active', +t.dataset.mtab===i));
+  document.querySelectorAll('.modal-step-panel').forEach(p=> p.classList.toggle('active', +p.dataset.mpanel===i));
+  document.getElementById('modalBack').style.visibility = i===0 ? 'hidden':'visible';
+  document.getElementById('modalNext').textContent = i===1 ? 'Send Instructions' : 'Next';
+}
+document.getElementById('btnInstruct').addEventListener('click', openModal);
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalCancel').addEventListener('click', closeModal);
+document.getElementById('modalBack').addEventListener('click',()=> goToModalStep(0));
+document.getElementById('modalNext').addEventListener('click',()=>{
+  if(mStep===0){ goToModalStep(1); return; }
+  closeModal();
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(()=> toast.classList.remove('show'), 4500);
+});
+
+goToStep(0);
+</script>
+</body>
+</html>

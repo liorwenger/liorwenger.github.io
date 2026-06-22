@@ -19,7 +19,7 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Avenir', 'Avenir Next', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: #fff;
       color: #1a1a1a;
       line-height: 1.6;
@@ -43,10 +43,10 @@
       top: 0;
       left: 0;
       right: 0;
-      background: rgba(17, 17, 17, 0.95);
+      background: rgba(255,255,255,0.88);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
       z-index: 100;
     }
 
@@ -63,9 +63,10 @@
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #fff;
+      color: #111;
     }
 
+    .header-name a { color: inherit; text-decoration: none; transition: opacity 0.2s; }
     .header-name a:hover { opacity: 0.6; }
 
     .header-nav {
@@ -78,11 +79,11 @@
       font-weight: 500;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.6);
+      color: rgba(0,0,0,0.45);
       transition: color 0.2s;
     }
 
-    .header-nav a:hover { color: #fff; }
+    .header-nav a:hover { color: #111; }
 
     /* ─── Layout ─── */
     .container {
@@ -119,169 +120,112 @@
     }
 
     /* ─── Hero ─── */
-    .hero {
-      background: #90324C;
-      padding: 80px 0 0 0;
-      overflow: hidden;
-      position: relative;
-      min-height: 80vh;
-      display: flex;
-      align-items: center;
+    .hero-wrap {
+      background: #FF3AB0;
+      padding-top: 88px;
     }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr;
-      align-items: center;
-      gap: 80px;
+    .hero-frame {
       width: 100%;
-      margin: 0 auto;
-      padding: 100px 0 100px 80px;
+      aspect-ratio: 1917 / 890;
+      overflow: hidden;
+    }
+    .hero-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
     }
 
-    .hero-content {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      min-height: 280px;
+    /* ─── Title block ─── */
+    .page-header {
+      padding: 64px 0 40px;
+      margin-bottom: 48px;
     }
-
-    .hero .label {
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 14px;
-      font-weight: 400;
+    .page-tag {
+      font-size: 11px;
+      font-weight: 500;
       letter-spacing: 0.16em;
-      margin-top: 24px;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.4);
+      margin-bottom: 20px;
     }
-
-    .hero-title {
-      font-size: 80px;
-      white-space: nowrap;
-      font-weight: 700;
-      line-height: 1.0;
-      letter-spacing: -0.03em;
-      color: #fff;
-      margin-bottom: 0;
-    }
-
-    .hero-company {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
+    .page-title {
+      font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif;
+      font-size: clamp(36px, 5.8vw, 78px);
+      font-weight: 800;
+      color: #FF3AB0;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
       margin-bottom: 28px;
     }
-
-    .wix-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-      padding: 5px 10px;
-      border-radius: 6px;
-    }
-
-    .wix-badge img {
-      height: 20px;
-      width: auto;
-      display: block;
-    }
-
-    .hero-company-label {
-      font-size: 14px;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.4);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .hero-image {
-      border-radius: 10px 0 0 10px;
-      overflow: hidden;
-      margin-right: 0;
-    }
-
-    .hero-image img {
-      width: 100%;
-      display: block;
-    }
-
-    /* ─── Overview ─── */
-    .overview {
-      padding: 80px 0 80px;
-      background: #fff;
-    }
-
-    .overview-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: start;
-    }
-
-    .overview-summary p {
-      font-size: 18px;
-      line-height: 1.7;
+    .page-impact {
+      font-size: clamp(15px, 1.3vw, 19px);
+      font-weight: 300;
       color: #555;
-      margin-bottom: 16px;
+      line-height: 1.7;
+      max-width: 680px;
     }
 
-    .overview-summary {
-      padding-bottom: 40px;
+    /* ─── Background card ─── */
+    .section { margin-bottom: 0; padding: 64px 0 0; }
+
+    .bg-card {
+      background: rgba(255,58,176,0.07);
+      border-radius: 20px;
+      padding: clamp(28px, 4vw, 56px);
     }
 
-    .overview-meta {
+    .section-label {
+      font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif;
+      font-size: clamp(14px, 1.3vw, 17px);
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.4);
+      margin-bottom: 24px;
+    }
+
+    .section-body {
+      font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif;
+      font-size: clamp(14px, 1.2vw, 17px);
+      font-weight: 300;
+      line-height: 1.8;
+      color: #1a1a1a;
+    }
+    .section-body p + p { margin-top: 16px; }
+    .section-body strong { color: #000; font-weight: 600; }
+    .bg-card .section-body strong { color: #A62672; font-weight: 700; }
+
+    .meta-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px 48px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px 64px;
+      margin-top: 40px;
     }
 
     .meta-item {
-      border-top: 2px solid #1a1a1a;
-      padding-top: 12px;
+      border-top: 1px solid rgba(0,0,0,0.7);
+      padding-top: 14px;
     }
 
     .meta-item dt {
       font-size: 12px;
       font-weight: 600;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #999;
-      margin-bottom: 6px;
+      color: rgba(0,0,0,0.4);
+      margin-bottom: 8px;
     }
 
     .meta-item dd {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 500;
       color: #1a1a1a;
       line-height: 1.5;
     }
 
-    /* ─── Background ─── */
-    .background-section {
-      background: #f5f5f5;
-      padding: 100px 0 0;
-    }
-
-    .background-title {
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      color: #1a1a1a;
-      letter-spacing: -0.02em;
-      margin-bottom: 28px;
-    }
-
-    .background-body {
-      font-size: 17px;
-      line-height: 1.75;
-      color: #444;
-      max-width: 760px;
-    }
-
-    .background-body strong {
-      color: #1a1a1a;
-      font-weight: 600;
-    }
-
+    /* ─── Background image ─── */
     .background-image-wrap {
       margin-top: 64px;
       padding: 0 60px 100px;
@@ -897,20 +841,13 @@
       /* Sections - reduce padding */
       section { padding: 64px 0; }
       .decisions, .kpis, .ab-test, .problem { padding: 64px 0; }
-      .background-section { padding: 64px 0 0; }
+      .section { padding: 48px 0 0; }
 
       /* Hero */
-      .hero-grid { grid-template-columns: 1fr; padding: 80px 20px 0; gap: 32px; }
-      .hero-image { border-radius: 0; margin: 0 -20px; width: calc(100% + 40px); }
-      .hero-title { font-size: 44px; white-space: normal; }
-      .hero-content { min-height: unset; padding: 0; }
-
-      /* Overview */
-      .overview { padding: 48px 0 0; }
-      .overview-grid { grid-template-columns: 1fr; gap: 32px; }
-      .overview-meta { grid-template-columns: 1fr 1fr; gap: 20px 32px; }
+      .page-header { padding: 40px 0 32px; }
 
       /* Background */
+      .meta-grid { grid-template-columns: 1fr 1fr; gap: 20px 32px; }
       .background-image-wrap { padding: 0 0 0; margin-top: 32px; }
 
       /* Problem */
@@ -962,65 +899,48 @@
   </header>
 
   <!-- ─── Hero ─── -->
-  <section class="hero">
-    <div class="hero-grid">
-      <div class="hero-content">
-        <div class="hero-company">
-          <span class="wix-badge"><img src="wix-logo.svg" alt="Wix"></span>
-          <span class="hero-company-label">Product Design</span>
-        </div>
-        <h1 class="hero-title">New Domain Tool</h1>
-        <p class="label">Conversion / UX / A/B Testing</p>
-      </div>
-      <div class="hero-image">
-        <img src="New Strategy - 11/header-image%20.png" alt="Wix New Domain Tool - search results page">
-      </div>
+  <div class="hero-wrap">
+    <div class="hero-frame">
+      <img src="New Strategy - 11/header-image%20.png" alt="Wix New Domain Tool - search results page">
     </div>
-  </section>
+  </div>
 
-  <!-- ─── Overview ─── -->
-  <section class="overview">
-    <div class="container">
-      <div class="overview-grid">
-        <div class="overview-summary">
-          <p class="label">Overview</p>
-          <p>Redesigning Wix's domain search tool to lift conversion - from a cluttered inline experience to a dedicated results page, validated by an A/B test.</p>
+  <!-- ─── Title block ─── -->
+  <div class="container--wide">
+    <header class="page-header">
+      <p class="page-tag">Case Study · 03</p>
+      <h1 class="page-title">Wix New Domain Tool</h1>
+      <p class="page-impact">Redesigning Wix's domain acquisition flow to lift conversion - validated by a 16-day A/B test.</p>
+    </header>
+  </div>
+
+  <!-- ─── Background ─── -->
+  <section class="section">
+    <div class="container--wide">
+      <div class="bg-card">
+        <p class="section-label">Background</p>
+        <div class="section-body">
+          <p><strong>Visitors, not exclusively Wix users, have the opportunity to directly acquire a domain name through Wix.</strong> Wix enables visitors to explore and acquire a personalized domain for their websites. Through the Wix domain tool, visitors can search for available domain names, make purchases, and connect them not only to their Wix websites but also to any other website.</p>
         </div>
-        <dl class="overview-meta">
+        <dl class="meta-grid">
           <div class="meta-item">
-            <dt>Company</dt>
-            <dd>Wix.com</dd>
+            <dt>Role</dt>
+            <dd>Product Designer</dd>
           </div>
           <div class="meta-item">
-            <dt>My Role</dt>
-            <dd>UX/UI Design</dd>
-          </div>
-          <div class="meta-item">
-            <dt>Duration</dt>
-            <dd>2 months</dd>
-          </div>
-          <div class="meta-item">
-            <dt>Year</dt>
-            <dd>2023</dd>
+            <dt>Timeline</dt>
+            <dd>1 month</dd>
           </div>
           <div class="meta-item">
             <dt>Team</dt>
-            <dd>PM, UX/UI Designer, SEO, Content, Developer</dd>
+            <dd>1 designer, 1 PM, 1 engineer, content writer</dd>
           </div>
           <div class="meta-item">
-            <dt>Platform</dt>
-            <dd>Web (Desktop + Mobile)</dd>
+            <dt>Status</dt>
+            <dd>Live with measured impact</dd>
           </div>
         </dl>
       </div>
-    </div>
-  </section>
-
-  <!-- ─── Background ─── -->
-  <section class="background-section">
-    <div class="container">
-      <h2 class="background-title">Background</h2>
-      <p class="background-body"><strong>Visitors, not exclusively Wix users, have the opportunity to directly acquire a domain name through Wix.</strong> Wix enables visitors to explore and acquire a personalized domain for their websites. Through the Wix domain tool, visitors can search for available domain names, make purchases, and connect them not only to their Wix websites but also to any other website.</p>
     </div>
     <div class="background-image-wrap">
       <img src="New Strategy - 11/background.png" alt="Wix domain tool - existing experience">
@@ -1315,13 +1235,13 @@
     <div class="footer-inner">
       <a href="../case-study-2/index.html" class="footer-nav-item">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        Previous project
+        Previous
       </a>
       <button class="footer-nav-item footer-nav-item--center" onclick="window.scrollTo({top:0,behavior:'smooth'})">
         Top of the page
       </button>
       <span class="footer-nav-item footer-nav-item--right footer-nav-item--disabled">
-        Next project
+        Next
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </span>
     </div>

@@ -45,7 +45,7 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Avenir', 'Avenir Next', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
@@ -405,160 +405,98 @@
     /* ─── Case Studies ─── */
     .case-studies {
       background: #fff;
-      padding: 70px 0 154px;
-    }
-
-    .cs-columns {
-      max-width: 1232px;
-      margin: 0 auto;
-      padding: 0 clamp(16px, 5vw, 92px);
-      display: flex;
-      align-items: flex-start;
-      gap: clamp(14px, 4.5vw, 84px);
-    }
-
-    .cs-col {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: clamp(28px, 3.5vw, 56px);
-    }
-
-    .cs-col-right {
-      margin-top: clamp(42px, 15vw, 280px);
-    }
-
-    .cs-card {
-      border-radius: 18px;
-      border: 1px solid rgba(0, 0, 0, 0.5);
-      background: #fff;
-      box-shadow: 0px 15px 50px 0px rgba(0, 0, 0, 0.08);
       overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      padding: clamp(60px, 9vw, 130px) 0;
     }
 
-    .cs-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0px 22px 63px 0px rgba(0, 0, 0, 0.14);
-    }
-
-    .cs-card-link {
-      display: block;
+    .cs-row {
+      display: grid;
+      grid-template-columns: minmax(300px, 580px) 1fr;
+      align-items: center;
+      gap: clamp(28px, 5vw, 80px);
+      margin-bottom: clamp(48px, 7vw, 100px);
       text-decoration: none;
       color: inherit;
     }
 
-    .cs-card-image {
-      background: #f4f5f8;
-      border-radius: 18px 18px 0 0;
-      aspect-ratio: 767 / 493;
-      overflow: hidden;
-      position: relative;
-      padding: clamp(12px, 2vw, 24px);
-    }
+    .cs-row:last-child { margin-bottom: 0; }
 
-    .cs-card-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      display: block;
-      border-radius: 8px;
-    }
+    .cs-row--left { grid-template-columns: 1fr minmax(300px, 580px); }
 
-    /* ─── Edge-to-edge image (no inset padding, cropped at the bottom) ─── */
-    .cs-card-image--bleed {
-      padding: 0;
-    }
+    .cs-row-content { display: flex; flex-direction: column; min-width: 0; padding-left: clamp(24px, 8vw, 120px); }
+    .cs-row--left .cs-row-content { order: 2; padding-left: 0; padding-right: clamp(24px, 8vw, 120px); }
+    .cs-row--left .cs-row-image { order: 1; }
 
-    .cs-card-image--bleed img {
-      border-radius: 0;
-    }
-
-    /* ─── Indigo background (image has transparent bg, no color baked in) ─── */
-    .cs-card-image--indigo {
-      background: #4338CA;
-    }
-
-    .cs-card-image--indigo img {
-      object-fit: contain;
-      border-radius: 0;
-    }
-
-    /* ─── Green background (image has transparent bg, no color baked in) ─── */
-    .cs-card-image--green {
-      background: #46bd61;
-      padding: 0;
-    }
-
-    .cs-card-image--green img {
-      object-fit: contain;
-      object-position: top center;
-      border-radius: 0;
-    }
-
-    .cs-card-content {
-      font-family: 'Inter', sans-serif;
-      padding: clamp(14px, 2vw, 28px);
-      padding-top: clamp(18px, 2.2vw, 30px);
-      display: flex;
-      flex-direction: column;
-      min-height: clamp(200px, 25vw, 390px);
-    }
-
-    .cs-card-title {
-      font-family: 'Inter', sans-serif;
-      color: #121212;
+    .cs-row-number {
+      font-size: clamp(40px, 6vw, 72px);
       font-weight: 800;
-      font-size: clamp(14px, 1.5vw, 22px);
-      line-height: 1.25;
-      margin: 0 0 8px;
+      line-height: 1;
+      margin: 0 0 12px;
       letter-spacing: -0.01em;
     }
 
-    .cs-card-client {
-      font-family: 'Inter', sans-serif;
-      color: rgba(18, 18, 18, 0.45);
-      font-size: clamp(12px, 1.2vw, 17px);
+    .cs-row-title {
+      font-size: clamp(20px, 2.2vw, 28px);
+      font-weight: 700;
+      color: #121212;
+      margin: 0 0 8px;
+      line-height: 1.25;
+      letter-spacing: -0.005em;
+    }
+
+    .cs-row-client {
+      font-size: clamp(20px, 2.2vw, 28px);
       font-weight: 400;
+      line-height: 1.25;
+      color: rgba(18, 18, 18, 0.45);
       margin: 0 0 18px;
     }
 
-    .cs-card-desc {
-      font-family: 'Inter', sans-serif;
-      color: rgba(18, 18, 18, 0.75);
+    .cs-row-desc {
+      font-size: 17px;
       font-weight: 300;
-      font-size: clamp(12px, 1.2vw, 17px);
-      line-height: 1.55;
-      margin: 0;
-      flex: 1;
+      color: rgba(18, 18, 18, 0.7);
+      line-height: 1.6;
+      margin: 0 0 28px;
+      max-width: 480px;
     }
 
-    .cs-card-footer {
-      padding-top: 16px;
-      margin-top: 28px;
-    }
-
-    .cs-card-cta {
-      font-family: 'Inter', sans-serif;
+    .cs-row-cta {
       display: inline-flex;
       align-items: center;
-      background: rgba(0, 0, 0, 0.03);
-      border: 1px solid rgba(0, 0, 0, 0.2);
+      padding: 12px 22px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
       border-radius: 10px;
-      padding: clamp(6px, 0.7vw, 10px) clamp(14px, 1.6vw, 22px);
+      font-size: 15px;
+      font-weight: 500;
       color: #121212;
-      font-size: clamp(12px, 1.2vw, 17px);
-      font-weight: 300;
-      transition: background 0.2s;
+      align-self: flex-start;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
     }
 
-    .cs-card:hover .cs-card-cta {
-      background: rgba(0, 0, 0, 0.06);
+    .cs-row-cta:hover { background: #121212; color: #fff; border-color: #121212; }
+
+    .cs-row-image {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+      aspect-ratio: 967 / 588;
+      overflow: hidden;
+      border-radius: 4px;
     }
+
+    .cs-row-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .cs-row:hover .cs-row-image img { transform: scale(1.02); }
 
     /* ─── Footer ─── */
-    .footer { border-top: 1px solid rgba(255,255,255,0.1); padding: 40px 0; }
+    .footer { border-top: 1px solid rgba(0,0,0,0.1); padding: 40px 0; }
 
     .footer-inner {
       max-width: 1120px;
@@ -569,17 +507,17 @@
       align-items: center;
     }
 
-    .footer-copyright { font-size: 13px; color: rgba(255,255,255,0.35); }
+    .footer-copyright { font-size: 13px; color: rgba(0,0,0,0.35); }
 
     .footer-links { display: flex; gap: 24px; }
 
     .footer-links a {
       font-size: 13px;
-      color: rgba(255,255,255,0.35);
+      color: rgba(0,0,0,0.35);
       transition: color 0.2s;
     }
 
-    .footer-links a:hover { color: #fff; }
+    .footer-links a:hover { color: #111; }
 
     /* ─── Scroll-to-top ─── */
     .scroll-top {
@@ -602,29 +540,12 @@
 
     .scroll-top:hover { opacity: 0.6; }
 
-    /* ─── Case studies always white, footer always dark ─── */
-    .case-studies {
+    /* ─── Footer always white ─── */
+    .footer {
       background: #fff;
     }
 
-    .footer {
-      background: #121212;
-    }
-
     /* ─── Responsive ─── */
-    @media (max-width: 700px) {
-      .cs-columns {
-        flex-direction: column;
-        gap: 24px;
-      }
-      .cs-col-right {
-        margin-top: 0;
-      }
-      .cs-card-content {
-        min-height: auto;
-      }
-    }
-
     @media (max-width: 768px) {
       .interactive-hero { font-size: 9vw; align-items: flex-start; }
       .hero-content { padding-top: 100px; }
@@ -644,7 +565,26 @@
       .pattern-swatch { width: 1.4em; height: 1.5em; }
 
       .header-inner, .footer-inner { padding: 0 20px; }
-      .case-studies { padding: 42px 0 84px; }
+      .case-studies { padding: 56px 0; }
+      .cs-row, .cs-row--left {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-bottom: 56px;
+      }
+      .cs-row-content,
+      .cs-row--left .cs-row-content {
+        order: 2;
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+      .cs-row-image,
+      .cs-row--left .cs-row-image {
+        order: 1;
+      }
+      .cs-row-number { font-size: 40px; margin-bottom: 8px; }
+      .cs-row-title { font-size: 19px; }
+      .cs-row-client { font-size: 19px; }
+      .cs-row-desc { font-size: 15px; margin-bottom: 20px; }
       .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
       .swatch-code { display: none; }
       .scroll-top { display: none; }
@@ -735,53 +675,49 @@
 
   <!-- ─── Case Studies ─── -->
   <section class="case-studies" id="projects">
-    <div class="cs-columns">
 
-      <!-- Left column: Card 1 -->
-      <div class="cs-col cs-col-left">
-
-        <!-- Card 1: Associate Network Dashboard -->
-        <article class="cs-card">
-          <a href="case-study-1/index.html" class="cs-card-link">
-            <div class="cs-card-image cs-card-image--indigo">
-              <img src="New Senior version/new-case-study1.png" alt="Associate Network Dashboard">
-            </div>
-            <div class="cs-card-content">
-              <h3 class="cs-card-title">Associate Network - New Dashboard</h3>
-              <p class="cs-card-client">Azami Global</p>
-              <p class="cs-card-desc">A data-heavy internal tool reframed as a strategic command center for managing partners.</p>
-              <div class="cs-card-footer">
-                <span class="cs-card-cta">View Case Study &gt;</span>
-              </div>
-            </div>
-          </a>
-        </article>
-
+    <!-- Case Study 1 -->
+    <a href="case-study-1/index.html" class="cs-row">
+      <div class="cs-row-content">
+        <p class="cs-row-number" style="color:#4338CA;">01</p>
+        <h3 class="cs-row-title">Associate Network - New Dashboard</h3>
+        <p class="cs-row-client">Azami Global</p>
+        <p class="cs-row-desc">A data-heavy internal tool reframed as a strategic command center for managing partners.</p>
+        <span class="cs-row-cta">View Case Study &gt;</span>
       </div>
-
-      <!-- Right column (staggered down): Card 2 -->
-      <div class="cs-col cs-col-right">
-
-        <!-- Card 2: Quote Wizard Redesign -->
-        <article class="cs-card">
-          <a href="case-study-2/index.html" class="cs-card-link">
-            <div class="cs-card-image cs-card-image--green">
-              <img src="New Senior version/new-case-study2.png" alt="Quote Wizard Redesign">
-            </div>
-            <div class="cs-card-content">
-              <h3 class="cs-card-title">Quote Wizard Redesign - Redesigning our main flow</h3>
-              <p class="cs-card-client">Azami Global</p>
-              <p class="cs-card-desc">One flow to select associates across every region and see the full cost, instead of waiting on a string of emails to find out what a filing will actually cost.</p>
-              <div class="cs-card-footer">
-                <span class="cs-card-cta">View Case Study &gt;</span>
-              </div>
-            </div>
-          </a>
-        </article>
-
+      <div class="cs-row-image">
+        <img src="New Senior version/1-new.png" alt="Associate Network - New Dashboard">
       </div>
+    </a>
 
-    </div>
+    <!-- Case Study 2 -->
+    <a href="case-study-2/index.html" class="cs-row cs-row--left">
+      <div class="cs-row-image">
+        <img src="New Senior version/2-new.png" alt="Quote Wizard Redesign">
+      </div>
+      <div class="cs-row-content">
+        <p class="cs-row-number" style="color:#46BD61;">02</p>
+        <h3 class="cs-row-title">Quote Wizard Redesign</h3>
+        <p class="cs-row-client">Azami Global</p>
+        <p class="cs-row-desc">One flow to select associates across every region and see the full cost, instead of waiting on a string of emails to find out what a filing will actually cost.</p>
+        <span class="cs-row-cta">View Case Study &gt;</span>
+      </div>
+    </a>
+
+    <!-- Case Study 3 -->
+    <a href="case-study-3/index.html" class="cs-row">
+      <div class="cs-row-content">
+        <p class="cs-row-number" style="color:#FF3AB0;">03</p>
+        <h3 class="cs-row-title">Wix New Domain Tool</h3>
+        <p class="cs-row-client">Wix.com</p>
+        <p class="cs-row-desc">Introducing the new domain results page, an important product that gets 43k visitors a month.</p>
+        <span class="cs-row-cta">View Case Study &gt;</span>
+      </div>
+      <div class="cs-row-image">
+        <img src="New Senior version/3-new.png" alt="Wix New Domain Tool">
+      </div>
+    </a>
+
   </section>
 
   <!-- ─── Footer ─── -->

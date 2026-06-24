@@ -411,20 +411,20 @@
 
     .cs-row {
       display: grid;
-      grid-template-columns: minmax(300px, 580px) 1fr;
+      grid-template-columns: 1fr 1fr;
       align-items: center;
-      gap: clamp(28px, 5vw, 80px);
-      margin-bottom: clamp(48px, 7vw, 100px);
+      gap: 0;
+      margin-bottom: 0;
       text-decoration: none;
       color: inherit;
     }
 
     .cs-row:last-child { margin-bottom: 0; }
 
-    .cs-row--left { grid-template-columns: 1fr minmax(300px, 580px); }
+    .cs-row--left { grid-template-columns: 1fr 1fr; }
 
-    .cs-row-content { display: flex; flex-direction: column; min-width: 0; padding-left: clamp(24px, 8vw, 120px); }
-    .cs-row--left .cs-row-content { order: 2; padding-left: 0; padding-right: clamp(24px, 8vw, 120px); }
+    .cs-row-content { display: flex; flex-direction: column; min-width: 0; padding: clamp(48px, 7vw, 96px) clamp(24px, 4vw, 60px) clamp(48px, 7vw, 96px) clamp(40px, 13.9vw, 200px); }
+    .cs-row--left .cs-row-content { order: 2; padding: clamp(48px, 7vw, 96px) clamp(40px, 13.9vw, 200px) clamp(48px, 7vw, 96px) clamp(24px, 4vw, 60px); }
     .cs-row--left .cs-row-image { order: 1; }
 
     .cs-row-number {
@@ -574,8 +574,7 @@
       .cs-row-content,
       .cs-row--left .cs-row-content {
         order: 2;
-        padding-left: 20px;
-        padding-right: 20px;
+        padding: 28px 20px;
       }
       .cs-row-image,
       .cs-row--left .cs-row-image {
@@ -715,6 +714,20 @@
       </div>
       <div class="cs-row-image">
         <img src="New Senior version/3-new.png" alt="Wix New Domain Tool">
+      </div>
+    </a>
+
+    <!-- Case Study 4 -->
+    <a href="case-study-4/index.html" class="cs-row cs-row--left">
+      <div class="cs-row-image">
+        <img src="New Senior version/4-new.png" alt="Wix Reviews Widget">
+      </div>
+      <div class="cs-row-content">
+        <p class="cs-row-number" style="color:#e64623;">04</p>
+        <h3 class="cs-row-title">Wix Reviews Widget</h3>
+        <p class="cs-row-client">Wix.com</p>
+        <p class="cs-row-desc">Building Wix's first-party reviews solution — a fully customizable widget that replaced fragmented third-party apps for millions of store owners.</p>
+        <span class="cs-row-cta">View Case Study &gt;</span>
       </div>
     </a>
 

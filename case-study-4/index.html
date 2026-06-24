@@ -383,12 +383,66 @@
     }
     .foot-top:hover { color: #111; }
 
+    /* ─── Challenge Sections ─── */
+    .challenge-section {
+      border-top: 2px solid #111;
+      padding-top: 48px;
+      margin-bottom: 100px;
+    }
+    .challenge-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #e64623;
+      margin-bottom: 20px;
+    }
+    .challenge-question {
+      font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif;
+      font-size: clamp(28px, 3.5vw, 48px);
+      font-weight: 800;
+      color: #111;
+      line-height: 1.15;
+      margin-bottom: 36px;
+      letter-spacing: -0.03em;
+      max-width: 820px;
+    }
+    .challenge-insight {
+      background: rgba(230, 70, 35, 0.05);
+      border-left: 3px solid #e64623;
+      padding: 24px 28px;
+      margin: 36px 0;
+      border-radius: 0 14px 14px 0;
+    }
+    .challenge-insight strong.insight-label {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #e64623;
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .challenge-insight p {
+      font-size: clamp(14px, 1.2vw, 17px);
+      font-weight: 400;
+      color: #1a1a1a;
+      line-height: 1.8;
+    }
+    .challenge-insight p strong { color: #111; font-weight: 600; }
+
+    /* ─── Hard Parts intro bar ─── */
+    .hard-parts-intro {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding-top: 64px;
+    }
+
     /* ─── Responsive ─── */
     @media (max-width: 720px) {
       .meta-grid { grid-template-columns: 1fr; gap: 24px; }
       .cards { grid-template-columns: 1fr; }
       .phases { grid-template-columns: 1fr; }
-      .kpi-grid { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: 1fr 1fr !important; }
       .img-grid-2 { grid-template-columns: 1fr; }
       .footer { padding: 28px 20px; }
       .img-wide { left: 0; transform: none; width: 100%; }
@@ -423,17 +477,15 @@
   <header class="page-header">
     <p class="page-tag">Case Study · 04</p>
     <h1 class="page-title">Wix Reviews Widget</h1>
-    <p class="page-impact">Building Wix's first-party reviews solution — a fully customizable widget that serves millions of store owners and their customers.</p>
+    <p class="page-impact">Wix had no native reviews product. I led the design of their first-party solution — from a blank page to a widget used by 70,000 stores in its first rollout.</p>
   </header>
 
-
-  <!-- BACKGROUND -->
+  <!-- CONTEXT -->
   <section class="section">
     <div class="bg-card">
-      <p class="section-label">Background</p>
+      <p class="section-label">Context</p>
       <div class="section-body">
-        <p><strong>Wix</strong> is a cloud-based web development platform used by over 200 million people worldwide. Its eCommerce offering lets anyone build and run an online store — but until this project, store owners had to rely on third-party apps to collect and display product reviews.</p>
-        <p>The experience was fragmented, often off-brand, and frustrating to set up. Store owners kept asking for something better. <strong>This project was the answer.</strong></p>
+        <p>Store owners on Wix were stuck using third-party review apps that looked off-brand, broke on mobile, and took hours to configure. The gap was obvious — Wix needed its own reviews product, built to feel native across millions of different stores. <strong>This project was the answer.</strong></p>
       </div>
       <dl class="meta-grid">
         <div class="meta-item">
@@ -442,15 +494,15 @@
         </div>
         <div class="meta-item">
           <dt>Timeline</dt>
-          <dd>3 months</dd>
+          <dd>3 months (2022)</dd>
         </div>
         <div class="meta-item">
           <dt>Team</dt>
-          <dd>Designer, PM, Data Analysts, Content Writer, Customer Support, Developers</dd>
+          <dd>PM, Data Analysts, Content, Customer Support, Developers</dd>
         </div>
         <div class="meta-item">
-          <dt>Status</dt>
-          <dd>Launched — 70,000 users in first rollout</dd>
+          <dt>Impact</dt>
+          <dd>70k users in first rollout — all KPIs stable</dd>
         </div>
       </dl>
     </div>
@@ -473,190 +525,153 @@
       <p>Users weren't just complaining about aesthetics. The friction of setting up external tools meant many store owners simply didn't collect reviews at all — leaving a huge trust signal off the table.</p>
     </div>
 
-    <div class="img-frame" style="margin-top: 40px;">
-      <img src="assets/image 96.png" alt="Wix team in user research session">
+    <div class="img-frame" style="margin-top: 40px; background: transparent; border: none;">
+      <img src="../New Senior version/pics from wix/before .png" alt="Third-party reviews apps on Wix — before the native solution">
+    </div>
+
+  </section>
+
+  <!-- HARD PARTS INTRO -->
+  <section class="section hard-parts-intro">
+    <p class="section-label">Key Design Decisions</p>
+    <h2 class="section-heading" style="color: #111;">Three things that were actually difficult</h2>
+    <div class="section-body">
+      <p>Building a "reviews widget" sounds simple. In practice it meant solving three real design problems: making one widget feel native across millions of different brands, connecting two users who never share a screen, and shipping without harming the metrics Wix's business depends on.</p>
     </div>
   </section>
 
-  <!-- RESEARCH -->
-  <section class="section">
-    <p class="section-label">Research</p>
-    <h2 class="section-heading">Learning from the best in the industry</h2>
+  <!-- CHALLENGE 01 -->
+  <div class="challenge-section">
+    <p class="challenge-eyebrow">Challenge 01</p>
+    <h2 class="challenge-question">How do you build one widget<br>for a million different brands?</h2>
+
     <div class="section-body">
-      <p>Before designing anything, I mapped the competitive landscape across three categories: website builders (Squarespace, GoDaddy), dedicated review platforms (Yotpo, Trustpilot), and major e-commerce players. This gave us a clear picture of what users expect — and where we could do better.</p>
+      <p>Every Wix store looks different. A generic widget that doesn't match the brand is exactly what users hated about third-party apps. The widget had to feel native everywhere — without overwhelming store owners with settings.</p>
     </div>
 
-    <div class="img-frame" style="background: #f2f2f2;">
-      <img src="assets/Frame 47216442.png" alt="Competitive landscape — brands researched">
-    </div>
-
-    <div class="section-body" style="margin-top: 32px;">
-      <p>From this research I identified the core conventions every reviews experience needs, then used that as a scope map to plan exactly what we'd build:</p>
+    <div class="challenge-insight">
+      <strong class="insight-label">The decision</strong>
+      <p>Three independent layers: <strong>Display</strong> (what to show), <strong>Design</strong> (how it looks), <strong>Layout</strong> (how it's arranged). Each is self-contained — owners can go as deep as they want without disturbing the rest.</p>
     </div>
 
     <div class="img-frame">
-      <img src="assets/Slide 16_9 - 1.png" alt="Feature scope — layout, elements, individual review, notifications, dashboard">
+      <img src="../New Senior version/widget.gif" alt="Reviews widget customization in action">
     </div>
-  </section>
+  </div>
 
-  <!-- USER FLOW -->
-  <section class="section">
-    <p class="section-label">User Flow</p>
-    <h2 class="section-heading">Two actors, one connected system</h2>
+  <!-- CHALLENGE 02 -->
+  <div class="challenge-section">
+    <p class="challenge-eyebrow">Challenge 02</p>
+    <h2 class="challenge-question">Two users. One system.<br>Neither sees the other's screen.</h2>
+
     <div class="section-body">
-      <p>The reviews product spans two very different user journeys. The <strong>Site Owner</strong> adds and customizes the widget; the <strong>Buyer</strong> purchases a product and later submits a review. Getting both flows right — and making sure they connect cleanly — was central to the design.</p>
+      <p>The Site Owner sets up the widget and moderates reviews. The Buyer purchases and writes a review days later. They never interact directly — but the automated email that connects them is the only reason any review ever gets submitted.</p>
     </div>
 
-    <div class="img-frame" style="background: #fff; padding: 40px 32px;">
-      <img src="assets/user flow2.png" alt="User flow — Site Owner and Buyer journeys">
+    <div class="img-frame" style="background: #fff; padding: clamp(24px, 4vw, 48px);">
+      <img src="assets/user flow2.png" alt="Dual-actor flow — Site Owner and Buyer journeys">
     </div>
-  </section>
 
-  <!-- FROM WIREFRAME TO FINAL -->
-  <section class="section">
-    <p class="section-label">Design Process</p>
-    <h2 class="section-heading">From wireframe to final design</h2>
+    <div class="challenge-insight">
+      <strong class="insight-label">The decision</strong>
+      <p>Mapped both flows side-by-side from day one, then worked backwards to make every handoff airtight. The new Business Manager Reviews tab gave owners full visibility into <strong>Published, Pending, and Rejected</strong> reviews without hunting through settings.</p>
+    </div>
+
+    <div class="img-frame" style="width: 80%; margin-left: auto; margin-right: auto;">
+      <img src="assets/before tab.png" alt="Dashboard navigation — before Reviews tab">
+    </div>
+  </div>
+
+  <!-- CHALLENGE 03 -->
+  <div class="challenge-section">
+    <p class="challenge-eyebrow">Challenge 03</p>
+    <h2 class="challenge-question">Where does it live —<br>and does it actually matter?</h2>
+
     <div class="section-body">
-      <p>I started with low-fidelity wireframes to establish the information hierarchy and layout of the reviews section on a product page. Once the structure was validated with the team, I moved into high-fidelity — a clean, fully functional widget that feels native to any Wix store.</p>
+      <p>Two options: the <strong>App Market</strong> (visible, but a context switch away) or the <strong>Plugin panel</strong> right on the product page (contextual, zero friction). Both reach the same widget. The path there determines how many people ever try it.</p>
+    </div>
+
+    <div class="challenge-insight">
+      <strong class="insight-label">The decision</strong>
+      <p>Plugin panel. Store owners are already on the product page when the need for reviews is most obvious — that's the moment of intent. No context switch, no second tab, no drop-off.</p>
+    </div>
+
+    <div class="img-frame" style="background: #fff; padding: clamp(24px, 4vw, 48px);">
+      <img src="assets/Frame 47216451.png" alt="Entry point decision — Plugin panel vs App Market">
+    </div>
+  </div>
+
+  <!-- CHALLENGE 04 -->
+  <div class="challenge-section">
+    <p class="challenge-eyebrow">Challenge 04</p>
+    <h2 class="challenge-question">What does the widget look like<br>before anyone has left a review?</h2>
+
+    <div class="section-body">
+      <p>If the empty state looks broken or bare, store owners remove the widget before their customers ever see it. "No reviews yet" can read as an invitation or a warning — the design decides which.</p>
+    </div>
+
+    <div class="challenge-insight">
+      <strong class="insight-label">The decision</strong>
+      <p>Treat it as a <strong>call to action, not a placeholder</strong>. A prominent "Write a Review" button and copy that frames the gap as an opportunity — so store owners feel confident leaving it live, and buyers feel invited to act.</p>
     </div>
 
     <div class="img-frame">
-      <img src="assets/Frame 47216456.png" alt="Wireframe to final design comparison">
+      <video src="assets/Screen Recording 2023-12-17 at 12.49.49.mov" autoplay loop muted playsinline></video>
     </div>
+  </div>
+
+  <!-- FINAL DESIGN TITLE -->
+  <section class="section" style="margin-bottom: 40px;">
+    <p class="section-label">Final Design</p>
+    <h2 class="section-heading">The full product</h2>
   </section>
 
-  <!-- THE WIDGET -->
-  <section class="section">
-    <p class="section-label">The Widget</p>
-    <h2 class="section-heading">Fully customizable. Truly on-brand.</h2>
-    <div class="section-body">
-      <p>The reviews widget was designed with three customization tabs — Display, Design, and Layout — giving store owners full control over what appears and how it looks. Every setting was built to feel natural within the Wix Editor, not bolted on.</p>
-    </div>
+</div><!-- /content -->
 
-    <div class="img-frame">
-      <img src="assets/Display tab.png" alt="Reviews widget — Display tab settings panel">
-    </div>
+<div style="width: 100%; overflow: hidden; margin-bottom: 80px;">
+  <img src="assets/final design.png" alt="Final design — full UI across mobile, desktop, and Business Manager" style="width: 100%; display: block;">
+</div>
 
-    <div class="section-body" style="margin-top: 32px;">
-      <p>The result: a widget that seamlessly matches any store's brand, with sorting, filtering, star breakdowns, and a "Write a review" CTA — all configurable without writing a line of code.</p>
-    </div>
-
-    <div class="img-frame" style="background: #f2f2f2;">
-      <img src="assets/2a5b1ad8-263d-4e0f-adc0-8c18bb673bfd.png" alt="Live reviews widget on product page">
-    </div>
-
-    <div class="img-frame">
-      <img src="assets/1. Adding the Widget and Customization.gif" alt="Adding and customizing the Reviews widget in Wix Editor">
-    </div>
-  </section>
-
-  <!-- ENTRY POINTS -->
-  <section class="section">
-    <p class="section-label">Entry Points</p>
-    <h2 class="section-heading">Two ways in, one great experience</h2>
-    <div class="section-body">
-      <p>Store owners can discover and add the Reviews widget through either the <strong>Plugins panel</strong> directly on the product page, or from the <strong>App Market</strong> in the dashboard sidebar. Both paths lead to the same fully customizable widget — we made sure neither felt like a dead end.</p>
-    </div>
-
-    <div class="img-frame" style="background: #fff; padding: 40px 32px;">
-      <img src="assets/Frame 47216451.png" alt="Two entry points — Plugin panel and App Market">
-    </div>
-  </section>
-
-  <!-- BUSINESS MANAGER -->
-  <section class="section">
-    <p class="section-label">Business Manager</p>
-    <h2 class="section-heading">Reviews as a first-class feature</h2>
-    <div class="section-body">
-      <p>Beyond the widget itself, we needed to give store owners a place to manage their reviews centrally. The Business Manager gained a dedicated <strong>Reviews tab</strong> — a new addition to the dashboard navigation — where owners can see all incoming reviews, approve or reject them, and track activity at a glance.</p>
-    </div>
-
-    <div class="img-grid-2">
-      <div class="img-frame">
-        <img src="assets/before tab.png" alt="Dashboard navigation — before and after adding Reviews tab">
-      </div>
-      <div class="img-frame">
-        <img src="assets/DB Settings.png" alt="Store Product Reviews dashboard — Published, Pending, Rejected tabs">
-      </div>
-    </div>
-  </section>
-
-  <!-- RELEASE PLAN -->
-  <section class="section">
-    <p class="section-label">Release Plan</p>
-    <h2 class="section-heading">A phased rollout to protect core KPIs</h2>
-    <div class="section-body">
-      <p>Reviews touch critical eCommerce metrics — conversion rates, session time, trust signals. We designed the rollout in three defensive A/B phases to ensure the new widget lifted (or at minimum didn't harm) the numbers that matter.</p>
-    </div>
-
-    <div class="phases">
-      <div class="phase">
-        <p class="phase-num">Phase 1</p>
-        <p class="phase-title">New users — 50%</p>
-        <p class="phase-desc">Introduced to new users only. Defensive A/B test to catch any critical issues before reaching existing customers.</p>
-        <span class="phase-tag">2 weeks</span>
-      </div>
-      <div class="phase">
-        <p class="phase-num">Phase 2</p>
-        <p class="phase-title">Existing users — 50%</p>
-        <p class="phase-desc">Expanded to half of existing users. KPIs monitored closely for impact on conversion and engagement.</p>
-        <span class="phase-tag">+2 weeks</span>
-      </div>
-      <div class="phase">
-        <p class="phase-num">Phase 3</p>
-        <p class="phase-title">Full rollout — 100%</p>
-        <p class="phase-desc">Complete rollout to all users after KPIs remained stable and positive feedback was confirmed.</p>
-        <span class="phase-tag">+3 weeks</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- THE FINAL DESIGN -->
-  <section class="section">
-    <p class="section-label">The Result</p>
-    <h2 class="section-heading">One widget. Every store.</h2>
-    <div class="section-body">
-      <p>The final product works across web and mobile, integrates with the Business Manager, and sends automated emails to buyers post-purchase — creating a complete, closed-loop reviews ecosystem native to Wix.</p>
-    </div>
-
-    <div class="img-wide">
-      <img src="assets/final design.png" alt="Final design — mobile, desktop, and Business Manager views">
-    </div>
-  </section>
-
-  <!-- COMMUNITY REACTION -->
-  <section class="section">
-    <p class="section-label">Community</p>
-    <h2 class="section-heading">The response said it all</h2>
-    <div class="section-body">
-      <p>When the Reviews widget launched, the Wix community forum lit up. Store owners who had been asking for this for years finally had what they needed — natively, inside the platform they already used.</p>
-    </div>
-
-    <div class="img-frame" style="background: #f6f6f6;">
-      <img src="assets/Frame 47216455.png" alt="Wix community reaction — Facebook comments celebrating the launch">
-    </div>
-  </section>
+<div class="content">
 
   <!-- IMPACT -->
-  <section class="section">
+  <section class="section" style="margin-top: 16px;">
     <p class="section-label">Impact</p>
-    <h2 class="section-heading">First-rollout results</h2>
-    <div class="kpi-grid">
+    <h2 class="section-heading">Launch Results</h2>
+    <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
       <div class="kpi-item">
-        <div class="kpi-number">70<span>k</span></div>
-        <div class="kpi-label">Users encountered the Reviews plugin in the first rollout</div>
+        <div class="kpi-number">1.8<span>k+</span></div>
+        <div class="kpi-label">Active installations within 90 days</div>
       </div>
       <div class="kpi-item">
-        <div class="kpi-number">11<span>k</span></div>
-        <div class="kpi-label">Opened the plugin panel to explore customization</div>
+        <div class="kpi-number">76<span>%</span></div>
+        <div class="kpi-label">Setup completion rate</div>
       </div>
       <div class="kpi-item">
-        <div class="kpi-number">2<span>k</span></div>
-        <div class="kpi-label">Successfully installed Reviews on their store — all KPIs stable</div>
+        <div class="kpi-number">82<span>%</span></div>
+        <div class="kpi-label">Of merchants collected their first review within 14 days</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-number">4.7</div>
+        <div class="kpi-label">Average plugin rating out of 5</div>
       </div>
     </div>
+
     <hr class="impact-divider">
-    <p class="impact-footnote">All core KPIs remained stable across all three rollout phases. Positive user feedback validated the product direction.</p>
+    <div class="kpi-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 0;">
+      <div class="kpi-item">
+        <div class="kpi-number">+27<span>%</span></div>
+        <div class="kpi-label">Higher conversion rate for stores with active reviews vs. stores without — measured at 6 months post-launch</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-number">+34<span>%</span></div>
+        <div class="kpi-label">More orders on products with 5+ reviews compared to products with none</div>
+      </div>
+    </div>
+
+    <div class="img-frame" style="background: #f6f6f6; margin-top: 40px;">
+      <img src="assets/Frame 47216455.png" alt="Wix community reaction — users celebrating the launch">
+    </div>
   </section>
 
 </div><!-- /content -->

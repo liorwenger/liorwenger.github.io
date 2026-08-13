@@ -113,7 +113,10 @@
       margin-top: clamp(24px,3.5vh,40px);
     }
     .final-video-wrap video { width: 100%; height: auto; display: block; }
-    @media (max-width: 768px) { .title-text-split { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      .title-text-split { grid-template-columns: 1fr; gap: 16px; }
+      .title-text-split > *:last-child { padding-top: 0; }
+    }
 
     .section-title {
       font-family: 'Familjen Grotesk', sans-serif;
@@ -282,7 +285,7 @@
       margin-top: clamp(20px,3vh,28px);
     }
     @media (max-width: 700px) {
-      .section-title { font-size: clamp(26px,7vw,38px); }
+      .section-title { font-size: clamp(26px,7vw,38px); margin-bottom: 14px; }
       .approach-title { font-size: clamp(18px,4.5vw,22px); }
       .chart-bars { height: 160px; gap: 8px; }
       .chart-value { font-size: 12px; }

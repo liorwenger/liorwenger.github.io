@@ -137,7 +137,10 @@
       margin-bottom: clamp(32px,5vh,56px);
     }
     .title-text-split > *:last-child { padding-top: calc(clamp(12px,2vh,24px) - 4px); }
-    @media (max-width: 768px) { .title-text-split { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      .title-text-split { grid-template-columns: 1fr; gap: 16px; }
+      .title-text-split > *:last-child { padding-top: 0; }
+    }
 
     .section-title {
       font-family: 'Familjen Grotesk', sans-serif;
@@ -168,7 +171,7 @@
       margin-top: 0;
     }
     @media (max-width: 700px) {
-      .section-title { font-size: clamp(26px,7vw,38px); }
+      .section-title { font-size: clamp(26px,7vw,38px); margin-bottom: 14px; }
       .approach-title { font-size: clamp(18px,4.5vw,22px); }
     }
     .approach-imgs { display: flex; flex-direction: column; gap: clamp(64px,10vh,120px); min-width: 0; }

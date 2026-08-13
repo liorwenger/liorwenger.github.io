@@ -83,7 +83,11 @@
     }
     .meta-col p:not(.section-label) { font-size: clamp(14px,1.05vw,17px); line-height: 1.7; }
     .meta-col ul { list-style: none; font-size: clamp(14px,1.05vw,17px); line-height: 1.9; }
-    @media (max-width: 700px) { .hero-meta-row { grid-template-columns: 1fr; gap: 28px; } }
+    @media (max-width: 700px) {
+      .hero-meta-row { grid-template-columns: 1fr; gap: 28px; }
+      .section-title { font-size: clamp(26px,7vw,38px); }
+      .approach-title { font-size: clamp(18px,4.5vw,22px); }
+    }
 
     /* ── TITLE / TEXT SPLIT ── */
     .title-text-split {
@@ -96,7 +100,7 @@
 
     .section-title {
       font-family: 'Familjen Grotesk', sans-serif;
-      font-size: clamp(30px,6vw,60px);
+      font-size: 60px;
       font-weight: 700; letter-spacing: -0.025em; line-height: 1.08;
       margin-top: 0; margin-bottom: clamp(20px,3vh,32px);
     }
@@ -125,7 +129,7 @@
       border-radius: 100px; padding: 5px 14px; margin-bottom: 16px;
     }
     .approach-title {
-      font-size: clamp(19px,2.4vw,25px); font-weight: 700;
+      font-size: 25px; font-weight: 700;
       letter-spacing: -0.02em; line-height: 1.2;
       margin-bottom: clamp(10px,1.5vh,16px);
       margin-top: 0;

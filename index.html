@@ -301,6 +301,9 @@
       .card-cta .cta-arrow--l { display: none; }
       .card-cta .cta-arrow--r { position: static; opacity: 1; transform: none; }
 
+      /* Video thumbnails play by default on mobile — poster matches the static image so there's no visible swap */
+      .card-video { opacity: 1; }
+
       .hero-para { font-size: 15px; }
       .outro-big { font-size: clamp(32px, 11vw, 56px); line-height: 1.1; }
     }
@@ -373,7 +376,7 @@
           <div class="card-box">
             <div class="card-img">
               <img src="case-study-1/assets/new-image-1.png" alt="Quote Wizard Redesign">
-              <video class="card-video" src="case-study-1/assets/wizard1.2.mp4" muted loop playsinline preload="metadata"></video>
+              <video class="card-video" src="case-study-1/assets/wizard1.2.mp4" poster="case-study-1/assets/new-image-1.png" muted loop playsinline preload="metadata"></video>
             </div>
             <div class="card-info">
               <div class="card-left">
@@ -395,7 +398,7 @@
           <div class="card-box">
             <div class="card-img">
               <img src="case-study-2/assets/associate-network-dashboard.gif" alt="Associate Network Dashboard">
-              <video class="card-video" src="case-study-2/assets/wizard1.2-new2.mp4" muted loop playsinline preload="metadata"></video>
+              <video class="card-video" src="case-study-2/assets/wizard1.2-new2.mp4" poster="case-study-2/assets/associate-network-dashboard.gif" muted loop playsinline preload="metadata"></video>
             </div>
             <div class="card-info">
               <div class="card-left">
@@ -470,6 +473,13 @@
         video.currentTime = 0;
       });
     });
+
+    // Mobile has no hover — thumbnail videos play by default instead of the static image
+    if (window.innerWidth <= 767) {
+      Array.prototype.slice.call(document.querySelectorAll('.card-video')).forEach(function (video) {
+        video.play().catch(function () {});
+      });
+    }
   })();
   </script>
 

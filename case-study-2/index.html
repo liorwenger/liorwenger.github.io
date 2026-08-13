@@ -291,7 +291,14 @@
     }
     @media (max-width: 700px) {
       .reveal-wrap { height: 220vh; margin-top: 16px; }
-      .reveal-sticky { align-items: flex-start; padding-top: 20px; }
+      /* The sticky box was forced to calc(100vh - headerH) - full viewport
+         height - so it stayed that tall even after fully unsticking, at the
+         end of the scroll. On a narrow phone the actual image is only
+         ~35% of that height, so ~65% of the box was blank space the user
+         had to keep scrolling through before the next section could start.
+         Let it shrink to fit its content instead; the scroll-progress JS
+         reads this element's real height at runtime, so it stays in sync. */
+      .reveal-sticky { height: auto; padding: 20px 0; }
       .reveal-avatar {
         width: clamp(36px,9vw,48px); height: clamp(36px,9vw,48px);
         border-radius: 12px; margin-bottom: 8px;
@@ -725,10 +732,11 @@
   <script>
   (function () {
     var wrap = document.getElementById('revealWrap');
+    var sticky = wrap ? wrap.querySelector('.reveal-sticky') : null;
     var panelFirst = document.getElementById('revealPanelFirst');
     var panelSecond = document.getElementById('revealPanelSecond');
     var header = document.querySelector('.site-header');
-    if (!wrap || !panelFirst || !panelSecond) return;
+    if (!wrap || !sticky || !panelFirst || !panelSecond) return;
 
     var ticking = false;
     var headerH = 84;
@@ -741,7 +749,7 @@
     function update() {
       ticking = false;
       var rect = wrap.getBoundingClientRect();
-      var stickyHeight = window.innerHeight - headerH;
+      var stickyHeight = sticky.offsetHeight;
       var scrollableHeight = wrap.offsetHeight - stickyHeight;
       var progress = scrollableHeight > 0 ? (headerH - rect.top) / scrollableHeight : 0;
       progress = Math.min(1, Math.max(0, progress));

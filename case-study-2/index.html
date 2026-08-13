@@ -178,12 +178,12 @@
     }
     .approach-imgs { display: flex; flex-direction: column; gap: clamp(64px,10vh,120px); min-width: 0; }
     @media (max-width: 768px) {
-      .approach-item { grid-template-columns: 1fr; }
+      .approach-item { grid-template-columns: 1fr; gap: 16px; }
       /* This item places its two text/image pairs in an explicit 2-column
          grid via inline styles (for the desktop side-by-side layout), which
          inline styles prevent the stacked mobile rule above from reaching -
          release that placement so children stack in DOM order instead. */
-      .approach-item-split { grid-template-rows: none !important; }
+      .approach-item-split { grid-template-rows: none !important; row-gap: 16px !important; }
       .approach-item-split > * { grid-column: 1 !important; grid-row: auto !important; }
     }
 
@@ -195,6 +195,7 @@
       gap: 12px; padding: clamp(32px,5vh,56px) clamp(24px,4vw,48px);
       margin: clamp(24px,3.5vh,40px) 0; text-align: center;
     }
+    @media (max-width: 768px) { .placeholder { margin: 0; } }
     .placeholder.tall   { aspect-ratio: 16/9; }
     .placeholder.medium { aspect-ratio: 4/3; }
     .placeholder.wide   { aspect-ratio: 21/9; }

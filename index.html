@@ -284,6 +284,23 @@
       .card-box { opacity: 1 !important; transform: none !important; }
       .card-name { font-size: 24px; }
       .card-desc { font-size: 15px; }
+
+      /* Plain static button on mobile — the hover-driven underline/arrow effect doesn't apply on touch */
+      .card-cta {
+        position: static !important;
+        width: 100% !important;
+        margin-top: 6px;
+        padding: 15px 20px;
+        border: 1px solid rgba(242,242,238,0.32);
+        border-radius: 8px;
+        justify-content: center;
+        gap: 0.6em;
+        font-size: 12px;
+      }
+      .card-cta .cta-line,
+      .card-cta .cta-arrow--l { display: none; }
+      .card-cta .cta-arrow--r { position: static; opacity: 1; transform: none; }
+
       .hero-para { font-size: 15px; }
       .outro-big { font-size: clamp(32px, 11vw, 56px); line-height: 1.1; }
     }

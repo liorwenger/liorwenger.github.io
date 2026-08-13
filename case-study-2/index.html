@@ -291,15 +291,21 @@
     }
     @media (max-width: 700px) {
       .reveal-wrap { height: 220vh; margin-top: 16px; }
-      .reveal-avatar { display: none; }
+      .reveal-sticky { align-items: flex-start; padding-top: 20px; }
+      .reveal-avatar {
+        width: clamp(36px,9vw,48px); height: clamp(36px,9vw,48px);
+        border-radius: 12px; margin-bottom: 8px;
+      }
       .reveal-panel-content {
-        padding: 12px; width: 100%; max-width: 100%; box-sizing: border-box;
+        padding: 12px; padding-bottom: clamp(36px,9vw,44px);
+        width: 100%; max-width: 100%; box-sizing: border-box;
         flex-shrink: 1;
       }
       .reveal-title { white-space: normal; font-size: clamp(14px,4.2vw,18px); }
-      .reveal-badge { white-space: normal; font-size: clamp(10px,2.8vw,13px); padding: 4px 10px; }
+      .reveal-badge { white-space: normal; font-size: clamp(10px,2.8vw,13px); padding: 4px 10px; margin-bottom: 8px; }
       .reveal-copy { max-width: 100%; font-size: clamp(10px,2.8vw,12px); }
-      .reveal-marquee { display: none; }
+      .reveal-marquee { padding: 6px 0; }
+      .reveal-marquee-item { font-size: clamp(11px,3.2vw,14px); gap: 12px; padding-right: 12px; }
     }
 
     /* ── PARTNER PRIORITIES CHART ── */

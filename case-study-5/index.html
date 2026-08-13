@@ -83,10 +83,7 @@
     }
     .meta-col p:not(.section-label) { font-size: clamp(14px,1.05vw,17px); line-height: 1.7; }
     .meta-col ul { list-style: none; font-size: clamp(14px,1.05vw,17px); line-height: 1.9; }
-    @media (max-width: 700px) {
-      .hero-meta-row { grid-template-columns: 1fr; gap: 28px; }
-      .section-title { font-size: clamp(26px,7vw,38px); }
-    }
+    @media (max-width: 700px) { .hero-meta-row { grid-template-columns: 1fr; gap: 28px; } }
 
     /* ── TITLE / TEXT SPLIT ── */
     .title-text-split {
@@ -103,6 +100,7 @@
       font-weight: 700; letter-spacing: -0.025em; line-height: 1.08;
       margin-top: 0; margin-bottom: clamp(20px,3vh,32px);
     }
+    @media (max-width: 700px) { .section-title { font-size: clamp(26px,7vw,38px); } }
 
     /* ── BODY TEXT ── */
     .body-text {

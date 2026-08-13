@@ -177,7 +177,15 @@
       .approach-title { font-size: clamp(18px,4.5vw,22px); }
     }
     .approach-imgs { display: flex; flex-direction: column; gap: clamp(64px,10vh,120px); min-width: 0; }
-    @media (max-width: 768px) { .approach-item { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      .approach-item { grid-template-columns: 1fr; }
+      /* This item places its two text/image pairs in an explicit 2-column
+         grid via inline styles (for the desktop side-by-side layout), which
+         inline styles prevent the stacked mobile rule above from reaching -
+         release that placement so children stack in DOM order instead. */
+      .approach-item-split { grid-template-rows: none !important; }
+      .approach-item-split > * { grid-column: 1 !important; grid-row: auto !important; }
+    }
 
     /* ── PLACEHOLDERS ── */
     .placeholder {
@@ -592,7 +600,7 @@
         <p class="section-label">Design Decisions</p>
         <h2 class="section-title">From Data to a Decision</h2>
 
-        <div class="approach-item" style="grid-template-rows:auto auto; row-gap:clamp(32px,5vh,64px);">
+        <div class="approach-item approach-item-split" style="grid-template-rows:auto auto; row-gap:clamp(32px,5vh,64px);">
           <div class="approach-text" style="grid-column:1; grid-row:1;">
             <h3 class="approach-title">1. Trends first, numbers on demand</h3>
             <p class="body-text">Overview charts show the shape of the trend by default - hover reveals the exact figures behind it.</p>

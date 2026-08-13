@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iPeer — Fee Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF1F6;
+    --panel:#FFFFFF;
+    --ink:#14161C;
+    --ink-soft:#5B5F6B;
+    --ink-faint:#9BA0AC;
+    --line:#E6E8EE;
+    --indigo:#4F46E5;
+    --indigo-2:#7C6AF0;
+    --indigo-soft:#EEF0FF;
+    --ok:#86EFAC; --ok-soft:#E9F8EF; --ok-strong:#16A34A;
+    --warn:#F5A623; --warn-soft:#FEF3E2; --warn-strong:#B45309;
+    --danger:#FCA5A5; --danger-soft:#FDECEC; --danger-strong:#DC2626; --danger-alert:#EF4444;
+    --panel-bg:#F6F6F8;
+    --line-hover:#D8DAE8;
+    --indigo-line:#D9D2F7;
+    --r-xs:4px; --r-sm:6px; --r-md:8px; --r-lg:12px; --r-xl:16px; --r-pill:9999px;
+    --shadow-sm:0 2px 8px rgba(30,25,80,.06);
+    --shadow-md:0 6px 20px rgba(30,25,80,.09);
+    --shadow-float:0 10px 30px rgba(30,25,80,.12), 0 2px 8px rgba(30,25,80,.06);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  a{color:inherit;text-decoration:none;}
+  button,select,input,textarea{font-family:inherit;}
+  ::selection{background:var(--indigo);color:#fff;}
+
+  @keyframes fade-in-up{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes card-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ---------- Sidebar shell ---------- */
+  .app-shell{display:flex;min-height:100vh;}
+  .sidebar{width:232px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  .sidebar-logo{display:flex;align-items:center;gap:8px;padding:0 6px;margin-bottom:18px;}
+  .sidebar-logo img{height:22px;width:auto;display:block;}
+  .sidebar-cta{font-family:inherit;background:var(--indigo);color:#fff;border:none;border-radius:9px;padding:10px 12px;font-size:13px;font-weight:700;cursor:pointer;margin:0 6px 18px;width:calc(100% - 12px);transition:background .15s;}
+  .sidebar-cta:hover{background:#4338CA;}
+  .side-nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--ink-soft);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:2px;transition:background .15s,color .15s;}
+  .side-nav a:hover{background:var(--panel-bg);color:var(--ink);}
+  .side-section{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--indigo);text-decoration:none;font-size:13px;font-weight:700;margin-top:8px;}
+  .side-sub{padding-left:30px;margin-bottom:4px;}
+  .side-sub a{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;color:var(--ink-faint);text-decoration:none;font-size:12.5px;margin-bottom:1px;transition:background .15s,color .15s;}
+  .side-sub a:hover{background:var(--panel-bg);color:var(--ink-soft);}
+  .side-sub a.active{background:var(--indigo-soft);color:var(--indigo);font-weight:700;}
+  .side-sub a .dot{width:4px;height:4px;border-radius:50%;background:var(--line-hover);flex-shrink:0;}
+  .side-sub a.active .dot{background:var(--indigo);}
+  .side-footer{margin-top:auto;display:flex;align-items:center;gap:9px;padding:12px 6px 4px;border-top:1px solid var(--line);}
+  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7c5cbf,#4f7ef5);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+  .side-footer-name{font-size:12.5px;font-weight:700;color:var(--ink);}
+
+  .main-area{flex:1;min-width:0;padding:32px 40px 80px;}
+
+  .breadcrumb{font-size:12.5px;color:var(--ink-faint);margin-bottom:14px;opacity:0;animation:fade-in-up .5s ease .05s both;}
+  .breadcrumb a{color:var(--ink-faint);transition:color .15s;}
+  .breadcrumb a:hover{color:var(--indigo);}
+  .breadcrumb b{color:var(--ink-soft);font-weight:700;}
+
+  .page-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:28px;opacity:0;animation:fade-in-up .55s ease .1s both;}
+  .page-icon{width:42px;height:42px;border-radius:11px;background:var(--indigo-soft);color:var(--indigo);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .page-head h1{font-size:21px;font-weight:800;letter-spacing:-.01em;}
+  .page-head p{color:var(--ink-soft);font-size:13px;margin-top:4px;max-width:540px;line-height:1.5;}
+
+  /* ---------- Step progress ---------- */
+  .stepper{display:flex;align-items:center;margin:0 0 28px;opacity:0;animation:fade-in-up .5s ease .12s both;}
+  .step{display:flex;align-items:center;gap:8px;}
+  .step-circle{width:22px;height:22px;border-radius:50%;background:#fff;border:1.5px solid var(--line-hover);color:var(--ink-faint);font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s;}
+  .step-label{font-size:12.5px;font-weight:600;color:var(--ink-faint);transition:color .25s;white-space:nowrap;}
+  .step-line{width:56px;height:1.5px;background:var(--line);margin:0 10px;transition:background .25s;}
+  .step.active .step-circle{background:var(--indigo);border-color:var(--indigo);color:#fff;box-shadow:0 0 0 4px var(--indigo-soft);}
+  .step.done .step-circle{background:var(--indigo);border-color:var(--indigo);color:#fff;}
+  .step.active .step-label,.step.done .step-label{color:var(--ink);}
+  .step-line.done{background:var(--indigo);}
+
+  /* ---------- Filter chips ---------- */
+  .filter-row{display:flex;gap:8px;margin:16px 22px 0;flex-wrap:wrap;}
+  .chip{font-family:inherit;font-size:12px;font-weight:700;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:var(--r-pill);padding:6px 13px;cursor:pointer;transition:all .15s;opacity:.5;pointer-events:none;}
+  .chip.enabled{opacity:1;pointer-events:auto;}
+  .chip:hover{border-color:var(--line-hover);background:var(--bg);}
+  .chip.active{background:var(--indigo);border-color:var(--indigo);color:#fff;}
+
+  /* ---------- Financial impact ---------- */
+  .impact-block{margin:16px 22px 0;border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px;background:var(--panel-bg);display:none;opacity:0;}
+  .impact-block.show{display:block;animation:card-in .5s cubic-bezier(.16,1,.3,1) both;}
+  .impact-head{font-size:11px;font-weight:800;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px;}
+  .impact-main{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:7px;}
+  .impact-label{font-size:12.5px;color:var(--ink-soft);font-weight:600;}
+  .impact-num{font-size:25px;font-weight:800;color:var(--danger-strong);letter-spacing:-.01em;}
+  .impact-num.zero{color:var(--ok-strong);}
+  .impact-bar-track{height:6px;background:#fff;border:1px solid var(--line);border-radius:var(--r-xs);overflow:hidden;margin-bottom:16px;}
+  .impact-bar-fill{height:100%;background:var(--danger-strong);border-radius:var(--r-xs);width:0%;transition:width .8s cubic-bezier(.4,0,.2,1);}
+  .impact-breakdown{display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--line);}
+  .impact-breakdown-row{display:flex;align-items:center;gap:10px;font-size:11.5px;}
+  .impact-breakdown-name{width:170px;flex-shrink:0;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .impact-breakdown-track{flex:1;height:5px;background:#fff;border:1px solid var(--line);border-radius:var(--r-xs);overflow:hidden;}
+  .impact-breakdown-fill{height:100%;background:var(--danger-strong);border-radius:var(--r-xs);width:0%;transition:width .8s cubic-bezier(.4,0,.2,1);}
+  .impact-breakdown-val{width:78px;flex-shrink:0;text-align:right;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+
+  .export-cta{display:none;align-items:center;justify-content:center;gap:8px;width:calc(100% - 44px);margin:16px 22px 22px;background:var(--indigo);color:#fff;border:none;border-radius:var(--r-lg);padding:13px;font-size:13.5px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .export-cta.show{display:flex;}
+  .export-cta:hover{background:#4338CA;}
+  .export-cta:active{transform:scale(.98);}
+
+  .tool-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:22px;align-items:start;}
+  @media (max-width:920px){.tool-grid{grid-template-columns:1fr;}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow-sm);overflow:hidden;}
+
+  /* ---------- Upload panel ---------- */
+  .upload-card{padding:22px 22px 24px;display:flex;flex-direction:column;min-height:640px;opacity:0;animation:fade-in-up .55s ease .15s both;}
+  .panel-head-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .panel-head-title{font-size:15.5px;font-weight:800;}
+  .remove-file-btn{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--danger-strong);cursor:pointer;padding:6px 10px;border-radius:var(--r-md);transition:background .15s;}
+  .remove-file-btn:hover{background:var(--danger-soft);}
+  .file-chip{display:none;}
+  .file-chip.show{display:flex;}
+
+  .dropzone{flex:1;border:1.5px dashed var(--line-hover);border-radius:var(--r-lg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:40px 24px;cursor:pointer;transition:border-color .18s,background .18s;background:var(--panel-bg);}
+  .dropzone:hover{border-color:var(--indigo);background:var(--indigo-soft);}
+  .dropzone.dragover{border-color:var(--indigo);background:var(--indigo-soft);transform:scale(1.005);}
+  .dz-icon{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 30% 25%, var(--indigo-soft), #E3E0FC);display:flex;align-items:center;justify-content:center;color:var(--indigo);transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;box-shadow:0 0 0 6px rgba(79,70,229,.05);}
+  .dropzone:hover .dz-icon,.dropzone.dragover .dz-icon{transform:translateY(-3px) scale(1.06);box-shadow:0 0 0 8px rgba(79,70,229,.08);}
+  .dz-title{font-size:14px;font-weight:700;color:var(--ink);}
+  .dz-title b{color:var(--indigo);}
+  .dz-formats{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
+  .fmt-badge{font-size:10px;font-weight:700;color:var(--ink-faint);background:#fff;border:1px solid var(--line);border-radius:var(--r-sm);padding:3px 7px;letter-spacing:.02em;}
+  .dz-sub{font-size:11px;color:var(--ink-faint);}
+  .dz-or{display:flex;align-items:center;gap:10px;width:100%;max-width:260px;color:var(--ink-faint);font-size:11px;font-weight:600;margin:2px 0;}
+  .dz-or::before,.dz-or::after{content:'';flex:1;height:1px;background:var(--line);}
+  .sample-btn{font-family:inherit;font-size:12.5px;font-weight:700;color:var(--indigo);background:#fff;border:1.5px solid var(--indigo-line);border-radius:var(--r-pill);padding:8px 18px;cursor:pointer;transition:all .15s;}
+  .sample-btn:hover{background:var(--indigo-soft);border-color:var(--indigo);}
+  .sample-btn:active{transform:scale(.96);}
+
+  .file-preview{flex:1;display:none;flex-direction:column;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--panel-bg);}
+  .file-preview.show{display:flex;}
+  .file-preview-top{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#fff;border-bottom:1px solid var(--line);}
+  .file-icon{width:36px;height:36px;border-radius:9px;background:var(--indigo-soft);color:var(--indigo);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .file-meta{min-width:0;}
+  .file-name{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .file-size{font-size:11px;color:var(--ink-faint);margin-top:1px;}
+  .file-preview-body{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:16px;min-height:360px;overflow:auto;}
+  .file-preview-body img{max-width:100%;max-height:420px;border-radius:var(--r-md);box-shadow:var(--shadow-md);object-fit:contain;}
+  .file-preview-doc{display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--ink-faint);margin:auto;}
+  .file-preview-doc .big-doc-icon{width:88px;height:88px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;color:var(--indigo);}
+  .file-preview-doc span{font-size:12px;font-weight:600;color:var(--ink-soft);}
+
+  /* ---------- Facsimile invoice ---------- */
+  .invoice-sheet{background:#fff;border:1px solid var(--line-hover);border-radius:6px;box-shadow:var(--shadow-md);width:100%;max-width:420px;padding:22px 22px 16px;font-size:11px;color:var(--ink-soft);}
+  .inv-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:14px;}
+  .inv-firm{font-size:13.5px;font-weight:800;color:var(--ink);}
+  .inv-firm-sub{font-size:10.5px;color:var(--ink-faint);margin-top:2px;}
+  .inv-meta{text-align:right;font-size:10.5px;line-height:1.6;}
+  .inv-meta b{color:var(--ink);}
+  .inv-table{width:100%;border-collapse:collapse;margin-bottom:10px;}
+  .inv-table th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-faint);border-bottom:1px solid var(--line);padding:0 0 6px;}
+  .inv-table th:last-child{text-align:right;}
+  .inv-table td{padding:7px 4px;border-bottom:1px solid var(--line);font-size:11px;color:var(--ink);transition:background .2s;}
+  .inv-table td:last-child{text-align:right;font-variant-numeric:tabular-nums;}
+  .inv-row{cursor:pointer;}
+  .inv-row:hover td{background:var(--panel-bg);}
+  .inv-row.active-highlight td{background:var(--indigo-soft);}
+  .inv-row.active-highlight td:first-child{box-shadow:inset 3px 0 0 var(--indigo);}
+  @keyframes row-pulse{0%{background:var(--indigo-2);}100%{background:var(--indigo-soft);}}
+  .inv-row.active-highlight.pulse td{animation:row-pulse .6s ease both;}
+  .inv-total-row td{border-bottom:none;border-top:2px solid var(--ink);font-weight:800;padding-top:9px;}
+
+  /* ---------- Results panel ---------- */
+  .results-card{opacity:0;animation:fade-in-up .55s ease .2s both;}
+  .results-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px 0;}
+  .results-title-wrap{display:flex;align-items:center;gap:9px;}
+  .results-title{font-size:15.5px;font-weight:800;}
+  .status-pill{display:none;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--r-pill);}
+  .status-pill.show{display:inline-flex;}
+  .status-pill.analyzing{background:var(--indigo-soft);color:var(--indigo);}
+  .status-pill.done{background:var(--ok-soft);color:var(--ok-strong);}
+  .copy-btn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:var(--r-pill);padding:7px 13px;cursor:pointer;transition:all .15s;opacity:0;pointer-events:none;}
+  .copy-btn.enabled{opacity:1;pointer-events:auto;}
+  .copy-btn:hover{border-color:var(--indigo);color:var(--indigo);background:var(--indigo-soft);}
+  .copy-btn.copied{color:var(--ok-strong);border-color:var(--ok);background:var(--ok-soft);}
+
+  .progress-wrap{margin:16px 22px 0;display:none;}
+  .progress-wrap.show{display:block;}
+  .progress-label{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:8px;}
+  .progress-label .dots::after{content:'';animation:dots 1.2s steps(4,end) infinite;}
+  @keyframes dots{0%{content:'';}25%{content:'.';}50%{content:'..';}75%{content:'...';}100%{content:'';}}
+  .progress-track{height:5px;border-radius:var(--r-pill);background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;width:0%;border-radius:var(--r-pill);background:linear-gradient(90deg,var(--indigo),var(--indigo-2));transition:width 1.6s cubic-bezier(.4,0,.2,1);}
+
+  .verdict-banner{margin:20px 22px 0;border-radius:var(--r-lg);padding:14px 16px;display:none;align-items:center;gap:12px;opacity:0;}
+  .verdict-banner.show{display:flex;animation:card-in .5s cubic-bezier(.16,1,.3,1) both;}
+  .verdict-banner.bad{background:var(--danger-soft);border:1px solid #F6C6C6;}
+  .verdict-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;}
+  .verdict-banner.bad .verdict-icon{background:var(--danger-strong);}
+  .verdict-title{font-size:13.5px;font-weight:800;color:var(--ink);}
+  .verdict-sub{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+
+  .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin:16px 22px 0;}
+  .meta-tag{font-size:11px;font-weight:600;color:var(--ink-soft);background:var(--panel-bg);border:1px solid var(--line);border-radius:var(--r-pill);padding:5px 11px;display:none;}
+  .meta-tag.show{display:inline-flex;align-items:center;gap:5px;}
+
+  .fee-block{margin:16px 22px 0;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;}
+  .fee-head{padding:12px 16px;background:var(--panel-bg);border-bottom:1px solid var(--line);font-size:13px;font-weight:800;}
+  .fee-row{padding:13px 16px 13px 13px;border-top:1px solid var(--line);border-left:3px solid transparent;opacity:0;animation:card-in .4s cubic-bezier(.16,1,.3,1) both;transition:max-height .2s,padding .2s,opacity .2s;}
+  .fee-row:first-child{border-top:none;}
+  .fee-row.hidden-filtered{display:none;}
+  .fee-row.ok{border-left-color:var(--ok);background:linear-gradient(to right, var(--ok-soft), #fff 55%);}
+  .fee-row.warn{border-left-color:var(--danger-strong);background:linear-gradient(to right, var(--danger-soft), #fff 55%);}
+  .fee-row.flag{border-left-color:var(--warn);background:linear-gradient(to right, var(--warn-soft), #fff 55%);}
+  .fee-row{cursor:pointer;transition:box-shadow .2s;}
+  .fee-row.active-highlight{box-shadow:inset 0 0 0 1.5px var(--indigo);}
+  .fee-row-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .fee-row-left{display:flex;align-items:center;gap:8px;min-width:0;}
+  .fee-item-name{font-size:12.5px;font-weight:700;color:var(--ink);}
+  .fee-conf{font-size:10px;color:var(--ink-faint);white-space:nowrap;}
+  .fee-status{font-size:10px;font-weight:800;padding:3px 9px;border-radius:var(--r-pill);white-space:nowrap;text-transform:uppercase;letter-spacing:.02em;}
+  .fee-status.ok{background:var(--ok-soft);color:var(--ok-strong);}
+  .fee-status.warn{background:var(--danger-soft);color:var(--danger-strong);}
+  .fee-status.flag{background:var(--warn-soft);color:var(--warn-strong);}
+  .fee-row-nums{display:flex;align-items:baseline;gap:14px;margin-top:8px;font-size:12px;}
+  .fee-invoiced{font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .fee-invoiced.warn{color:var(--danger-strong);}
+  .fee-expected{color:var(--ink-faint);font-variant-numeric:tabular-nums;}
+  .fee-note{font-size:11.5px;color:var(--ink-soft);margin-top:6px;line-height:1.5;padding:8px 10px;background:var(--panel-bg);border-radius:var(--r-sm);display:none;}
+  .fee-note.show{display:block;}
+
+  .empty-state{padding:52px 24px;text-align:center;color:var(--ink-faint);font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .empty-state svg{color:var(--ink-faint);opacity:.6;}
+
+  .feature-preview{padding:8px 20px 18px;}
+  .feature-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);}
+  .feature-row:first-child{border-top:none;}
+  .feature-icon{width:30px;height:30px;border-radius:9px;background:var(--indigo-soft);color:var(--indigo);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .feature-text{font-size:12.5px;color:var(--ink-soft);line-height:1.4;}
+  .feature-text b{color:var(--ink);font-weight:700;}
+
+  .footnote{text-align:center;margin-top:28px;font-size:11.5px;color:var(--ink-faint);opacity:0;animation:fade-in-up .5s ease .3s both;}
+
+  @media (max-width:900px){
+    .app-shell{flex-direction:column;}
+    .sidebar{width:100%;height:auto;position:static;overflow-y:visible;border-right:none;border-bottom:1px solid var(--line);}
+    .wrap{padding:24px 20px 60px;max-width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="sidebar">
+    <a class="sidebar-logo" href="#"><img src="assets/ipeer_logo.93e48459 1.png" alt="iPeer"></a>
+    <button class="sidebar-cta">+ Create Quote</button>
+    <div class="side-nav">
+      <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Home</a>
+      <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>My Associates</a>
+      <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Saved Quotes</a>
+      <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Cases</a>
+      <a class="side-section" href="../ai-playground/index.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        iPeer AI Toolkit
+      </a>
+      <div class="side-sub">
+        <a href="../claims-analysis-tool/index.html"><span class="dot"></span>Claims Analysis Tool</a>
+        <a href="../translation-estimator/index.html"><span class="dot"></span>Translation Estimator</a>
+        <a href="index.html" class="active"><span class="dot"></span>Fee Calculator</a>
+      </div>
+    </div>
+    <div class="side-footer">
+      <div class="avatar">A</div>
+      <div class="side-footer-name">Sarah Reinhart</div>
+    </div>
+  </div>
+
+  <div class="main-area">
+
+    <div class="breadcrumb"><a href="../ai-playground/index.html">iPeer AI Toolkit</a> / <b>Fee Calculator</b></div>
+
+    <div class="page-head">
+      <div class="page-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/><path d="m9 16 2 2 4-4"/></svg>
+      </div>
+      <div>
+        <h1>Fee Calculator</h1>
+        <p>Upload an associate invoice and get every line item cross-checked against the expected fee schedule for that jurisdiction — so overcharges get caught before you approve payment.</p>
+      </div>
+    </div>
+
+    <div class="stepper" id="stepper">
+      <div class="step" id="step1"><div class="step-circle">1</div><div class="step-label">Upload</div></div>
+      <div class="step-line" id="line1"></div>
+      <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">Analyzing</div></div>
+      <div class="step-line" id="line2"></div>
+      <div class="step" id="step3"><div class="step-circle">3</div><div class="step-label">Results</div></div>
+    </div>
+
+    <div class="tool-grid">
+
+      <!-- Upload panel -->
+      <div class="card upload-card">
+        <div class="panel-head-row">
+          <div class="panel-head-title" id="panelHeadTitle">Invoice</div>
+          <div class="file-chip" id="fileChip">
+            <div class="remove-file-btn" id="removeFileBtn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              Remove File
+            </div>
+          </div>
+        </div>
+
+        <div class="dropzone" id="dropzone">
+          <div class="dz-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.9A5 5 0 0 1 6 5.3 6 6 0 0 1 17.8 7 4.5 4.5 0 0 1 17 16H6a4.5 4.5 0 0 1-2-8.5"/><path d="M12 12v9"/><path d="m9 15 3-3 3 3"/></svg>
+          </div>
+          <div class="dz-title">Drag &amp; Drop an invoice or <b>Click to Upload</b></div>
+          <div class="dz-formats"><span class="fmt-badge">PNG</span><span class="fmt-badge">JPG</span><span class="fmt-badge">PDF</span></div>
+          <div class="dz-sub">50MB max</div>
+          <div class="dz-or">or</div>
+          <button class="sample-btn" id="sampleBtn" type="button">Try a Sample Invoice</button>
+        </div>
+
+        <div class="file-preview" id="filePreview">
+          <div class="file-preview-top">
+            <div class="file-icon" id="fileIconWrap">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            </div>
+            <div class="file-meta">
+              <div class="file-name" id="fileNameEl">—</div>
+              <div class="file-size" id="fileSizeEl">—</div>
+            </div>
+          </div>
+          <div class="file-preview-body" id="filePreviewBody"></div>
+        </div>
+
+        <input type="file" id="fileInput" accept="image/*,.pdf" style="display:none;">
+      </div>
+
+      <!-- Results panel -->
+      <div class="card results-card">
+        <div class="results-head">
+          <div class="results-title-wrap">
+            <div class="results-title">Fee Breakdown</div>
+            <div class="status-pill analyzing" id="statusAnalyzing"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Analyzing</div>
+            <div class="status-pill done" id="statusDone"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Complete</div>
+          </div>
+          <button class="copy-btn" id="copyBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="copyBtnLabel">Copy Report</span>
+          </button>
+        </div>
+
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-label">Extracting line items &amp; checking fee schedule<span class="dots"></span></div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+
+        <div class="verdict-banner bad" id="verdictBanner">
+          <div class="verdict-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+          </div>
+          <div>
+            <div class="verdict-title" id="verdictTitle">—</div>
+            <div class="verdict-sub" id="verdictSub">—</div>
+          </div>
+        </div>
+
+        <div class="meta-row" id="metaRow">
+          <span class="meta-tag" id="metaAssociate"></span>
+          <span class="meta-tag" id="metaJurisdiction"></span>
+          <span class="meta-tag" id="metaCase"></span>
+          <span class="meta-tag" id="metaInvoice"></span>
+        </div>
+
+        <div class="filter-row">
+          <button class="chip active" data-filter="all" id="chipAll">All</button>
+          <button class="chip" data-filter="flagged" id="chipFlagged">Flagged</button>
+          <button class="chip" data-filter="ok" id="chipOk">OK</button>
+        </div>
+
+        <div class="fee-block">
+          <div class="fee-head">Extracted Line Items</div>
+          <div id="feeRows">
+            <div class="feature-preview" id="feeEmpty">
+              <div class="feature-row">
+                <div class="feature-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg></div>
+                <div class="feature-text"><b>Line-item extraction</b> from the invoice, with confidence scores</div>
+              </div>
+              <div class="feature-row">
+                <div class="feature-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+                <div class="feature-text">Cross-check against the <b>expected fee schedule</b> for the jurisdiction</div>
+              </div>
+              <div class="feature-row">
+                <div class="feature-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                <div class="feature-text">Automatic <b>overcharge flags</b>, with an estimated dollar impact</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="impact-block" id="impactBlock">
+          <div class="impact-head">Financial Impact</div>
+          <div class="impact-main"><span class="impact-label">Potential Overcharge</span><span class="impact-num" id="impactNum">—</span></div>
+          <div class="impact-bar-track"><div class="impact-bar-fill" id="impactBar"></div></div>
+          <div class="impact-main"><span class="impact-label">Total Invoiced</span><span class="impact-label" id="impactInvoiced" style="font-weight:700;color:var(--ink);">—</span></div>
+          <div class="impact-main" style="margin-bottom:0;"><span class="impact-label">Expected Range</span><span class="impact-label" id="impactExpected" style="font-weight:700;color:var(--ink);">—</span></div>
+          <div class="impact-breakdown" id="impactBreakdown"></div>
+        </div>
+
+        <button class="export-cta" id="exportBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="exportBtnLabel">Export Report</span>
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="footnote">Prototype · iPeer AI Toolkit — demo data for illustration only</div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var INVOICE = {
+    associate: 'Tanaka & Watanabe IP',
+    jurisdiction: 'Japan (JPO)',
+    caseRef: 'AZ-2024-1187',
+    invoiceNo: 'INV-88231',
+    date: 'Jun 18, 2026',
+    currency: '¥'
+  };
+
+  var ITEMS = [
+    {name:'Official Filing Fee (JPO)', invoiced:182000, min:170000, max:190000, conf:97},
+    {name:'Attorney Filing Fee', invoiced:128000, min:70000, max:95000, conf:95},
+    {name:'Translation Fee (EN→JA)', invoiced:612000, min:390000, max:460000, conf:93,
+      note:'This associate\'s translation fees have exceeded the expected range on 2 of their last 3 invoices — worth a conversation about their translation vendor rates.'},
+    {name:'Excess Claims Handling Fee', invoiced:18000, min:0, max:5000, conf:88,
+      note:'Japan (JPO) uses a flat claims-fee model with no per-claim charge at filing — this line item is unusual and may be a billing error.'},
+    {name:'Disbursements & Courier', invoiced:9800, min:4000, max:10000, conf:99}
+  ];
+
+  function fmt(n){ return INVOICE.currency + n.toLocaleString(); }
+
+  function setActiveLineItem(idx){
+    Array.prototype.forEach.call(document.querySelectorAll('.fee-row'), function(row){
+      row.classList.toggle('active-highlight', row.getAttribute('data-idx') === String(idx));
+    });
+    var invRow = filePreviewBody.querySelector('.inv-row[data-idx="' + idx + '"]');
+    Array.prototype.forEach.call(filePreviewBody.querySelectorAll('.inv-row'), function(row){
+      row.classList.remove('active-highlight','pulse');
+    });
+    if(invRow){
+      invRow.classList.add('active-highlight','pulse');
+      invRow.scrollIntoView({block:'nearest', behavior:'smooth'});
+      setTimeout(function(){ invRow.classList.remove('pulse'); }, 650);
+    }
+    var activeRow = feeRows.querySelector('.fee-row[data-idx="' + idx + '"]');
+    if(activeRow) activeRow.scrollIntoView({block:'nearest', behavior:'smooth'});
+  }
+
+  function invoiceSheet(){
+    var rows = ITEMS.map(function(it, idx){
+      return '<tr class="inv-row" data-idx="' + idx + '"><td>' + it.name + '</td><td>' + fmt(it.invoiced) + '</td></tr>';
+    }).join('');
+    var total = ITEMS.reduce(function(s,it){return s+it.invoiced;},0);
+    return '<div class="invoice-sheet">' +
+      '<div class="inv-head"><div><div class="inv-firm">' + INVOICE.associate + '</div><div class="inv-firm-sub">Chiyoda-ku, Tokyo, Japan</div></div>' +
+      '<div class="inv-meta"><div>Invoice <b>' + INVOICE.invoiceNo + '</b></div><div>' + INVOICE.date + '</div><div>Ref: ' + INVOICE.caseRef + '</div></div></div>' +
+      '<table class="inv-table"><thead><tr><th>Description</th><th>Amount</th></tr></thead><tbody>' + rows +
+      '<tr class="inv-total-row"><td>Total Due</td><td>' + fmt(total) + '</td></tr></tbody></table></div>';
+  }
+
+  var dropzone = document.getElementById('dropzone');
+  var filePreview = document.getElementById('filePreview');
+  var filePreviewBody = document.getElementById('filePreviewBody');
+  var fileInput = document.getElementById('fileInput');
+  var fileChip = document.getElementById('fileChip');
+  var removeFileBtn = document.getElementById('removeFileBtn');
+  var fileNameEl = document.getElementById('fileNameEl');
+  var fileSizeEl = document.getElementById('fileSizeEl');
+  var sampleBtn = document.getElementById('sampleBtn');
+
+  var progressWrap = document.getElementById('progressWrap');
+  var progressFill = document.getElementById('progressFill');
+  var statusAnalyzing = document.getElementById('statusAnalyzing');
+  var statusDone = document.getElementById('statusDone');
+  var copyBtn = document.getElementById('copyBtn');
+  var copyBtnLabel = document.getElementById('copyBtnLabel');
+
+  var verdictBanner = document.getElementById('verdictBanner');
+  var verdictTitle = document.getElementById('verdictTitle');
+  var verdictSub = document.getElementById('verdictSub');
+  var metaAssociate = document.getElementById('metaAssociate');
+  var metaJurisdiction = document.getElementById('metaJurisdiction');
+  var metaCase = document.getElementById('metaCase');
+  var metaInvoice = document.getElementById('metaInvoice');
+
+  var feeRows = document.getElementById('feeRows');
+  var feeEmpty = document.getElementById('feeEmpty');
+  var impactBlock = document.getElementById('impactBlock');
+  var impactNum = document.getElementById('impactNum');
+  var impactBar = document.getElementById('impactBar');
+  var impactInvoiced = document.getElementById('impactInvoiced');
+  var impactExpected = document.getElementById('impactExpected');
+  var impactBreakdown = document.getElementById('impactBreakdown');
+  var exportBtn = document.getElementById('exportBtn');
+  var exportBtnLabel = document.getElementById('exportBtnLabel');
+
+  var chipAll = document.getElementById('chipAll');
+  var chipFlagged = document.getElementById('chipFlagged');
+  var chipOk = document.getElementById('chipOk');
+  var activeFilter = 'all';
+
+  var step1 = document.getElementById('step1'), step2 = document.getElementById('step2'), step3 = document.getElementById('step3');
+  var line1 = document.getElementById('line1'), line2 = document.getElementById('line2');
+
+  var currentObjectUrl = null;
+  var analysisTimer = null;
+  var isSample = false;
+
+  function setStep(n){
+    [step1,step2,step3].forEach(function(s,i){ s.classList.remove('active','done'); if(i+1 < n) s.classList.add('done'); else if(i+1 === n) s.classList.add('active'); });
+    line1.classList.toggle('done', n > 1);
+    line2.classList.toggle('done', n > 2);
+  }
+
+  function buildReport(){
+    var totalInv = ITEMS.reduce(function(s,it){return s+it.invoiced;},0);
+    var totalMax = ITEMS.reduce(function(s,it){return s+it.max;},0);
+    var totalMin = ITEMS.reduce(function(s,it){return s+it.min;},0);
+    var overAmt = Math.max(0, totalInv - totalMax);
+    return 'Fee Calculator Report\nAssociate: ' + INVOICE.associate + '\nJurisdiction: ' + INVOICE.jurisdiction +
+      '\nCase: ' + INVOICE.caseRef + '\nInvoice: ' + INVOICE.invoiceNo + ' (' + INVOICE.date + ')\n\n' +
+      ITEMS.map(function(it){
+        var flagged = it.invoiced > it.max;
+        return it.name + ': ' + fmt(it.invoiced) + ' invoiced (expected ' + fmt(it.min) + '-' + fmt(it.max) + ')' + (flagged ? ' — FLAGGED' : ' — OK') + (it.note ? '\n  Note: ' + it.note : '');
+      }).join('\n') +
+      '\n\nTotal Invoiced: ' + fmt(totalInv) + '\nTotal Expected Range: ' + fmt(totalMin) + '-' + fmt(totalMax) +
+      '\nPotential Overcharge: ' + (overAmt>0?fmt(overAmt):'None');
+  }
+
+  function fmtSize(bytes){
+    if(bytes < 1024*1024) return Math.max(1, Math.round(bytes/1024)) + ' KB';
+    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+  }
+  function fileTypeIcon(isImage){
+    if(isImage) return '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>';
+    return '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  }
+
+  function handleFile(file, opts){
+    opts = opts || {};
+    isSample = !!opts.sample;
+    resetResults();
+    if(currentObjectUrl){ URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; }
+
+    var isImage = opts.sample ? false : /^image\//.test(file.type);
+    fileNameEl.textContent = file.name;
+    fileSizeEl.textContent = fmtSize(file.size) + (opts.sample ? ' · Sample document' : '');
+    document.getElementById('fileIconWrap').innerHTML = fileTypeIcon(isImage);
+
+    if(isSample){
+      filePreviewBody.innerHTML = invoiceSheet();
+      Array.prototype.forEach.call(filePreviewBody.querySelectorAll('.inv-row'), function(row){
+        row.addEventListener('click', function(){ setActiveLineItem(row.getAttribute('data-idx')); });
+      });
+    } else if(isImage){
+      currentObjectUrl = URL.createObjectURL(file);
+      filePreviewBody.innerHTML = '<img src="' + currentObjectUrl + '" alt="Uploaded invoice preview">';
+    } else {
+      filePreviewBody.innerHTML =
+        '<div class="file-preview-doc"><div class="big-doc-icon">' + fileTypeIcon(false).replace('width="17" height="17"','width="34" height="34"') + '</div>' +
+        '<span>Document ready for analysis</span></div>';
+    }
+
+    dropzone.style.display = 'none';
+    filePreview.classList.add('show');
+    fileChip.classList.add('show');
+
+    startAnalysis();
+  }
+
+  function resetResults(){
+    clearTimeout(analysisTimer);
+    progressWrap.classList.remove('show');
+    progressFill.style.width = '0%';
+    statusAnalyzing.classList.remove('show');
+    statusDone.classList.remove('show');
+    copyBtn.classList.remove('enabled','copied');
+    copyBtnLabel.textContent = 'Copy Report';
+    exportBtn.classList.remove('show');
+    verdictBanner.classList.remove('show');
+    [metaAssociate,metaJurisdiction,metaCase,metaInvoice].forEach(function(m){ m.classList.remove('show'); m.textContent=''; });
+    feeRows.innerHTML = '';
+    feeRows.appendChild(feeEmpty);
+    impactBlock.classList.remove('show');
+    impactBar.style.width = '0%';
+    activeFilter = 'all';
+    [chipAll,chipFlagged,chipOk].forEach(function(c){ c.classList.remove('enabled'); });
+    setActiveChip(chipAll);
+    setStep(1);
+  }
+
+  function resetAll(){
+    resetResults();
+    dropzone.style.display = 'flex';
+    filePreview.classList.remove('show');
+    fileChip.classList.remove('show');
+    filePreviewBody.innerHTML = '';
+    fileInput.value = '';
+    if(currentObjectUrl){ URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; }
+  }
+
+  function setActiveChip(chip){
+    [chipAll,chipFlagged,chipOk].forEach(function(c){ c.classList.remove('active'); });
+    chip.classList.add('active');
+  }
+
+  function applyFilter(){
+    Array.prototype.forEach.call(feeRows.querySelectorAll('.fee-row'), function(row){
+      var status = row.getAttribute('data-status');
+      var show = activeFilter === 'all' || (activeFilter === 'flagged' && status !== 'ok') || (activeFilter === 'ok' && status === 'ok');
+      row.classList.toggle('hidden-filtered', !show);
+    });
+  }
+
+  function startAnalysis(){
+    progressWrap.classList.add('show');
+    statusAnalyzing.classList.add('show');
+    setStep(2);
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ progressFill.style.width = '100%'; });
+    });
+    analysisTimer = setTimeout(finishAnalysis, 1700);
+  }
+
+  function finishAnalysis(){
+    statusAnalyzing.classList.remove('show');
+    statusDone.classList.add('show');
+    copyBtn.classList.add('enabled');
+    exportBtn.classList.add('show');
+    setStep(3);
+
+    metaAssociate.textContent = '🏢 ' + INVOICE.associate;
+    metaJurisdiction.textContent = '🌐 ' + INVOICE.jurisdiction;
+    metaCase.textContent = '📁 Case ' + INVOICE.caseRef;
+    metaInvoice.textContent = '🧾 ' + INVOICE.invoiceNo + ' · ' + INVOICE.date;
+    [metaAssociate,metaJurisdiction,metaCase,metaInvoice].forEach(function(m){ m.classList.add('show'); });
+
+    var flaggedCount = ITEMS.filter(function(it){ return it.invoiced > it.max; }).length;
+    var totalInv = ITEMS.reduce(function(s,it){return s+it.invoiced;},0);
+    var totalMin = ITEMS.reduce(function(s,it){return s+it.min;},0);
+    var totalMax = ITEMS.reduce(function(s,it){return s+it.max;},0);
+    var overAmt = Math.max(0, totalInv - totalMax);
+
+    if(flaggedCount > 0){
+      verdictTitle.textContent = flaggedCount + ' of ' + ITEMS.length + ' line items need review';
+      verdictSub.textContent = 'Up to ' + fmt(overAmt) + ' in potential overcharges versus the expected fee schedule for ' + INVOICE.jurisdiction + '.';
+    } else {
+      verdictTitle.textContent = 'Invoice matches expected fee schedule';
+      verdictSub.textContent = 'All line items fall within the expected range for ' + INVOICE.jurisdiction + '.';
+    }
+    verdictBanner.classList.add('show');
+
+    feeRows.innerHTML = ITEMS.map(function(it, idx){
+      var flagged = it.invoiced > it.max;
+      var statusClass = flagged ? (it.note && it.note.indexOf('flat') !== -1 ? 'flag' : 'warn') : 'ok';
+      var statusLabel = flagged ? (statusClass === 'flag' ? 'Unusual Charge' : 'Above Expected') : 'Matches Schedule';
+      return '<div class="fee-row ' + statusClass + '" data-status="' + statusClass + '" data-idx="' + idx + '" style="animation-delay:' + (idx*0.05) + 's">' +
+        '<div class="fee-row-top"><div class="fee-row-left"><span class="fee-item-name">' + it.name + '</span></div>' +
+        '<span class="fee-status ' + statusClass + '">' + statusLabel + '</span></div>' +
+        '<div class="fee-row-nums"><span class="fee-invoiced' + (flagged?' warn':'') + '">' + fmt(it.invoiced) + ' invoiced</span>' +
+        '<span class="fee-expected">expected ' + fmt(it.min) + '–' + fmt(it.max) + '</span>' +
+        '<span class="fee-conf">' + it.conf + '% confidence</span></div>' +
+        (it.note ? '<div class="fee-note show">' + it.note + '</div>' : '') +
+        '</div>';
+    }).join('');
+
+    Array.prototype.forEach.call(feeRows.querySelectorAll('.fee-row'), function(row){
+      row.addEventListener('click', function(e){
+        if(e.target.closest('.fee-note')) return;
+        setActiveLineItem(row.getAttribute('data-idx'));
+      });
+    });
+
+    var okCount = ITEMS.length - flaggedCount;
+    chipAll.textContent = 'All (' + ITEMS.length + ')';
+    chipFlagged.textContent = 'Flagged (' + flaggedCount + ')';
+    chipOk.textContent = 'OK (' + okCount + ')';
+    [chipAll,chipFlagged,chipOk].forEach(function(c){ c.classList.add('enabled'); });
+    applyFilter();
+
+    impactNum.textContent = overAmt > 0 ? fmt(overAmt) : fmt(0);
+    impactNum.classList.toggle('zero', overAmt === 0);
+    impactInvoiced.textContent = fmt(totalInv);
+    impactExpected.textContent = fmt(totalMin) + '–' + fmt(totalMax);
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ impactBar.style.width = (overAmt > 0 ? Math.min(100, Math.round((overAmt/totalInv)*100)) : 0) + '%'; });
+    });
+
+    var flaggedItems = ITEMS.filter(function(it){ return it.invoiced > it.max; });
+    var maxOver = Math.max.apply(null, flaggedItems.map(function(it){ return it.invoiced - it.max; }).concat([1]));
+    impactBreakdown.innerHTML = flaggedItems.length ? flaggedItems.map(function(it){
+      var over = it.invoiced - it.max;
+      var pct = Math.round((over/maxOver)*100);
+      return '<div class="impact-breakdown-row"><div class="impact-breakdown-name">' + it.name + '</div>' +
+        '<div class="impact-breakdown-track"><div class="impact-breakdown-fill" style="width:0%" data-w="' + pct + '%"></div></div>' +
+        '<div class="impact-breakdown-val">' + fmt(over) + '</div></div>';
+    }).join('') : '<div style="font-size:11.5px;color:var(--ink-faint);">No flagged line items.</div>';
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        Array.prototype.forEach.call(impactBreakdown.querySelectorAll('.impact-breakdown-fill'), function(el){ el.style.width = el.getAttribute('data-w'); });
+      });
+    });
+    impactBlock.classList.add('show');
+  }
+
+  dropzone.addEventListener('click', function(e){
+    if(e.target === sampleBtn) return;
+    fileInput.click();
+  });
+  fileInput.addEventListener('change', function(){
+    if(fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
+  ['dragenter','dragover'].forEach(function(evt){
+    dropzone.addEventListener(evt, function(e){ e.preventDefault(); e.stopPropagation(); dropzone.classList.add('dragover'); });
+  });
+  ['dragleave','drop'].forEach(function(evt){
+    dropzone.addEventListener(evt, function(e){ e.preventDefault(); e.stopPropagation(); dropzone.classList.remove('dragover'); });
+  });
+  dropzone.addEventListener('drop', function(e){
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if(f) handleFile(f);
+  });
+  sampleBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    handleFile({name:'INV-88231-tanaka-watanabe.pdf', size: 612000, type:'application/pdf'}, {sample:true});
+  });
+  removeFileBtn.addEventListener('click', resetAll);
+
+  chipAll.addEventListener('click', function(){ if(!chipAll.classList.contains('enabled'))return; activeFilter='all'; setActiveChip(chipAll); applyFilter(); });
+  chipFlagged.addEventListener('click', function(){ if(!chipFlagged.classList.contains('enabled'))return; activeFilter='flagged'; setActiveChip(chipFlagged); applyFilter(); });
+  chipOk.addEventListener('click', function(){ if(!chipOk.classList.contains('enabled'))return; activeFilter='ok'; setActiveChip(chipOk); applyFilter(); });
+
+  copyBtn.addEventListener('click', function(){
+    if(!copyBtn.classList.contains('enabled')) return;
+    var done = function(){
+      copyBtn.classList.add('copied'); copyBtnLabel.textContent = 'Copied!';
+      setTimeout(function(){ copyBtn.classList.remove('copied'); copyBtnLabel.textContent = 'Copy Report'; }, 1600);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(buildReport()).then(done).catch(done); }
+    else { done(); }
+  });
+
+  exportBtn.addEventListener('click', function(){
+    if(!exportBtn.classList.contains('show')) return;
+    var blob = new Blob([buildReport()], {type:'text/plain'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'fee-report-' + INVOICE.invoiceNo + '.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    exportBtnLabel.textContent = 'Downloaded!';
+    setTimeout(function(){ exportBtnLabel.textContent = 'Export Report'; }, 1600);
+  });
+
+  resetAll();
+})();
+</script>
+
+</body>
+</html>

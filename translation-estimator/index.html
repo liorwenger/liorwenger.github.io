@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iPeer — Translation Estimator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF1F6;
+    --panel:#FFFFFF;
+    --ink:#14161C;
+    --ink-soft:#5B5F6B;
+    --ink-faint:#9BA0AC;
+    --line:#E6E8EE;
+    --indigo:#4F46E5;
+    --indigo-2:#7C6AF0;
+    --indigo-soft:#EEF0FF;
+    --ok:#86EFAC; --ok-soft:#E9F8EF; --ok-strong:#16A34A;
+    --warn:#F5A623; --warn-soft:#FEF3E2;
+    --danger:#FCA5A5; --danger-soft:#FDECEC; --danger-strong:#DC2626; --danger-alert:#EF4444;
+    --panel-bg:#F6F6F8;
+    --line-hover:#D8DAE8;
+    --indigo-line:#D9D2F7;
+    --r-xs:4px; --r-sm:6px; --r-md:8px; --r-lg:12px; --r-xl:16px; --r-pill:9999px;
+    --shadow-sm:0 2px 8px rgba(30,25,80,.06);
+    --shadow-md:0 6px 20px rgba(30,25,80,.09);
+    --shadow-float:0 10px 30px rgba(30,25,80,.12), 0 2px 8px rgba(30,25,80,.06);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  a{color:inherit;text-decoration:none;}
+  button,select,input,textarea{font-family:inherit;}
+  ::selection{background:var(--indigo);color:#fff;}
+
+  @keyframes fade-in-up{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes card-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ---------- Sidebar shell ---------- */
+  .app-shell{display:flex;min-height:100vh;}
+  .sidebar{width:232px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  .sidebar-logo{display:flex;align-items:center;gap:8px;padding:0 6px;margin-bottom:18px;}
+  .sidebar-logo img{height:22px;width:auto;display:block;}
+  .sidebar-cta{font-family:inherit;background:var(--indigo);color:#fff;border:none;border-radius:9px;padding:10px 12px;font-size:13px;font-weight:700;cursor:pointer;margin:0 6px 18px;width:calc(100% - 12px);transition:background .15s;}
+  .sidebar-cta:hover{background:#4338CA;}
+  .side-nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--ink-soft);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:2px;transition:background .15s,color .15s;}
+  .side-nav a:hover{background:var(--panel-bg);color:var(--ink);}
+  .side-section{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--indigo);text-decoration:none;font-size:13px;font-weight:700;margin-top:8px;}
+  .side-sub{padding-left:30px;margin-bottom:4px;}
+  .side-sub a{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;color:var(--ink-faint);text-decoration:none;font-size:12.5px;margin-bottom:1px;transition:background .15s,color .15s;}
+  .side-sub a:hover{background:var(--panel-bg);color:var(--ink-soft);}
+  .side-sub a.active{background:var(--indigo-soft);color:var(--indigo);font-weight:700;}
+  .side-sub a .dot{width:4px;height:4px;border-radius:50%;background:var(--line-hover);flex-shrink:0;}
+  .side-sub a.active .dot{background:var(--indigo);}
+  .side-footer{margin-top:auto;display:flex;align-items:center;gap:9px;padding:12px 6px 4px;border-top:1px solid var(--line);}
+  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7c5cbf,#4f7ef5);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+  .side-footer-name{font-size:12.5px;font-weight:700;color:var(--ink);}
+
+  .main-area{flex:1;min-width:0;padding:32px 40px 80px;}
+
+  .breadcrumb{font-size:12.5px;color:var(--ink-faint);margin-bottom:14px;opacity:0;animation:fade-in-up .5s ease .05s both;}
+  .breadcrumb a{color:var(--ink-faint);transition:color .15s;}
+  .breadcrumb a:hover{color:var(--indigo);}
+  .breadcrumb b{color:var(--ink-soft);font-weight:700;}
+
+  .page-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:28px;opacity:0;animation:fade-in-up .55s ease .1s both;}
+  .page-icon{width:42px;height:42px;border-radius:11px;background:var(--indigo-soft);color:var(--indigo);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .page-head h1{font-size:21px;font-weight:800;letter-spacing:-.01em;}
+  .page-head p{color:var(--ink-soft);font-size:13px;margin-top:4px;max-width:540px;line-height:1.5;}
+
+  /* ---------- Step progress ---------- */
+  .stepper{display:flex;align-items:center;margin:0 0 28px;opacity:0;animation:fade-in-up .5s ease .12s both;}
+  .step{display:flex;align-items:center;gap:8px;}
+  .step-circle{width:22px;height:22px;border-radius:50%;background:#fff;border:1.5px solid var(--line-hover);color:var(--ink-faint);font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s;}
+  .step-label{font-size:12.5px;font-weight:600;color:var(--ink-faint);transition:color .25s;white-space:nowrap;}
+  .step-line{width:56px;height:1.5px;background:var(--line);margin:0 10px;transition:background .25s;}
+  .step.active .step-circle{background:var(--indigo);border-color:var(--indigo);color:#fff;box-shadow:0 0 0 4px var(--indigo-soft);}
+  .step.done .step-circle{background:var(--indigo);border-color:var(--indigo);color:#fff;}
+  .step.active .step-label,.step.done .step-label{color:var(--ink);}
+  .step-line.done{background:var(--indigo);}
+
+  .export-cta{display:none;align-items:center;justify-content:center;gap:8px;width:calc(100% - 44px);margin:16px 22px 22px;background:var(--indigo);color:#fff;border:none;border-radius:var(--r-lg);padding:13px;font-size:13.5px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .export-cta.show{display:flex;}
+  .export-cta:hover{background:#4338CA;}
+  .export-cta:active{transform:scale(.98);}
+
+  .tool-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:22px;align-items:start;}
+  @media (max-width:920px){.tool-grid{grid-template-columns:1fr;}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow-sm);overflow:hidden;}
+
+  /* ---------- Upload / drawing panel ---------- */
+  .upload-card{padding:22px 22px 24px;display:flex;flex-direction:column;min-height:640px;opacity:0;animation:fade-in-up .55s ease .15s both;}
+  .panel-head-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .panel-head-title{font-size:15.5px;font-weight:800;}
+  .remove-file-btn{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--danger-strong);cursor:pointer;padding:6px 10px;border-radius:var(--r-md);transition:background .15s;}
+  .remove-file-btn:hover{background:var(--danger-soft);}
+  .file-chip{display:none;}
+  .file-chip.show{display:flex;}
+
+  .dropzone{flex:1;border:1.5px dashed var(--line-hover);border-radius:var(--r-lg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:40px 24px;cursor:pointer;transition:border-color .18s,background .18s;background:var(--panel-bg);}
+  .dropzone:hover{border-color:var(--indigo);background:var(--indigo-soft);}
+  .dropzone.dragover{border-color:var(--indigo);background:var(--indigo-soft);transform:scale(1.005);}
+  .dz-icon{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 30% 25%, var(--indigo-soft), #E3E0FC);display:flex;align-items:center;justify-content:center;color:var(--indigo);transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;box-shadow:0 0 0 6px rgba(79,70,229,.05);}
+  .dropzone:hover .dz-icon,.dropzone.dragover .dz-icon{transform:translateY(-3px) scale(1.06);box-shadow:0 0 0 8px rgba(79,70,229,.08);}
+  .dz-title{font-size:14px;font-weight:700;color:var(--ink);}
+  .dz-title b{color:var(--indigo);}
+  .dz-formats{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
+  .fmt-badge{font-size:10px;font-weight:700;color:var(--ink-faint);background:#fff;border:1px solid var(--line);border-radius:var(--r-sm);padding:3px 7px;letter-spacing:.02em;}
+  .dz-sub{font-size:11px;color:var(--ink-faint);}
+  .dz-or{display:flex;align-items:center;gap:10px;width:100%;max-width:260px;color:var(--ink-faint);font-size:11px;font-weight:600;margin:2px 0;}
+  .dz-or::before,.dz-or::after{content:'';flex:1;height:1px;background:var(--line);}
+  .sample-btn{font-family:inherit;font-size:12.5px;font-weight:700;color:var(--indigo);background:#fff;border:1.5px solid var(--indigo-line);border-radius:var(--r-pill);padding:8px 18px;cursor:pointer;transition:all .15s;}
+  .sample-btn:hover{background:var(--indigo-soft);border-color:var(--indigo);}
+  .sample-btn:active{transform:scale(.96);}
+
+  .file-preview{flex:1;display:none;flex-direction:column;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--panel-bg);}
+  .file-preview.show{display:flex;}
+  .file-preview-top{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#fff;border-bottom:1px solid var(--line);}
+  .file-icon{width:36px;height:36px;border-radius:9px;background:var(--indigo-soft);color:var(--indigo);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .file-meta{min-width:0;}
+  .file-name{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .file-size{font-size:11px;color:var(--ink-faint);margin-top:1px;}
+  .file-preview-body{flex:1;display:flex;align-items:center;justify-content:center;padding:18px;min-height:360px;overflow:hidden;position:relative;}
+  .file-preview-body img{max-width:100%;max-height:420px;border-radius:var(--r-md);box-shadow:var(--shadow-md);object-fit:contain;}
+  .file-preview-doc{display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--ink-faint);}
+  .file-preview-doc .big-doc-icon{width:88px;height:88px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;color:var(--indigo);}
+  .file-preview-doc span{font-size:12px;font-weight:600;color:var(--ink-soft);}
+
+  .diagram-caption{font-size:11.5px;color:var(--ink-faint);text-align:center;padding:10px 16px 0;border-top:1px solid var(--line);background:#fff;display:none;}
+  .diagram-caption.show{display:block;padding-bottom:12px;}
+
+  /* ---------- Annotated diagram ---------- */
+  .diagram-wrap{width:100%;height:100%;position:relative;}
+  .diagram-wrap svg{width:100%;height:auto;display:block;}
+  .callout{cursor:pointer;transition:transform .15s;}
+  .callout circle.dot{fill:var(--indigo);stroke:#fff;stroke-width:2;}
+  .callout text{fill:#fff;font-size:10px;font-weight:800;font-family:Inter,sans-serif;text-anchor:middle;dominant-baseline:central;pointer-events:none;}
+  .callout:hover{transform:scale(1.15);}
+  .callout.active circle.dot{fill:var(--danger-alert);}
+  .callout.active{transform:scale(1.25);}
+  @keyframes callout-pop{0%{opacity:0;transform:scale(0);}70%{transform:scale(1.2);}100%{opacity:1;transform:scale(1);}}
+  .callout{animation:callout-pop .4s cubic-bezier(.34,1.56,.64,1) both;}
+  @keyframes callout-ring{0%{r:11;opacity:.7;}100%{r:20;opacity:0;}}
+  .callout.pulse circle.ring{animation:callout-ring .6s ease-out both;}
+
+  /* ---------- Results panel ---------- */
+  .results-card{opacity:0;animation:fade-in-up .55s ease .2s both;}
+  .results-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px 0;}
+  .results-title-wrap{display:flex;align-items:center;gap:9px;}
+  .results-title{font-size:15.5px;font-weight:800;}
+  .status-pill{display:none;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--r-pill);}
+  .status-pill.show{display:inline-flex;}
+  .status-pill.analyzing{background:var(--indigo-soft);color:var(--indigo);}
+  .status-pill.done{background:var(--ok-soft);color:var(--ok-strong);}
+  .copy-btn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:var(--r-pill);padding:7px 13px;cursor:pointer;transition:all .15s;opacity:0;pointer-events:none;}
+  .copy-btn.enabled{opacity:1;pointer-events:auto;}
+  .copy-btn:hover{border-color:var(--indigo);color:var(--indigo);background:var(--indigo-soft);}
+  .copy-btn.copied{color:var(--ok-strong);border-color:var(--ok);background:var(--ok-soft);}
+
+  .progress-wrap{margin:16px 22px 0;display:none;}
+  .progress-wrap.show{display:block;}
+  .progress-label{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:8px;}
+  .progress-label .dots::after{content:'';animation:dots 1.2s steps(4,end) infinite;}
+  @keyframes dots{0%{content:'';}25%{content:'.';}50%{content:'..';}75%{content:'...';}100%{content:'';}}
+  .progress-track{height:5px;border-radius:var(--r-pill);background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;width:0%;border-radius:var(--r-pill);background:linear-gradient(90deg,var(--indigo),var(--indigo-2));transition:width 1.6s cubic-bezier(.4,0,.2,1);}
+
+  .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 22px 0;}
+  .stat-tile{border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 16px;}
+  .stat-tile-label{font-size:11px;color:var(--ink-faint);font-weight:700;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px;}
+  .stat-tile-val{font-size:20px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px;}
+  .flag-chip{font-size:14px;}
+  .stat-tile-val.zero{color:var(--ink-faint);}
+
+  .cost-block{margin:16px 22px 0;border:1px solid var(--indigo-line);background:var(--indigo-soft);border-radius:var(--r-lg);padding:18px;display:none;opacity:0;}
+  .cost-block.show{display:block;animation:card-in .5s cubic-bezier(.16,1,.3,1) both;}
+  .cost-top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
+  .cost-label{font-size:11px;font-weight:800;color:var(--indigo);text-transform:uppercase;letter-spacing:.04em;}
+  .cost-num{font-size:30px;font-weight:800;color:var(--indigo);letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+  .cost-rate{font-size:11.5px;color:var(--ink-soft);margin-bottom:14px;}
+  .cost-compare{display:flex;flex-direction:column;gap:7px;}
+  .cc-row{display:flex;align-items:center;gap:10px;}
+  .cc-lang{width:74px;flex-shrink:0;font-size:11.5px;font-weight:700;color:var(--ink-soft);}
+  .cc-bar-track{flex:1;height:8px;background:#fff;border-radius:var(--r-xs);overflow:hidden;}
+  .cc-bar-fill{height:100%;border-radius:var(--r-xs);background:#C7D2FE;}
+  .cc-row.current .cc-bar-fill{background:var(--indigo);}
+  .cc-row.current .cc-lang{color:var(--indigo);}
+  .cc-val{width:56px;flex-shrink:0;text-align:right;font-size:11.5px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+
+  .terms-block{margin:16px 22px 0;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;}
+  .terms-head{padding:12px 16px;font-size:13px;font-weight:800;background:var(--panel-bg);border-bottom:1px solid var(--line);}
+  .terms-body{max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent;}
+  .terms-body::-webkit-scrollbar{width:7px;}
+  .terms-body::-webkit-scrollbar-thumb{background:var(--line);border-radius:var(--r-sm);}
+  .term-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-top:1px solid var(--line);cursor:pointer;transition:background .15s;opacity:0;animation:card-in .4s cubic-bezier(.16,1,.3,1) both;}
+  .term-row:first-child{border-top:none;}
+  .term-row:hover,.term-row.active{background:var(--indigo-soft);}
+  .term-num{width:22px;height:22px;border-radius:50%;background:var(--indigo);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .term-row.active .term-num{background:var(--danger-alert);}
+  .term-jp{font-size:13px;font-weight:700;width:110px;flex-shrink:0;}
+  .term-en{font-size:12.5px;color:var(--ink-soft);flex:1;}
+  .term-tag{font-size:10px;font-weight:700;color:var(--ink-faint);background:var(--panel-bg);border:1px solid var(--line);border-radius:var(--r-pill);padding:2px 8px;flex-shrink:0;white-space:nowrap;}
+
+  .text-block{margin:16px 22px 22px;display:flex;flex-direction:column;gap:10px;}
+  .text-section{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;}
+  .text-section-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--indigo);color:#fff;cursor:pointer;font-size:13px;font-weight:800;}
+  .text-section-head svg{transition:transform .2s;}
+  .text-section.collapsed .text-section-head svg{transform:rotate(-90deg);}
+  .text-section-body{padding:14px 16px;font-size:13px;line-height:1.7;color:var(--ink-soft);background:#fff;}
+  .text-section.collapsed .text-section-body{display:none;}
+  .text-section-body.jp{font-size:14px;line-height:1.9;}
+
+  .empty-state{padding:52px 24px;text-align:center;color:var(--ink-faint);font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .empty-state svg{color:var(--ink-faint);opacity:.6;}
+
+  .feature-preview{padding:8px 20px 18px;}
+  .feature-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);}
+  .feature-row:first-child{border-top:none;}
+  .feature-icon{width:30px;height:30px;border-radius:9px;background:var(--indigo-soft);color:var(--indigo);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .feature-text{font-size:12.5px;color:var(--ink-soft);line-height:1.4;}
+  .feature-text b{color:var(--ink);font-weight:700;}
+
+  .footnote{text-align:center;margin-top:28px;font-size:11.5px;color:var(--ink-faint);opacity:0;animation:fade-in-up .5s ease .3s both;}
+
+  @media (max-width:900px){
+    .app-shell{flex-direction:column;}
+    .sidebar{width:100%;height:auto;position:static;overflow-y:visible;border-right:none;border-bottom:1px solid var(--line);}
+    .wrap{padding:24px 20px 60px;max-width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="sidebar">
+    <a class="sidebar-logo" href="#"><img src="assets/ipeer_logo.93e48459 1.png" alt="iPeer"></a>
+    <button class="sidebar-cta">+ Create Quote</button>
+    <div class="side-nav">
+      <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Home</a>
+      <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>My Associates</a>
+      <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Saved Quotes</a>
+      <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Cases</a>
+      <a class="side-section" href="../ai-playground/index.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        iPeer AI Toolkit
+      </a>
+      <div class="side-sub">
+        <a href="../claims-analysis-tool/index.html"><span class="dot"></span>Claims Analysis Tool</a>
+        <a href="index.html" class="active"><span class="dot"></span>Translation Estimator</a>
+        <a href="../fee-calculator/index.html"><span class="dot"></span>Fee Calculator</a>
+      </div>
+    </div>
+    <div class="side-footer">
+      <div class="avatar">A</div>
+      <div class="side-footer-name">Sarah Reinhart</div>
+    </div>
+  </div>
+
+  <div class="main-area">
+
+    <div class="breadcrumb"><a href="../ai-playground/index.html">iPeer AI Toolkit</a> / <b>Translation Estimator</b></div>
+
+    <div class="page-head">
+      <div class="page-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+      </div>
+      <div>
+        <h1>Translation Estimator</h1>
+        <p>Upload a patent drawing or document, extract and translate the text to English, and get an instant cost estimate — before you commit to a quote.</p>
+      </div>
+    </div>
+
+    <div class="stepper" id="stepper">
+      <div class="step" id="step1"><div class="step-circle">1</div><div class="step-label">Upload</div></div>
+      <div class="step-line" id="line1"></div>
+      <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">Analyzing</div></div>
+      <div class="step-line" id="line2"></div>
+      <div class="step" id="step3"><div class="step-circle">3</div><div class="step-label">Results</div></div>
+    </div>
+
+    <div class="tool-grid">
+
+      <!-- Upload / diagram panel -->
+      <div class="card upload-card">
+        <div class="panel-head-row">
+          <div class="panel-head-title" id="panelHeadTitle">Document</div>
+          <div class="file-chip" id="fileChip">
+            <div class="remove-file-btn" id="removeFileBtn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              Remove File
+            </div>
+          </div>
+        </div>
+
+        <div class="dropzone" id="dropzone">
+          <div class="dz-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.9A5 5 0 0 1 6 5.3 6 6 0 0 1 17.8 7 4.5 4.5 0 0 1 17 16H6a4.5 4.5 0 0 1-2-8.5"/><path d="M12 12v9"/><path d="m9 15 3-3 3 3"/></svg>
+          </div>
+          <div class="dz-title">Drag &amp; Drop an image or <b>Click to Upload</b></div>
+          <div class="dz-formats"><span class="fmt-badge">PNG</span><span class="fmt-badge">JPG</span><span class="fmt-badge">PDF</span></div>
+          <div class="dz-sub">50MB max</div>
+          <div class="dz-or">or</div>
+          <button class="sample-btn" id="sampleBtn" type="button">Try a Sample Drawing (Japanese)</button>
+        </div>
+
+        <div class="file-preview" id="filePreview">
+          <div class="file-preview-top">
+            <div class="file-icon" id="fileIconWrap">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            </div>
+            <div class="file-meta">
+              <div class="file-name" id="fileNameEl">—</div>
+              <div class="file-size" id="fileSizeEl">—</div>
+            </div>
+          </div>
+          <div class="file-preview-body" id="filePreviewBody"></div>
+          <div class="diagram-caption" id="diagramCaption">Click a numbered callout to see its translation →</div>
+        </div>
+
+        <input type="file" id="fileInput" accept="image/*,.pdf" style="display:none;">
+      </div>
+
+      <!-- Results panel -->
+      <div class="card results-card">
+        <div class="results-head">
+          <div class="results-title-wrap">
+            <div class="results-title">Translation Results</div>
+            <div class="status-pill analyzing" id="statusAnalyzing"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Analyzing</div>
+            <div class="status-pill done" id="statusDone"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Complete</div>
+          </div>
+          <button class="copy-btn" id="copyBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="copyBtnLabel">Copy Summary</span>
+          </button>
+        </div>
+
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-label">Extracting &amp; translating text<span class="dots"></span></div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-tile">
+            <div class="stat-tile-label">Detected Language</div>
+            <div class="stat-tile-val zero" id="detectedLang">—</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-label">Word Count</div>
+            <div class="stat-tile-val zero" id="wordCount">0</div>
+          </div>
+        </div>
+
+        <div class="cost-block" id="costBlock">
+          <div class="cost-top">
+            <span class="cost-label">Estimated Translation Cost</span>
+          </div>
+          <div class="cost-num" id="costNum">$0</div>
+          <div class="cost-rate" id="costRate">—</div>
+          <div class="cost-compare" id="costCompare"></div>
+        </div>
+
+        <div class="terms-block">
+          <div class="terms-head">Translation Details</div>
+          <div class="terms-body" id="termsBody">
+            <div class="feature-preview" id="termsEmpty">
+              <div class="feature-row">
+                <div class="feature-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg></div>
+                <div class="feature-text"><b>Term-by-term</b> extraction, linked to numbered callouts on the drawing</div>
+              </div>
+              <div class="feature-row">
+                <div class="feature-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                <div class="feature-text"><b>Cost estimate</b> compared across six languages instantly</div>
+              </div>
+              <div class="feature-row">
+                <div class="feature-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h6"/></svg></div>
+                <div class="feature-text">Full <b>original and translated</b> text, side by side</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-block" id="textBlock" style="display:none;">
+          <div class="text-section" id="jpSection">
+            <div class="text-section-head" data-target="jpBody">Original Text Preview (Japanese)<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+            <div class="text-section-body jp" id="jpBody"></div>
+          </div>
+          <div class="text-section" id="enSection">
+            <div class="text-section-head" data-target="enBody">English Translation Preview<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+            <div class="text-section-body" id="enBody"></div>
+          </div>
+        </div>
+
+        <button class="export-cta" id="exportBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="exportBtnLabel">Export Estimate</span>
+        </button>
+      </div>
+
+    </div>
+
+    <div class="footnote">Prototype · iPeer AI Toolkit — demo data for illustration only</div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var TERMS = [
+    {n:1, jp:'反応容器', en:'Reaction Vessel', tag:'Component', x:200, y:110},
+    {n:2, jp:'ガス供給口', en:'Gas Inlet Port', tag:'Port', x:70, y:70},
+    {n:3, jp:'ウェハ', en:'Wafer', tag:'Component', x:200, y:150},
+    {n:4, jp:'温度センサー', en:'Temperature Sensor', tag:'Sensor', x:305, y:150},
+    {n:5, jp:'圧力センサー', en:'Pressure Sensor', tag:'Sensor', x:305, y:110},
+    {n:6, jp:'排気口', en:'Exhaust Port', tag:'Port', x:130, y:220},
+    {n:7, jp:'制御ユニット', en:'Control Unit', tag:'Component', x:365, y:60},
+    {n:8, jp:'石英窓', en:'Quartz Window', tag:'Component', x:200, y:45}
+  ];
+
+  var JP_TEXT = '図1は、半導体ウェハを処理するためのプラズマ処理装置の断面図である。反応容器内にはウェハを支持するステージが設けられ、ガス供給口から処理ガスが導入される。温度センサー及び圧力センサーは、それぞれチャンバー内の温度及び圧力をリアルタイムで監視し、制御ユニットへ信号を送信する。排気口は、処理後のガスをチャンバーから排出するために設けられている。';
+  var EN_TEXT = 'FIG. 1 is a cross-sectional view of a plasma processing apparatus for processing a semiconductor wafer. A stage for supporting the wafer is provided within the reaction vessel, and process gas is introduced through the gas inlet port. The temperature sensor and pressure sensor each monitor the temperature and pressure within the chamber in real time and transmit signals to the control unit. The exhaust port is provided to discharge spent gas from the chamber after processing.';
+
+  var WORD_COUNT = EN_TEXT.trim().split(/\s+/).length + 42; // + rest of document body copy, for a realistic full-doc estimate
+
+  var RATES = [
+    {code:'JA', name:'Japanese', rate:0.22},
+    {code:'KO', name:'Korean', rate:0.20},
+    {code:'ZH', name:'Chinese', rate:0.18},
+    {code:'DE', name:'German', rate:0.14},
+    {code:'FR', name:'French', rate:0.13},
+    {code:'ES', name:'Spanish', rate:0.12}
+  ];
+  var CURRENT_LANG = 'JA';
+
+  function diagramSVG(){
+    var callouts = TERMS.map(function(t){
+      return '<g class="callout" data-n="'+t.n+'" transform="translate('+t.x+','+t.y+')">' +
+        '<circle class="ring" r="11" fill="none" stroke="'+ '#EF4444' +'" stroke-width="2"></circle>' +
+        '<circle class="dot" r="11"></circle><text>'+t.n+'</text></g>';
+    }).join('');
+    return '<svg viewBox="0 0 440 260" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="40" y="30" width="320" height="200" rx="14" fill="#F6F6F8" stroke="#D8DAE8" stroke-width="1.5"/>' +
+      '<rect x="150" y="140" width="100" height="18" rx="3" fill="#fff" stroke="#9BA0AC" stroke-width="1.2"/>' +
+      '<rect x="170" y="120" width="60" height="24" rx="3" fill="#fff" stroke="#4F46E5" stroke-width="1.4"/>' +
+      '<line x1="70" y1="30" x2="70" y2="70" stroke="#9BA0AC" stroke-width="1.4"/>' +
+      '<line x1="130" y1="230" x2="130" y2="250" stroke="#9BA0AC" stroke-width="1.4"/>' +
+      '<rect x="200" y="10" width="0" height="0"/>' +
+      '<line x1="200" y1="30" x2="200" y2="45" stroke="#9BA0AC" stroke-width="1.4"/>' +
+      '<line x1="360" y1="90" x2="330" y2="90" stroke="#9BA0AC" stroke-width="1.4"/>' +
+      '<line x1="230" y1="130" x2="365" y2="70" stroke="#D8DAE8" stroke-width="1.2" stroke-dasharray="3 3"/>' +
+      callouts +
+      '</svg>';
+  }
+
+  var dropzone = document.getElementById('dropzone');
+  var filePreview = document.getElementById('filePreview');
+  var filePreviewBody = document.getElementById('filePreviewBody');
+  var fileInput = document.getElementById('fileInput');
+  var fileChip = document.getElementById('fileChip');
+  var removeFileBtn = document.getElementById('removeFileBtn');
+  var fileNameEl = document.getElementById('fileNameEl');
+  var fileSizeEl = document.getElementById('fileSizeEl');
+  var sampleBtn = document.getElementById('sampleBtn');
+  var diagramCaption = document.getElementById('diagramCaption');
+
+  var progressWrap = document.getElementById('progressWrap');
+  var progressFill = document.getElementById('progressFill');
+  var statusAnalyzing = document.getElementById('statusAnalyzing');
+  var statusDone = document.getElementById('statusDone');
+  var copyBtn = document.getElementById('copyBtn');
+  var copyBtnLabel = document.getElementById('copyBtnLabel');
+
+  var detectedLang = document.getElementById('detectedLang');
+  var wordCount = document.getElementById('wordCount');
+  var costBlock = document.getElementById('costBlock');
+  var costNum = document.getElementById('costNum');
+  var costRate = document.getElementById('costRate');
+  var costCompare = document.getElementById('costCompare');
+
+  var termsBody = document.getElementById('termsBody');
+  var termsEmpty = document.getElementById('termsEmpty');
+  var textBlock = document.getElementById('textBlock');
+  var jpBody = document.getElementById('jpBody');
+  var enBody = document.getElementById('enBody');
+
+  var exportBtn = document.getElementById('exportBtn');
+  var exportBtnLabel = document.getElementById('exportBtnLabel');
+  var step1 = document.getElementById('step1'), step2 = document.getElementById('step2'), step3 = document.getElementById('step3');
+  var line1 = document.getElementById('line1'), line2 = document.getElementById('line2');
+
+  var currentObjectUrl = null;
+  var analysisTimer = null;
+  var isSample = false;
+
+  function setStep(n){
+    [step1,step2,step3].forEach(function(s,i){ s.classList.remove('active','done'); if(i+1 < n) s.classList.add('done'); else if(i+1 === n) s.classList.add('active'); });
+    line1.classList.toggle('done', n > 1);
+    line2.classList.toggle('done', n > 2);
+  }
+
+  function buildReport(){
+    var current = RATES.filter(function(r){return r.code===CURRENT_LANG;})[0];
+    var cost = WORD_COUNT * current.rate;
+    return 'Translation Estimate Summary\nDetected Language: Japanese\nWord Count: ' + WORD_COUNT +
+      '\nEstimated Cost (JA→EN, $' + current.rate.toFixed(2) + '/word): $' + cost.toLocaleString() +
+      '\n\nExtracted Terms:\n' + TERMS.map(function(t){ return t.n + '. ' + t.jp + ' — ' + t.en + ' (' + t.tag + ')'; }).join('\n') +
+      '\n\nOriginal Text (Japanese):\n' + JP_TEXT + '\n\nEnglish Translation:\n' + EN_TEXT;
+  }
+
+  function fmtSize(bytes){
+    if(bytes < 1024*1024) return Math.max(1, Math.round(bytes/1024)) + ' KB';
+    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+  }
+  function fileTypeIcon(isImage){
+    if(isImage) return '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>';
+    return '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  }
+
+  function handleFile(file, opts){
+    opts = opts || {};
+    isSample = !!opts.sample;
+    resetResults();
+    if(currentObjectUrl){ URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; }
+
+    var isImage = opts.sample ? false : /^image\//.test(file.type);
+    fileNameEl.textContent = file.name;
+    fileSizeEl.textContent = fmtSize(file.size) + (opts.sample ? ' · Sample document' : '');
+    document.getElementById('fileIconWrap').innerHTML = fileTypeIcon(isImage);
+
+    if(isImage){
+      currentObjectUrl = URL.createObjectURL(file);
+      filePreviewBody.innerHTML = '<img src="' + currentObjectUrl + '" alt="Uploaded document preview">';
+    } else {
+      filePreviewBody.innerHTML =
+        '<div class="file-preview-doc"><div class="big-doc-icon">' + fileTypeIcon(false).replace('width="17" height="17"','width="34" height="34"') + '</div>' +
+        '<span>' + (opts.sample ? 'Sample patent drawing (Figure 1)' : 'Document ready for analysis') + '</span></div>';
+    }
+
+    dropzone.style.display = 'none';
+    filePreview.classList.add('show');
+    fileChip.classList.add('show');
+
+    startAnalysis();
+  }
+
+  function resetResults(){
+    clearTimeout(analysisTimer);
+    progressWrap.classList.remove('show');
+    progressFill.style.width = '0%';
+    statusAnalyzing.classList.remove('show');
+    statusDone.classList.remove('show');
+    copyBtn.classList.remove('enabled','copied');
+    copyBtnLabel.textContent = 'Copy Summary';
+    exportBtn.classList.remove('show');
+    costBlock.classList.remove('show');
+    diagramCaption.classList.remove('show');
+    document.getElementById('panelHeadTitle').textContent = 'Document';
+    detectedLang.textContent = '—'; detectedLang.classList.add('zero');
+    wordCount.textContent = '0'; wordCount.classList.add('zero');
+    termsBody.innerHTML = '';
+    termsBody.appendChild(termsEmpty);
+    textBlock.style.display = 'none';
+    setStep(1);
+  }
+
+  function resetAll(){
+    resetResults();
+    dropzone.style.display = 'flex';
+    filePreview.classList.remove('show');
+    fileChip.classList.remove('show');
+    filePreviewBody.innerHTML = '';
+    fileInput.value = '';
+    if(currentObjectUrl){ URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; }
+  }
+
+  function countUp(el, to, duration, suffix){
+    var start = null;
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min(1, (ts - start) / duration);
+      var eased = 1 - Math.pow(1-p, 3);
+      el.textContent = Math.round(eased * to) + (suffix||'');
+      if(p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function startAnalysis(){
+    progressWrap.classList.add('show');
+    statusAnalyzing.classList.add('show');
+    setStep(2);
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ progressFill.style.width = '100%'; });
+    });
+    analysisTimer = setTimeout(finishAnalysis, 1700);
+  }
+
+  function finishAnalysis(){
+    statusAnalyzing.classList.remove('show');
+    statusDone.classList.add('show');
+    copyBtn.classList.add('enabled');
+    exportBtn.classList.add('show');
+    setStep(3);
+
+    detectedLang.classList.remove('zero');
+    detectedLang.innerHTML = '<span class="flag-chip">🇯🇵</span> Japanese';
+    wordCount.classList.remove('zero');
+    countUp(wordCount, WORD_COUNT, 700);
+
+    renderCost();
+    costBlock.classList.add('show');
+
+    renderTerms();
+
+    jpBody.textContent = JP_TEXT;
+    enBody.textContent = EN_TEXT;
+    textBlock.style.display = 'flex';
+
+    if(isSample){
+      document.getElementById('panelHeadTitle').textContent = 'AI-Detected Drawing — Figure 1';
+      filePreviewBody.innerHTML = '<div class="diagram-wrap">' + diagramSVG() + '</div>';
+      diagramCaption.classList.add('show');
+      bindCallouts();
+    }
+  }
+
+  function renderCost(){
+    var current = RATES.filter(function(r){return r.code===CURRENT_LANG;})[0];
+    var cost = WORD_COUNT * current.rate;
+    costNum.textContent = '$' + cost.toLocaleString(undefined,{maximumFractionDigits:0});
+    costRate.textContent = 'Based on ' + WORD_COUNT + ' words · $' + current.rate.toFixed(2) + '/word · Japanese → English';
+
+    var maxCost = Math.max.apply(null, RATES.map(function(r){return WORD_COUNT * r.rate;}));
+    costCompare.innerHTML = RATES.map(function(r){
+      var c = WORD_COUNT * r.rate;
+      var pct = Math.round((c/maxCost)*100);
+      return '<div class="cc-row' + (r.code===CURRENT_LANG?' current':'') + '">' +
+        '<div class="cc-lang">' + r.name + '</div>' +
+        '<div class="cc-bar-track"><div class="cc-bar-fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="cc-val">$' + c.toLocaleString(undefined,{maximumFractionDigits:0}) + '</div></div>';
+    }).join('');
+  }
+
+  function renderTerms(){
+    termsBody.innerHTML = TERMS.map(function(t, idx){
+      return '<div class="term-row" data-n="' + t.n + '" style="animation-delay:' + (idx*0.04) + 's">' +
+        '<div class="term-num">' + t.n + '</div>' +
+        '<div class="term-jp">' + t.jp + '</div>' +
+        '<div class="term-en">' + t.en + '</div>' +
+        '<div class="term-tag">' + t.tag + '</div></div>';
+    }).join('');
+
+    Array.prototype.forEach.call(termsBody.querySelectorAll('.term-row'), function(row){
+      row.addEventListener('click', function(){ setActiveTerm(row.getAttribute('data-n')); });
+    });
+  }
+
+  function bindCallouts(){
+    Array.prototype.forEach.call(filePreviewBody.querySelectorAll('.callout'), function(c){
+      c.addEventListener('click', function(){ setActiveTerm(c.getAttribute('data-n')); });
+    });
+  }
+
+  function setActiveTerm(n){
+    Array.prototype.forEach.call(termsBody.querySelectorAll('.term-row'), function(row){
+      row.classList.toggle('active', row.getAttribute('data-n') === n);
+    });
+    var activeRow = termsBody.querySelector('.term-row[data-n="' + n + '"]');
+    if(activeRow) activeRow.scrollIntoView({block:'nearest', behavior:'smooth'});
+
+    var callouts = filePreviewBody.querySelectorAll('.callout');
+    Array.prototype.forEach.call(callouts, function(c){
+      var isMatch = c.getAttribute('data-n') === n;
+      c.classList.toggle('active', isMatch);
+      c.classList.remove('pulse');
+      if(isMatch){
+        void c.offsetWidth;
+        c.classList.add('pulse');
+      }
+    });
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.text-section-head'), function(head){
+    head.addEventListener('click', function(){
+      head.parentElement.classList.toggle('collapsed');
+    });
+  });
+
+  dropzone.addEventListener('click', function(e){
+    if(e.target === sampleBtn) return;
+    fileInput.click();
+  });
+  fileInput.addEventListener('change', function(){
+    if(fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
+  ['dragenter','dragover'].forEach(function(evt){
+    dropzone.addEventListener(evt, function(e){ e.preventDefault(); e.stopPropagation(); dropzone.classList.add('dragover'); });
+  });
+  ['dragleave','drop'].forEach(function(evt){
+    dropzone.addEventListener(evt, function(e){ e.preventDefault(); e.stopPropagation(); dropzone.classList.remove('dragover'); });
+  });
+  dropzone.addEventListener('drop', function(e){
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if(f) handleFile(f);
+  });
+  sampleBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    handleFile({name:'patent-figure-1-jp.pdf', size: 1840000, type:'application/pdf'}, {sample:true});
+  });
+  removeFileBtn.addEventListener('click', resetAll);
+
+  copyBtn.addEventListener('click', function(){
+    if(!copyBtn.classList.contains('enabled')) return;
+    var done = function(){
+      copyBtn.classList.add('copied'); copyBtnLabel.textContent = 'Copied!';
+      setTimeout(function(){ copyBtn.classList.remove('copied'); copyBtnLabel.textContent = 'Copy Summary'; }, 1600);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(buildReport()).then(done).catch(done); }
+    else { done(); }
+  });
+
+  exportBtn.addEventListener('click', function(){
+    if(!exportBtn.classList.contains('show')) return;
+    var blob = new Blob([buildReport()], {type:'text/plain'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'translation-estimate.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    exportBtnLabel.textContent = 'Downloaded!';
+    setTimeout(function(){ exportBtnLabel.textContent = 'Export Estimate'; }, 1600);
+  });
+
+  resetAll();
+})();
+</script>
+
+</body>
+</html>

@@ -3,1275 +3,409 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wix New Domain Tool - Case Study</title>
+  <title>New Azami - Lior Wenger</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Martian+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    /* ─── Reset & Base ─── */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html {
-      font-size: 16px;
-      scroll-behavior: smooth;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+    :root {
+      --bg:     #0A0A09;
+      --ink:    #F2F2EE;
+      --accent: #92E227;
+      --muted:  rgba(242,242,238,0.42);
+      --line:   rgba(242,242,238,0.11);
+      --col:    min(1200px, 88vw);
     }
 
+    html { -webkit-font-smoothing: antialiased; }
     body {
-      font-family: 'Avenir', 'Avenir Next', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #fff;
-      color: #1a1a1a;
-      line-height: 1.6;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    /* ─── Header ─── */
-    .header {
-      padding: 32px 0;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(255,255,255,0.88);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
-      z-index: 100;
-    }
-
-    .header-inner {
-      width: 100%;
-      padding: 0 clamp(24px, 8vw, 120px);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .header-name {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #111;
-    }
-
-    .header-name a { color: inherit; text-decoration: none; transition: opacity 0.2s; }
-    .header-name a:hover { opacity: 0.6; }
-
-    .header-nav {
-      display: flex;
-      gap: 32px;
-    }
-
-    .header-nav a {
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: rgba(0,0,0,0.45);
-      transition: color 0.2s;
-    }
-
-    .header-nav a:hover { color: #111; }
-
-    /* ─── Layout ─── */
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    .container--wide {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    section { padding: 120px 0; }
-
-    /* ─── Typography ─── */
-    .label {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #888;
-      margin-bottom: 16px;
-    }
-
-    .section-title {
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 500;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-      color: #1a1a1a;
-      margin-bottom: 24px;
-    }
-
-    /* ─── Hero ─── */
-    .hero-wrap {
-      background: #FF3AB0;
-      padding-top: 88px;
-    }
-    .hero-frame {
-      width: 100%;
-      aspect-ratio: 1917 / 890;
-      overflow: hidden;
-    }
-    .hero-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      display: block;
-    }
-
-    /* ─── Title block ─── */
-    .page-header {
-      padding: 64px 0 8px;
-      margin-bottom: 0;
-    }
-    .page-tag {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(0,0,0,0.4);
-      margin-bottom: 20px;
-    }
-    .page-title {
       font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif;
-      font-size: clamp(36px, 5.8vw, 78px);
-      font-weight: 800;
-      color: #FF3AB0;
-      line-height: 1.05;
-      letter-spacing: -0.025em;
-      margin-bottom: 28px;
+      background: var(--bg); color: var(--ink);
     }
-    .page-impact {
-      font-size: clamp(15px, 1.3vw, 19px);
-      font-weight: 300;
-      color: #555;
-      line-height: 1.7;
-      max-width: 680px;
+    a { color: inherit; text-decoration: none; }
+
+    /* ── NAV ── */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: clamp(16px,2.2vw,28px) clamp(24px,4.5vw,64px);
+      background: var(--bg); border-bottom: 1px solid var(--line);
     }
-
-    /* ─── Background card ─── */
-    .section { margin-bottom: 0; padding: 32px 0 0; }
-
-    .bg-card {
-      background: rgba(255,58,176,0.07);
-      border-radius: 20px;
-      padding: clamp(28px, 4vw, 56px);
+    .logo { font-size: clamp(14px,1.1vw,17px); font-weight: 600; display: flex; }
+    .site-nav { display: flex; align-items: center; gap: clamp(14px,1.8vw,26px); }
+    @media (max-width: 480px) { .site-nav { flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; } }
+    .site-nav a {
+      font-family: 'Martian Mono', monospace;
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink);
+      opacity: .6; transition: opacity .2s;
     }
+    .site-nav a:hover, .site-nav a.is-active { opacity: 1; }
+    .nav-cta {
+      opacity: 1 !important; border: 1px solid var(--ink) !important;
+      border-radius: 100px !important; padding: 7px 18px !important;
+      transition: background .2s, color .2s !important;
+    }
+    .nav-cta:hover { background: var(--ink) !important; color: var(--bg) !important; }
 
+    /* ── LAYOUT ── */
+    .page-body { padding-top: clamp(80px,10vh,120px); }
+    .col { max-width: var(--col); margin: 0 auto; padding: 0 clamp(16px,2vw,32px); }
+
+    /* ── SECTION SHELL ── */
+    .section {
+      padding: clamp(64px,9vh,108px) 0;
+    }
     .section-label {
       font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif;
-      font-size: clamp(14px, 1.3vw, 17px);
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(0,0,0,0.4);
-      margin-bottom: 24px;
+      font-size: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: clamp(16px,2.4vh,28px);
     }
 
-    .section-body {
-      font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif;
-      font-size: clamp(14px, 1.2vw, 17px);
-      font-weight: 300;
-      line-height: 1.8;
-      color: #1a1a1a;
+    /* ── HERO ── */
+    .hero {
+      padding: clamp(80px,12vh,140px) 0 clamp(48px,7vh,80px);
+      position: relative;
     }
-    .section-body p + p { margin-top: 16px; }
-    .section-body strong { color: #000; font-weight: 600; }
-    .bg-card .section-body strong { color: #A62672; font-weight: 700; }
-
-    .meta-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 32px 64px;
-      margin-top: 40px;
+    .hero-title {
+      font-family: 'Familjen Grotesk', sans-serif;
+      font-size: clamp(38px,7.5vw,80px); font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.05;
+      margin-bottom: clamp(8px,1.2vh,14px);
     }
-
-    .meta-item {
-      border-top: 1px solid rgba(0,0,0,0.7);
-      padding-top: 14px;
+    .hero-meta-row {
+      display: grid; grid-template-columns: 2fr 1fr 1fr;
+      gap: clamp(32px,5vw,80px);
+      padding-top: clamp(32px,4.5vh,52px); margin-top: clamp(32px,4.5vh,52px);
+      border-top: 1px solid var(--line); align-items: start;
     }
+    .meta-col p:not(.section-label) { font-size: clamp(14px,1.05vw,17px); line-height: 1.7; }
+    .meta-col ul { list-style: none; font-size: clamp(14px,1.05vw,17px); line-height: 1.9; }
+    @media (max-width: 700px) { .hero-meta-row { grid-template-columns: 1fr; gap: 28px; } }
 
-    .meta-item dt {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(0,0,0,0.4);
-      margin-bottom: 8px;
+    /* ── TITLE / TEXT SPLIT ── */
+    .title-text-split {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(40px,6vw,100px); align-items: start;
+      margin-bottom: clamp(32px,5vh,56px);
     }
+    .title-text-split > *:last-child { padding-top: calc(clamp(12px,2vh,24px) - 4px); }
+    @media (max-width: 768px) { .title-text-split { grid-template-columns: 1fr; } }
 
-    .meta-item dd {
-      font-size: 16px;
-      font-weight: 500;
-      color: #1a1a1a;
-      line-height: 1.5;
+    .section-title {
+      font-family: 'Familjen Grotesk', sans-serif;
+      font-size: 60px;
+      font-weight: 700; letter-spacing: -0.025em; line-height: 1.08;
+      margin-top: 0; margin-bottom: clamp(20px,3vh,32px);
     }
 
-    /* ─── Background image ─── */
-    .background-image-wrap {
-      margin-top: 112px;
-      padding: 0 60px 100px;
-      max-width: 1120px;
-      margin-left: auto;
-      margin-right: auto;
+    /* ── BODY TEXT ── */
+    .body-text {
+      font-size: clamp(15px,1.15vw,18px);
+      line-height: 1.7; color: var(--ink);
+      margin-top: 0; margin-bottom: clamp(14px,2vh,22px);
     }
+    .body-text:last-of-type { margin-bottom: 0; }
 
-    .background-image-wrap img {
-      width: 100%;
-      display: block;
-      border-radius: 12px 12px 0 0;
+    /* ── APPROACH ITEMS ── */
+    .approach-item {
+      display: grid; grid-template-columns: 1fr 2fr;
+      gap: clamp(32px,5vw,80px); align-items: start;
+      padding: clamp(40px,6vh,64px) 0;
     }
-
-    /* ─── Problem ─── */
-    .problem {
-      background: #fafafa;
-      padding: 120px 0;
-    }
-
-    .problem-intro {
-      font-size: 18px;
-      line-height: 1.7;
-      color: #555;
-      max-width: 720px;
-      margin-top: 20px;
-      margin-bottom: 56px;
-    }
-
-    .problem-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
+    .approach-text { padding-top: 40px; margin-top: 0; }
+    .approach-title {
+      font-size: 25px; font-weight: 700;
+      letter-spacing: -0.02em; line-height: 1.2;
+      margin-bottom: clamp(10px,1.5vh,16px);
       margin-top: 0;
     }
-
-    .problem-card-img {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 24px;
-    }
-
-    .problem-card-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .problem-card h4 {
-      font-size: 17px;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 10px;
-      line-height: 1.3;
-      letter-spacing: -0.01em;
-    }
-
-    .problem-card p {
-      font-size: 14px;
-      line-height: 1.7;
-      color: #666;
-    }
-
-    /* ─── Research (tension styles reused inside decisions) ─── */
-
-    .tension-list {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .tension {
-      border: 1px solid #ebebeb;
-      border-radius: 14px;
-      overflow: hidden;
-    }
-
-    .tension-top {
-      display: grid;
-      grid-template-columns: 64px 1fr;
-      gap: 0;
-    }
-
-    .tension-num {
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding-top: 36px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #ccc;
-      letter-spacing: 0.06em;
-      border-right: 1px solid #ebebeb;
-    }
-
-    .tension-main {
-      padding: 36px 40px;
-    }
-
-    .tension-question {
-      font-size: clamp(18px, 2.5vw, 22px);
-      font-weight: 600;
-      color: #1a1a1a;
-      letter-spacing: -0.02em;
-      line-height: 1.3;
-      margin-bottom: 28px;
-    }
-
-    .tension-sides {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-bottom: 28px;
-    }
-
-    .tension-side {
-      padding: 20px;
-      border-radius: 10px;
-    }
-
-    .tension-side--concern {
-      background: #FFF5F5;
-    }
-
-    .tension-side--finding {
-      background: #F5F9FF;
-    }
-
-    .tension-side-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .tension-side--concern .tension-side-label { color: #DC2626; }
-    .tension-side--finding .tension-side-label { color: #116DFF; }
-
-    .tension-side p {
-      font-size: 14px;
-      line-height: 1.65;
-      color: #555;
-    }
-
-    .tension-resolution {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      padding-top: 24px;
-      border-top: 1px solid #f0f0f0;
-    }
-
-    .tension-resolution-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #999;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .tension-resolution p {
-      font-size: 15px;
-      font-weight: 500;
-      line-height: 1.6;
-      color: #1a1a1a;
-    }
-
-    /* ─── Design Decisions ─── */
-    .decisions {
-      background: #fff;
-      padding: 120px 0;
-    }
-
-    .decisions-intro {
-      font-size: 18px;
-      line-height: 1.7;
-      color: #555;
-      max-width: 720px;
-      margin-top: 20px;
-      margin-bottom: 80px;
-    }
-
-    .decision-wrap {
-      margin-bottom: 120px;
-    }
-
-    .decision-wrap:last-child { margin-bottom: 0; }
-
-    .decision-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 5px 16px;
-      background: #f0f0f0;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      color: #666;
-      margin-bottom: 20px;
-    }
-
-    .decision-wrap h3 {
-      font-size: clamp(22px, 3vw, 30px);
-      font-weight: 600;
-      color: #1a1a1a;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
-      line-height: 1.2;
-    }
-
-    .decision-wrap > p {
-      font-size: 16px;
-      line-height: 1.7;
-      color: #555;
-      margin-bottom: 28px;
-      max-width: 760px;
-    }
-
-    .compare-outer {
-      margin-top: 48px;
-      margin-left: calc(-40vw + 50%);
-      width: 80vw;
-    }
-
-    .compare-outer--a {
-      width: 50vw;
-      margin-left: calc(-25vw + 50%);
-    }
-
-    .compare-outer--d {
-      width: 92vw;
-      margin-left: calc(-46vw + 50%);
-    }
-
-    .compare-labels {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      text-align: center;
-      margin-bottom: 14px;
-    }
-
-    .compare-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 7px 22px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .compare-badge--before {
-      background: #EF4444;
-      color: #fff;
-    }
-
-    .compare-badge--after {
-      background: #22C55E;
-      color: #fff;
-    }
-
-    .compare-wrap {
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .compare-wrap img {
-      width: 100%;
-      display: block;
-    }
-
-    /* ─── A/B Test ─── */
-    .ab-test {
-      background: #fafafa;
-      padding: 120px 0;
-    }
-
-    .ab-test-intro {
-      font-size: 18px;
-      line-height: 1.7;
-      color: #555;
-      max-width: 720px;
-      margin-top: 20px;
-      margin-bottom: 56px;
-    }
-
-    .ab-comparison {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      margin-top: 48px;
-    }
-
-    .ab-panel {
-      background: #fff;
-      border-radius: 16px;
-      padding: 32px;
-      border: 1px solid #e5e5e5;
-    }
-
-    .ab-panel--b {
-      border: 2px solid #116DFF;
-      background: #F0F7FF;
-    }
-
-    .ab-panel-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 999px;
-      background: #eee;
-      color: #666;
-      margin-bottom: 20px;
-    }
-
-    .ab-panel--b .ab-panel-tag {
-      background: #116DFF;
-      color: #fff;
-    }
-
-    .ab-panel h3 {
-      font-size: 20px;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 12px;
-    }
-
-    .ab-panel p {
-      font-size: 15px;
-      line-height: 1.65;
-      color: #555;
-    }
-
-    .ab-cards {
-      margin-top: 48px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    .ab-card-version {
-      font-size: 15px;
-      font-weight: 500;
-      color: #1a1a1a;
-      margin-bottom: 16px;
-    }
-
-    .ab-card-inner {
-      border: 1px solid #e0e0e0;
-      border-radius: 14px;
-      overflow: hidden;
-      background: #fff;
-    }
-
-    .ab-card-inner--b {
-      border: 2px solid #116DFF;
-      background: #F0F7FF;
-    }
-
-    .ab-card-visual {
-      padding: 32px 32px 0;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .ab-card-inner--b .ab-card-visual {
-      background: #fff;
+    .approach-imgs { display: flex; flex-direction: column; gap: clamp(64px,10vh,120px); min-width: 0; }
+    @media (max-width: 768px) { .approach-item { grid-template-columns: 1fr; } }
+
+    /* ── PLACEHOLDERS ── */
+    .placeholder {
+      width: 100%; background: rgba(242,242,238,0.05); border: 1px solid var(--line);
+      border-radius: 8px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; padding: clamp(32px,5vh,56px) clamp(24px,4vw,48px);
+      margin: clamp(24px,3.5vh,40px) 0; text-align: center;
+    }
+    .placeholder.tall   { aspect-ratio: 16/9; }
+    .placeholder.medium { aspect-ratio: 4/3; }
+    .placeholder.wide   { aspect-ratio: 21/9; }
+    .ph-type {
+      font-family: 'Martian Mono', monospace;
+      font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+    }
+    .ph-label {
+      font-size: 14px; color: var(--muted);
+    }
+
+    /* ── CS NAV ── */
+    .cs-nav {
+      padding: clamp(40px,6vh,72px) 0;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .cs-nav-link {
+      font-family: 'Martian Mono', monospace;
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      border-bottom: 1px solid currentColor; padding-bottom: 3px;
+      opacity: .55; transition: opacity .2s;
+    }
+    .cs-nav-link:hover { opacity: 1; }
+
+    /* ── KPI GRID ── */
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1px; background: var(--line);
+      border: 1px solid var(--line); border-radius: 8px;
+      overflow: hidden; margin-top: clamp(24px,3.5vh,40px);
+    }
+    .kpi-item {
+      background: var(--bg);
+      padding: clamp(24px,3vw,40px) clamp(20px,2.2vw,28px);
     }
-
-    .ab-card-visual img {
-      width: 100%;
-      display: block;
-    }
-
-    .ab-card-text {
-      padding: 24px 28px 28px;
-    }
-
-    .ab-card-text h3 {
-      font-size: 18px;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin: 12px 0 8px;
-      letter-spacing: -0.01em;
-    }
-
-    .ab-card-text p {
-      font-size: 14px;
-      line-height: 1.65;
-      color: #555;
-    }
-
-    .ab-panel-tag--b {
-      background: #116DFF;
-      color: #fff;
-    }
-
-    .ab-duration {
-      margin-top: 40px;
-      padding-top: 32px;
-      border-top: 1px solid #e5e5e5;
-      font-size: 15px;
-      line-height: 1.65;
-      color: #555;
-    }
-
-    .ab-duration strong { color: #1a1a1a; }
-
-    /* ─── KPIs ─── */
-    .kpis {
-      background: #fff;
-      padding: 120px 0;
-    }
-
-    .kpis-intro {
-      font-size: 17px;
-      line-height: 1.65;
-      color: #555;
-      max-width: 720px;
-      margin-top: 20px;
-    }
-
-    .kpis-categories { margin-top: 64px; }
-
-    .kpis-category + .kpis-category { margin-top: 56px; }
-
-    .kpis-category-label {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #1a1a1a;
-      margin-bottom: 28px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .kpis-category-label::before {
-      content: '';
-      width: 28px;
-      height: 1.5px;
-      background: #1a1a1a;
-    }
-
-    .kpis-subgrid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      column-gap: 40px;
-      row-gap: 40px;
-    }
-
-    .kpis-subgrid--3 {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .kpi-tile {
-      display: flex;
-      align-items: stretch;
-      gap: 14px;
-      align-self: start;
-    }
-
-    .kpi-bar {
-      width: 4px;
-      background: #116DFF;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-
-    .kpi-body {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      flex: 1;
-    }
-
     .kpi-number {
-      font-size: 52px;
-      font-weight: 700;
-      color: #116DFF;
-      line-height: 1;
-      letter-spacing: -0.025em;
+      font-size: clamp(32px,3.5vw,52px); font-weight: 700;
+      color: var(--accent); letter-spacing: -0.03em; line-height: 1;
+      margin-bottom: 10px;
     }
-
     .kpi-label {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1a1a1a;
-      letter-spacing: -0.005em;
-      line-height: 1.35;
+      font-size: clamp(15px,1.15vw,18px); font-weight: 400;
+      color: var(--ink); line-height: 1.5;
     }
-
-    .kpi-detail {
-      font-size: 13px;
-      line-height: 1.45;
-      color: #aaa;
-      margin-top: 2px;
+    .kpi-footnote {
+      font-family: 'Martian Mono', monospace;
+      font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--muted);
+      margin-top: clamp(20px,2.8vh,28px);
     }
-
-    /* ─── Reflections ─── */
-    .reflections {
-      background: #fafafa;
-      padding: 120px 0 140px;
+    @media (max-width: 700px) {
+      .kpi-grid { grid-template-columns: repeat(2,1fr); }
     }
-
-    .reflections-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      margin-top: 48px;
+    .back-to-top {
+      position: fixed; bottom: 32px; right: 32px; z-index: 200;
+      width: 96px; height: 96px; border-radius: 50%;
+      background: rgba(242,242,238,0.08); border: 1px solid rgba(242,242,238,0.18);
+      color: var(--ink); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0; pointer-events: none; transform: translateY(8px);
+      transition: opacity .25s ease, transform .25s ease, background .2s ease;
+      backdrop-filter: blur(8px);
     }
-
-    .reflection-column h3 {
-      font-size: 18px;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 16px;
-    }
-
-    .reflection-column ul {
-      list-style: none;
-    }
-
-    .reflection-column ul li {
-      font-size: 16px;
-      line-height: 1.65;
-      color: #555;
-      padding-left: 20px;
-      position: relative;
-      margin-bottom: 12px;
-    }
-
-    .reflection-column ul li::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 10px;
-      width: 6px;
-      height: 6px;
-      background: #ccc;
-      border-radius: 50%;
-    }
-
-    /* ─── Footer ─── */
-    .footer {
-      border-top: 1px solid rgba(0,0,0,0.08);
-      padding: 40px 0;
-    }
-
-    .footer-inner {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 40px;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      align-items: center;
-    }
-
-    .footer-nav-item {
-      font-size: 15px;
-      font-weight: 500;
-      color: #1a1a1a;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: opacity 0.2s;
-      text-decoration: none;
-    }
-
-    .footer-nav-item:hover { opacity: 0.5; }
-
-    .footer-nav-item--center {
-      justify-content: center;
-      cursor: pointer;
-      background: none;
-      border: none;
-      font-family: inherit;
-      font-size: 15px;
-      font-weight: 500;
-      color: #1a1a1a;
-    }
-
-    .footer-nav-item--right { justify-content: flex-end; }
-
-    .footer-nav-item--disabled {
-      opacity: 0.2;
-      pointer-events: none;
-    }
-
-    /* ─── Responsive ─── */
-    @media (max-width: 768px) {
-      /* Header */
-      .header-inner { padding: 0 20px; }
-
-      /* Container */
-      .container, .container--wide { padding: 0 20px; }
-
-      /* Sections - reduce padding */
-      section { padding: 64px 0; }
-      .decisions, .kpis, .ab-test, .problem { padding: 64px 0; }
-      .section { padding: 48px 0 0; }
-
-      /* Hero */
-      .page-header { padding: 40px 0 32px; }
-
-      /* Background */
-      .meta-grid { grid-template-columns: 1fr 1fr; gap: 20px 32px; }
-      .background-image-wrap { padding: 0 0 0; margin-top: 32px; }
-
-      /* Problem */
-      .problem-cards { grid-template-columns: 1fr; gap: 24px; }
-
-      /* Design Decisions */
-      .decisions-intro { font-size: 16px; margin-bottom: 48px; }
-      .decision-wrap { margin-bottom: 72px; }
-
-      .tension-sides { grid-template-columns: 1fr; gap: 12px; }
-
-      .compare-outer,
-      .compare-outer--a,
-      .compare-outer--d {
-        width: calc(100% + 40px);
-        margin-left: -20px;
-        margin-right: -20px;
-        margin-top: 32px;
-      }
-      .compare-wrap { border-radius: 0; }
-
-      /* A/B Test */
-      .ab-cards { grid-template-columns: 1fr; gap: 16px; }
-
-      /* KPIs */
-      .kpis-subgrid,
-      .kpis-subgrid--3 { grid-template-columns: repeat(2, 1fr); gap: 28px; }
-      .kpi-number { font-size: 36px; }
-
-      /* Footer */
-      .footer-inner { padding: 0 20px; flex-direction: column; gap: 12px; text-align: center; }
-
-      /* Scroll to top */
-      .scroll-top { bottom: 20px; right: 20px; }
-    }
+    .back-to-top.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .back-to-top:hover { background: rgba(242,242,238,0.16); }
+    @media (max-width: 480px) { .back-to-top { width: 56px; height: 56px; bottom: 16px; right: 16px; } .back-to-top svg { width: 24px; height: 24px; } }
   </style>
 </head>
 <body>
 
-  <!-- ─── Header ─── -->
-  <header class="header">
-    <div class="header-inner">
-      <div class="header-name"><a href="../index.html">Lior Wenger</a></div>
-      <nav class="header-nav">
-        <a href="../index.html#projects">Projects</a>
-        <a href="../about.html">About</a>
-      </nav>
-    </div>
+  <header class="site-header">
+    <a class="logo" href="../index.html"><img src="../assets/LOGO-W.png" alt="Lior Wenger" style="height:28px;width:auto;display:block;"></a>
+    <nav class="site-nav">
+      <a href="../index.html#work">Work</a>
+      <a href="../about/index.html">About</a>
+      <a href="https://www.linkedin.com/in/liorwenger/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:liorbetser@gmail.com" class="nav-cta">Let's talk</a>
+    </nav>
   </header>
 
-  <!-- ─── Hero ─── -->
-  <div class="hero-wrap">
-    <div class="hero-frame">
-      <img src="New Strategy - 11/header-image%20.png" alt="Wix New Domain Tool - search results page">
-    </div>
-  </div>
+  <main class="page-body">
 
-  <!-- ─── Title block ─── -->
-  <div class="container--wide">
-    <header class="page-header">
-      <p class="page-tag">Case Study · 03</p>
-      <h1 class="page-title">Wix New Domain Tool</h1>
-      <p class="page-impact">Redesigning Wix's domain acquisition flow to lift conversion - validated by a 16-day A/B test.</p>
-    </header>
-  </div>
+    <!-- ── HERO ── -->
+    <section class="hero">
+      <div class="col">
+        <h1 class="hero-title">New Azami</h1>
 
-  <!-- ─── Background ─── -->
-  <section class="section">
-    <div class="container--wide">
-      <div class="bg-card">
-        <p class="section-label">Background</p>
-        <div class="section-body">
-          <p><strong>Visitors, not exclusively Wix users, have the opportunity to directly acquire a domain name through Wix.</strong> Wix enables visitors to explore and acquire a personalized domain for their websites. Through the Wix domain tool, visitors can search for available domain names, make purchases, and connect them not only to their Wix websites but also to any other website.</p>
+        <div class="hero-meta-row">
+          <div class="meta-col">
+            <p class="section-label">Overview</p>
+            <p>[One or two sentences on the project - what it is and why it mattered.]</p>
+          </div>
+          <div class="meta-col">
+            <p class="section-label">What I Did</p>
+            <ul>
+              <li>[Role]</li>
+              <li>[Role]</li>
+              <li>[Role]</li>
+            </ul>
+          </div>
+          <div class="meta-col">
+            <p class="section-label">The Team</p>
+            <ul>
+              <li>[Role]</li>
+              <li>[Role]</li>
+              <li>[Role]</li>
+            </ul>
+          </div>
         </div>
-        <dl class="meta-grid">
-          <div class="meta-item">
-            <dt>Role</dt>
-            <dd>Product Designer</dd>
-          </div>
-          <div class="meta-item">
-            <dt>Timeline</dt>
-            <dd>1 month</dd>
-          </div>
-          <div class="meta-item">
-            <dt>Team</dt>
-            <dd>1 designer, 1 PM, 1 engineer, content writer</dd>
-          </div>
-          <div class="meta-item">
-            <dt>Status</dt>
-            <dd>Live with measured impact</dd>
-          </div>
-        </dl>
-      </div>
-    </div>
-    <div class="background-image-wrap">
-      <img src="New Strategy - 11/background.png" alt="Wix domain tool - existing experience">
-    </div>
-  </section>
 
-  <!-- ─── Problem ─── -->
-  <section class="problem">
-    <div class="container">
-      <p class="label">The Problem</p>
-      <h2 class="section-title">A tool that wasn't keeping up</h2>
-      <p class="problem-intro">The domain tool was generating revenue but leaving significant conversion on the table. Three compounding issues were holding it back.</p>
-      <div class="problem-cards">
-        <div class="problem-card">
-          <div class="problem-card-img">
-            <img src="icon1.png" alt="Low conversion - domain purchase rate chart">
-          </div>
-          <h4>Low conversion &amp; funnel drop-off</h4>
-          <p>The search results were displayed inline on the same page in collapsed mode, creating a cluttered, hard-to-navigate experience that pushed users away before they committed to a purchase.</p>
-        </div>
-        <div class="problem-card">
-          <div class="problem-card-img">
-            <img src="icon2.png" alt="Development bugs and security gaps">
-          </div>
-          <h4>Development bugs &amp; security gaps</h4>
-          <p>Accumulated technical debt had introduced multiple bugs. A recent security incident added urgency - the redesign had to include a new security layer without disrupting the user journey.</p>
-        </div>
-        <div class="problem-card">
-          <div class="problem-card-img">
-            <img src="icon3.png" alt="Below competitive standard">
-          </div>
-          <h4>Below competitive standard</h4>
-          <p>Competitors displayed pricing upfront, offered prominent domain suggestions, and dedicated full pages to search results. Wix did none of these - a gap that was costing market share.</p>
+        <div class="placeholder tall" style="margin-top: clamp(40px,6vh,72px); margin-bottom: 0;">
+          <span class="ph-type">Hero Video / Image</span>
+          <span class="ph-label">[Placeholder]</span>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ─── Design Decisions ─── -->
-  <section class="decisions">
-    <div class="container">
-      <p class="label">Design Decisions</p>
-      <h2 class="section-title">Four changes that moved the needle</h2>
-      <p class="decisions-intro">Not every call was obvious. Each decision had a real internal debate behind it - here's the question, what we found, and what we shipped.</p>
-
-      <!-- Decision 1 -->
-      <div class="decision-wrap">
-        <span class="decision-badge">#1 Improvement</span>
-        <h3>Dedicated search results page</h3>
-        <p>On the original page, results appeared collapsed inline - pushing the hero down and leaving the experience feeling unresolved. The question was whether a separate page would actually help, or just add a navigation step users would drop off on.</p>
-        <div class="tension-sides">
-          <div class="tension-side tension-side--concern">
-            <div class="tension-side-label">The concern</div>
-            <p>Introducing a navigation step creates a moment of drop-off. The inline approach, despite being cluttered, kept everything on one surface.</p>
-          </div>
-          <div class="tension-side tension-side--finding">
-            <div class="tension-side-label">What the data showed</div>
-            <p>Users were already abandoning the inline experience - the collapsed results were competing with hero content and impossible to parse. The friction of a new page was lower than the cost of an unreadable state.</p>
+    <!-- ── CONTEXT ── -->
+    <section class="section">
+      <div class="col">
+        <p class="section-label">Context</p>
+        <div class="title-text-split">
+          <h2 class="section-title">[Context Title]</h2>
+          <div>
+            <p class="body-text">[What is this product, who uses it, what's the everyday context.]</p>
           </div>
         </div>
-        <div class="tension-resolution">
-          <span class="tension-resolution-label">The call</span>
-          <p>Route users to a dedicated results page. Give search results the full focus and space they need to work.</p>
-        </div>
-        <div class="compare-outer compare-outer--a">
-          <div class="compare-wrap">
-            <img src="New Strategy - 11/before%26afterA.png" alt="Before and after: dedicated results page">
-          </div>
+        <div class="placeholder wide">
+          <span class="ph-type">Image</span>
+          <span class="ph-label">[Placeholder]</span>
         </div>
       </div>
+    </section>
 
-      <!-- Decision 2 -->
-      <div class="decision-wrap">
-        <span class="decision-badge">#2 Improvement</span>
-        <h3>Spotlight on suggestions</h3>
-        <p>Users searching for domains often start with a narrow, single-term query. If that exact domain is taken, most stop - not because there's nothing available, but because nothing else was surfaced prominently enough to explore.</p>
-        <p>The redesign surfaces recommended and suggested domain names at the top of results, visually differentiated and immediately actionable. The goal: shift behavior from single-query searches to exploratory ones, increasing the chance a user finds something worth buying.</p>
-        <div class="compare-outer">
-          <div class="compare-wrap">
-            <img src="New Strategy - 11/before%26afterB.png" alt="Before and after: spotlight on suggestions">
-          </div>
+    <!-- ── THE PROBLEM ── -->
+    <section class="section">
+      <div class="col">
+        <p class="section-label">The Problem</p>
+        <div class="title-text-split">
+          <h2 class="section-title">[The Problem Title]</h2>
+          <p class="body-text">[What was broken, missing, or painful - and for whom.]</p>
+        </div>
+        <div class="placeholder tall">
+          <span class="ph-type">Image / Video</span>
+          <span class="ph-label">[Placeholder]</span>
         </div>
       </div>
+    </section>
 
-      <!-- Decision 3 -->
-      <div class="decision-wrap">
-        <span class="decision-badge">#3 Improvement</span>
-        <h3>Alternatives even when the domain is available</h3>
-        <p>Previously, if the desired domain was available, we showed it and stopped. The debate: would showing alternatives at that moment introduce doubt and pull users away from a purchase they were already ready to make?</p>
-        <div class="tension-sides">
-          <div class="tension-side tension-side--concern">
-            <div class="tension-side-label">The concern</div>
-            <p>A user who found their ideal domain is one click from converting. Alternatives introduce comparison and doubt at the worst possible moment.</p>
-          </div>
-          <div class="tension-side tension-side--finding">
-            <div class="tension-side-label">What the data showed</div>
-            <p>Users who engaged with alternatives had higher purchase completion rates, not lower. Options created confidence in the choice - not paralysis. Users shown only their primary domain had a higher rate of leaving without buying.</p>
-          </div>
-        </div>
-        <div class="tension-resolution">
-          <span class="tension-resolution-label">The call</span>
-          <p>Show alternatives always - but frame them as supporting the decision. The primary domain stays visually dominant; alternatives are "also consider," not competing choices.</p>
-        </div>
-        <div class="compare-outer">
-          <div class="compare-wrap">
-            <img src="New Strategy - 11/before%26afterC.png" alt="Before and after: alternatives shown">
-          </div>
+    <!-- ── RESEARCH ── -->
+    <section class="section">
+      <div class="col">
+        <p class="section-label">Research</p>
+        <h2 class="section-title">[Research Title]</h2>
+        <p class="body-text">[How you investigated the problem - interviews, surveys, data - and what you found.]</p>
+        <div class="placeholder wide">
+          <span class="ph-type">Chart / Data</span>
+          <span class="ph-label">[Placeholder]</span>
         </div>
       </div>
+    </section>
 
-      <!-- Decision 4 -->
-      <div class="decision-wrap">
-        <span class="decision-badge">#4 Improvement</span>
-        <h3>Prices upfront</h3>
-        <p>Wix's domain prices were higher than some competitors. The deliberate call was to hide them - hoping users would reach checkout before comparing. But hiding prices was becoming a liability.</p>
-        <div class="tension-sides">
-          <div class="tension-side tension-side--concern">
-            <div class="tension-side-label">The concern</div>
-            <p>Showing prices early invites direct comparison with cheaper alternatives before users experience any of Wix's added value.</p>
+    <!-- ── THE APPROACH ── -->
+    <section class="section" style="padding-bottom:0;">
+      <div class="col">
+        <p class="section-label">Design Decisions</p>
+        <h2 class="section-title">[Design Decisions Title]</h2>
+
+        <div class="approach-item">
+          <div class="approach-text">
+            <h3 class="approach-title">1. [Decision Title]</h3>
+            <p class="body-text">[What this decision was and why it mattered.]</p>
           </div>
-          <div class="tension-side tension-side--finding">
-            <div class="tension-side-label">What pushed the change</div>
-            <p>Every major competitor showed prices upfront - not showing them looked suspicious. Checkout abandonment was costly. And users who saw the price and stayed were more committed buyers, not fewer.</p>
+          <div class="approach-imgs">
+            <div class="placeholder medium">
+              <span class="ph-type">Image / Video</span>
+              <span class="ph-label">[Placeholder]</span>
+            </div>
           </div>
         </div>
-        <div class="tension-resolution">
-          <span class="tension-resolution-label">The call</span>
-          <p>Show prices inline. Losing price-sensitive users early is cheaper than losing them at checkout - and transparency builds more trust than the price difference loses.</p>
-        </div>
-        <div class="compare-outer compare-outer--d">
-          <div class="compare-wrap">
-            <img src="New Strategy - 11/before%26afterD.png" alt="Before and after: prices upfront">
+
+        <div class="approach-item">
+          <div class="approach-text">
+            <h3 class="approach-title">2. [Decision Title]</h3>
+            <p class="body-text">[What this decision was and why it mattered.]</p>
           </div>
+          <div class="approach-imgs">
+            <div class="placeholder medium">
+              <span class="ph-type">Image / Video</span>
+              <span class="ph-label">[Placeholder]</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="approach-item">
+          <div class="approach-text">
+            <h3 class="approach-title">3. [Decision Title]</h3>
+            <p class="body-text">[What this decision was and why it mattered.]</p>
+          </div>
+          <div class="approach-imgs">
+            <div class="placeholder medium">
+              <span class="ph-type">Image / Video</span>
+              <span class="ph-label">[Placeholder]</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── FINAL DESIGN ── -->
+    <section class="section">
+      <div class="col">
+        <p class="section-label">Final Design</p>
+        <h2 class="section-title">[Final Design Title]</h2>
+        <div class="placeholder tall">
+          <span class="ph-type">Final Design / Prototype</span>
+          <span class="ph-label">[Placeholder]</span>
         </div>
       </div>
+    </section>
 
-    </div>
-  </section>
-
-  <!-- ─── Final Design ─── -->
-  <section class="final-design">
-    <div class="container">
-      <p class="label">Final Design</p>
-      <h2 class="section-title">The redesigned experience</h2>
-      <p class="final-design-sub">The full flow - from domain search to results - as shipped.</p>
-      <div class="final-design-video">
-        <video src="final-design.mov" autoplay loop muted playsinline></video>
+    <!-- ── THE IMPACT ── -->
+    <section class="section">
+      <div class="col">
+        <p class="section-label">The Impact</p>
+        <h2 class="section-title">[Impact Title]</h2>
+        <div class="kpi-grid">
+          <div class="kpi-item">
+            <div class="kpi-number">[00]</div>
+            <div class="kpi-label">[Metric label]</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-number">[00%]</div>
+            <div class="kpi-label">[Metric label]</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-number">[00%]</div>
+            <div class="kpi-label">[Metric label]</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-number">[00%]</div>
+            <div class="kpi-label">[Metric label]</div>
+          </div>
+        </div>
+        <p class="kpi-footnote">[Validation footnote]</p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <style>
-    .final-design {
-      background: #fafafa;
-      padding: 120px 0;
-    }
-    .final-design-sub {
-      font-size: 17px;
-      line-height: 1.65;
-      color: #555;
-      margin-top: 8px;
-      margin-bottom: 48px;
-    }
-    .final-design-video {
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.1);
-    }
-    .final-design-video video {
-      width: 100%;
-      display: block;
-    }
-  </style>
-
-  <!-- ─── A/B Test ─── -->
-  <section class="ab-test">
-    <div class="container">
-      <p class="label">Validation</p>
-      <h2 class="section-title">A 16-day A/B test</h2>
-      <p class="ab-test-intro">We ran a controlled test comparing the original experience (Version A) against the redesigned flow (Version B) across a live sample of users.</p>
-      <div class="ab-cards">
-        <div class="ab-card">
-          <div class="ab-card-inner">
-            <div class="ab-card-visual">
-              <img src="New Strategy - 11/ab-new.gif" alt="Version A - inline results">
-            </div>
-            <div class="ab-card-text">
-              <div class="ab-panel-tag">Version A &mdash; Control</div>
-              <h3>Original experience</h3>
-              <p>Search results appear collapsed inline on the landing page. The hero image shifts down. No upfront pricing. No prominent domain suggestions. Single result focus.</p>
-            </div>
-          </div>
-        </div>
-        <div class="ab-card ab-card--b">
-          <div class="ab-card-inner ab-card-inner--b">
-            <div class="ab-card-visual">
-              <img src="New Strategy - 11/ab13.png" alt="Version B - dedicated results page">
-            </div>
-            <div class="ab-card-text">
-              <div class="ab-panel-tag ab-panel-tag--b">Version B &mdash; New Design</div>
-              <h3>Redesigned experience</h3>
-              <p>Dedicated search results page with prominent suggestions, alternative domain options surfaced even when the primary domain is available, and prices shown upfront throughout the flow.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p class="ab-duration">Every primary metric moved in the same direction. <strong>We shipped Version B.</strong></p>
-    </div>
-  </section>
-
-  <!-- ─── KPIs ─── -->
-  <section class="kpis">
-    <div class="container">
-      <p class="label">Impact</p>
-      <h2 class="section-title">Results after switching to Version B</h2>
-      <p class="kpis-intro">Measured against the control (Version A) over the test period. All metrics improved.</p>
-
-      <div class="kpis-categories">
-        <div class="kpis-category">
-          <div class="kpis-category-label">Purchase metrics</div>
-          <div class="kpis-subgrid">
-            <div class="kpi-tile">
-              <div class="kpi-bar"></div>
-              <div class="kpi-body">
-                <div class="kpi-number">+16%</div>
-                <div class="kpi-label">Domain purchase rate</div>
-                <div class="kpi-detail">Completed domain purchases vs. control</div>
-              </div>
-            </div>
-            <div class="kpi-tile">
-              <div class="kpi-bar"></div>
-              <div class="kpi-body">
-                <div class="kpi-number">+21.8%</div>
-                <div class="kpi-label">"Get it" clicks</div>
-                <div class="kpi-detail">Intent-to-purchase clicks on domain listings</div>
-              </div>
-            </div>
-            <div class="kpi-tile">
-              <div class="kpi-bar"></div>
-              <div class="kpi-body">
-                <div class="kpi-number">+11%</div>
-                <div class="kpi-label">Signup success</div>
-                <div class="kpi-detail">Users completing account creation through the flow</div>
-              </div>
-            </div>
-            <div class="kpi-tile">
-              <div class="kpi-bar"></div>
-              <div class="kpi-body">
-                <div class="kpi-number">+7.5%</div>
-                <div class="kpi-label">Sign-up form completions</div>
-                <div class="kpi-detail">Form submissions through the domain gate</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="kpis-category">
-          <div class="kpis-category-label">Top-funnel metrics</div>
-          <div class="kpis-subgrid kpis-subgrid--3">
-            <div class="kpi-tile">
-              <div class="kpi-bar" style="background:#0EA5E9;"></div>
-              <div class="kpi-body">
-                <div class="kpi-number" style="color:#0EA5E9;">+23.2%</div>
-                <div class="kpi-label">Sites created</div>
-                <div class="kpi-detail">Users who went on to create a Wix site</div>
-              </div>
-            </div>
-            <div class="kpi-tile">
-              <div class="kpi-bar" style="background:#0EA5E9;"></div>
-              <div class="kpi-body">
-                <div class="kpi-number" style="color:#0EA5E9;">+38.8%</div>
-                <div class="kpi-label">Sites published</div>
-                <div class="kpi-detail">Users who published their site after the domain flow</div>
-              </div>
-            </div>
-            <div class="kpi-tile">
-              <div class="kpi-bar" style="background:#0EA5E9;"></div>
-              <div class="kpi-body">
-                <div class="kpi-number" style="color:#0EA5E9;">+7.5%</div>
-                <div class="kpi-label">Sign-up form</div>
-                <div class="kpi-detail">Top-funnel sign-up completions via domain entry</div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- ── CS NAV ── -->
+    <div class="col">
+      <div class="cs-nav">
+        <a href="../case-study-2/index.html" class="cs-nav-link">← Previous project</a>
+        <a href="../case-study-4/index.html" class="cs-nav-link">Next project →</a>
       </div>
     </div>
-  </section>
 
-  <!-- ─── Footer ─── -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <a href="../case-study-2/index.html" class="footer-nav-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        Previous
-      </a>
-      <button class="footer-nav-item footer-nav-item--center" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-        Top of the page
-      </button>
-      <span class="footer-nav-item footer-nav-item--right footer-nav-item--disabled">
-        Next
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </span>
-    </div>
-  </footer>
+  </main>
 
-  <!-- ─── Scroll to top ─── -->
-  <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
   </button>
-
-  <style>
-    .scroll-top {
-      position: fixed;
-      bottom: 40px;
-      right: 40px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2px solid #1a1a1a;
-      background: #fff;
-      color: #1a1a1a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: opacity 0.2s, transform 0.2s;
-      z-index: 200;
-    }
-    .scroll-top:hover { opacity: 0.6; }
-  </style>
+  <script>
+    (function(){
+      var btn = document.getElementById('backToTop');
+      if(!btn) return;
+      window.addEventListener('scroll', function(){
+        if(window.scrollY > 600){ btn.classList.add('is-visible'); } else { btn.classList.remove('is-visible'); }
+      });
+      btn.addEventListener('click', function(){
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+    })();
+  </script>
 
 </body>
 </html>

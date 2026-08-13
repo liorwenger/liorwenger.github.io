@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wix Reviews Widget - Lior Wenger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Martian+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:     #0A0A09;
+      --ink:    #F2F2EE;
+      --accent: #1CFF33;
+      --muted:  rgba(242,242,238,0.42);
+      --line:   rgba(242,242,238,0.11);
+      --col:    min(1200px, 88vw);
+    }
+
+    html { -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif;
+      background: var(--bg); color: var(--ink);
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── NAV ── */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: clamp(16px,2.2vw,28px) clamp(24px,4.5vw,64px);
+      background: var(--bg); border-bottom: 1px solid var(--line);
+    }
+    .logo { font-size: clamp(14px,1.1vw,17px); font-weight: 600; display: flex; }
+    .site-nav { display: flex; align-items: center; gap: clamp(14px,1.8vw,26px); }
+    @media (max-width: 480px) { .site-nav { flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; } }
+    .site-nav a {
+      font-family: 'Martian Mono', monospace;
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink);
+      opacity: .6; transition: opacity .2s;
+    }
+    .site-nav a:hover, .site-nav a.is-active { opacity: 1; }
+    .nav-cta {
+      opacity: 1 !important; border: 1px solid var(--ink) !important;
+      border-radius: 100px !important; padding: 7px 18px !important;
+      transition: background .2s, color .2s !important;
+    }
+    .nav-cta:hover { background: var(--ink) !important; color: var(--bg) !important; }
+
+    /* ── LAYOUT ── */
+    .page-body { padding-top: clamp(80px,10vh,120px); }
+    .col { max-width: var(--col); margin: 0 auto; padding: 0 clamp(16px,2vw,32px); }
+
+    /* ── SECTION SHELL ── */
+    .section {
+      padding: clamp(110px,16vh,180px) 0;
+    }
+    .section-label {
+      font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif;
+      font-size: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: clamp(16px,2.4vh,28px);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: clamp(80px,12vh,140px) 0 clamp(48px,7vh,80px);
+      position: relative;
+    }
+    .hero-title {
+      font-family: 'Familjen Grotesk', sans-serif;
+      font-size: clamp(38px,7.5vw,80px); font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.05;
+      margin-bottom: clamp(8px,1.2vh,14px);
+    }
+    .hero-meta-row {
+      display: grid; grid-template-columns: 2fr 1fr 1fr;
+      gap: clamp(32px,5vw,80px);
+      padding-top: clamp(32px,4.5vh,52px); margin-top: clamp(32px,4.5vh,52px);
+      border-top: 1px solid var(--line); align-items: start;
+    }
+    .meta-col p:not(.section-label) { font-size: clamp(14px,1.05vw,17px); line-height: 1.7; }
+    .meta-col ul { list-style: none; font-size: clamp(14px,1.05vw,17px); line-height: 1.9; }
+    @media (max-width: 700px) { .hero-meta-row { grid-template-columns: 1fr; gap: 28px; } }
+
+    /* ── TITLE / TEXT SPLIT ── */
+    .title-text-split {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(40px,6vw,100px); align-items: start;
+      margin-bottom: clamp(32px,5vh,56px);
+    }
+    .title-text-split > *:last-child { padding-top: calc(clamp(12px,2vh,24px) - 4px); }
+    @media (max-width: 768px) { .title-text-split { grid-template-columns: 1fr; } }
+
+    .section-title {
+      font-family: 'Familjen Grotesk', sans-serif;
+      font-size: 60px;
+      font-weight: 700; letter-spacing: -0.025em; line-height: 1.08;
+      margin-top: 0; margin-bottom: clamp(20px,3vh,32px);
+    }
+
+    /* ── BODY TEXT ── */
+    .body-text {
+      font-size: clamp(15px,1.15vw,18px);
+      line-height: 1.7; color: var(--ink);
+      margin-top: 0; margin-bottom: clamp(14px,2vh,22px);
+    }
+    .body-text:last-of-type { margin-bottom: 0; }
+    .body-text strong { color: var(--accent); font-weight: 700; }
+
+    /* ── PULL QUOTE ── */
+    .pull-quote {
+      border-left: 3px solid var(--accent);
+      padding: clamp(16px,2.5vw,26px) clamp(20px,3vw,30px);
+      margin: clamp(24px,3.5vh,36px) 0;
+      background: rgba(28,255,51,0.05);
+      border-radius: 0 12px 12px 0;
+    }
+    .pull-quote p {
+      font-size: clamp(17px,1.6vw,22px); font-style: italic;
+      color: var(--ink); line-height: 1.55; margin: 0;
+    }
+    .pull-quote cite {
+      display: block; margin-top: 14px; font-style: normal;
+      font-family: 'Martian Mono', monospace;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── CHALLENGE / APPROACH ITEMS ── */
+    .approach-item {
+      display: grid; grid-template-columns: 1fr 2fr;
+      gap: clamp(32px,5vw,64px); align-items: start;
+      padding: clamp(110px,14.5vh,175px) 0;
+    }
+    .approach-item:first-of-type { padding-top: clamp(48px,6.5vh,72px); }
+    .approach-badge {
+      display: inline-block;
+      font-family: 'Martian Mono', monospace;
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: #0A0A09; background: var(--accent);
+      border-radius: 100px; padding: 5px 14px; margin-bottom: 16px;
+    }
+    .approach-title {
+      font-family: 'Familjen Grotesk', sans-serif;
+      font-size: clamp(24px,2.8vw,34px); font-weight: 700;
+      letter-spacing: -0.02em; line-height: 1.2;
+      margin-bottom: clamp(16px,2.2vh,22px);
+      margin-top: 0;
+    }
+    .approach-body { max-width: 480px; }
+    .approach-text { min-width: 0; }
+    .approach-imgs { display: flex; flex-direction: column; gap: clamp(24px,3.5vh,32px); min-width: 0; }
+    .approach-imgs .placeholder { margin: 0; }
+    .approach-imgs .flow-card { margin: 0; }
+    @media (max-width: 900px) { .approach-item { grid-template-columns: 1fr; } }
+
+    /* ── INSIGHT / DECISION BOX ── */
+    .insight-box {
+      background: rgba(242,242,238,0.04); border: 1px solid var(--line);
+      border-radius: 10px; padding: clamp(20px,3vw,28px);
+      margin: clamp(24px,3.5vh,36px) 0; max-width: 780px;
+    }
+    .insight-label {
+      font-family: 'Martian Mono', monospace;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); display: block; margin-bottom: 10px;
+    }
+    .insight-box p { font-size: clamp(15px,1.1vw,17px); line-height: 1.7; color: var(--ink); margin: 0; }
+    .insight-box p strong { color: var(--accent); font-weight: 700; }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow-card {
+      background: rgba(242,242,238,0.03); border: 1px solid var(--line);
+      border-radius: 16px; padding: clamp(28px,4vw,40px);
+      margin: clamp(24px,3.5vh,36px) 0;
+    }
+    .flow-lanes { display: flex; flex-direction: column; gap: clamp(28px,4vh,40px); width: 100%; }
+    .flow-lane { display: flex; align-items: flex-start; gap: clamp(12px,2vw,20px); }
+    .flow-lane-label {
+      flex-shrink: 0; width: 104px; margin-top: 9px;
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Martian Mono', monospace;
+      font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--ink);
+    }
+    .flow-lane-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .flow-lane--buyer .flow-lane-dot { background: #6FA8FF; }
+    .flow-steps { display: flex; flex-wrap: wrap; align-items: center; gap: clamp(6px,1vw,10px) clamp(6px,1vw,10px); min-width: 0; }
+    .flow-chip {
+      font-size: 13px; color: var(--ink); white-space: nowrap;
+      background: rgba(242,242,238,0.05); border: 1px solid var(--line);
+      border-radius: 8px; padding: 9px 14px;
+    }
+    .flow-chip--accent {
+      color: #0A0A09; background: var(--accent); border-color: var(--accent); font-weight: 700;
+    }
+    .flow-chip--buyer-accent {
+      color: #0A0A09; background: #6FA8FF; border-color: #6FA8FF; font-weight: 700;
+    }
+    .flow-chevron { color: var(--muted); font-size: 13px; flex-shrink: 0; }
+    .flow-connect-row { display: flex; align-items: center; gap: 8px; padding-left: 132px; }
+    .flow-connect-label {
+      font-family: 'Martian Mono', monospace;
+      font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+      white-space: nowrap;
+    }
+    @media (max-width: 700px) {
+      .flow-chip, .flow-lane-label { font-size: 11.5px; }
+    }
+
+    /* ── PLACEHOLDERS / IMAGES ── */
+    .placeholder {
+      width: 100%; background: rgba(242,242,238,0.05); border: 1px solid var(--line);
+      border-radius: 8px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; padding: clamp(32px,5vh,56px) clamp(24px,4vw,48px);
+      margin: clamp(24px,3.5vh,40px) 0; text-align: center;
+    }
+    .placeholder.tall   { aspect-ratio: 16/9; }
+    .placeholder.medium { aspect-ratio: 4/3; }
+    .placeholder.wide   { aspect-ratio: 21/9; }
+
+    /* ── CS NAV ── */
+    .cs-nav {
+      padding: clamp(40px,6vh,72px) 0;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .cs-nav-link {
+      font-family: 'Martian Mono', monospace;
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      border-bottom: 1px solid currentColor; padding-bottom: 3px;
+      opacity: .55; transition: opacity .2s;
+    }
+    .cs-nav-link:hover { opacity: 1; }
+
+    /* ── KPI GRID ── */
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1px; background: var(--line);
+      border: 1px solid var(--line); border-radius: 8px;
+      overflow: hidden; margin-top: clamp(24px,3.5vh,40px);
+    }
+    .kpi-grid.is-2 { grid-template-columns: repeat(2,1fr); margin-top: clamp(16px,2.4vh,24px); }
+    .kpi-item {
+      background: var(--bg);
+      padding: clamp(24px,3vw,40px) clamp(20px,2.2vw,28px);
+    }
+    .kpi-number {
+      font-size: clamp(32px,3.5vw,52px); font-weight: 700;
+      color: var(--accent); letter-spacing: -0.03em; line-height: 1;
+      margin-bottom: 10px;
+    }
+    .kpi-label {
+      font-size: clamp(14px,1.05vw,17px); font-weight: 400;
+      color: var(--ink); line-height: 1.5;
+    }
+    .kpi-footnote {
+      font-family: 'Martian Mono', monospace;
+      font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--muted);
+      margin-top: clamp(20px,2.8vh,28px);
+    }
+    @media (max-width: 700px) {
+      .kpi-grid, .kpi-grid.is-2 { grid-template-columns: repeat(2,1fr); }
+    }
+    .back-to-top {
+      position: fixed; bottom: 32px; right: 32px; z-index: 200;
+      width: 96px; height: 96px; border-radius: 50%;
+      background: rgba(242,242,238,0.08); border: 1px solid rgba(242,242,238,0.18);
+      color: var(--ink); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0; pointer-events: none; transform: translateY(8px);
+      transition: opacity .25s ease, transform .25s ease, background .2s ease;
+      backdrop-filter: blur(8px);
+    }
+    .back-to-top.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .back-to-top:hover { background: rgba(242,242,238,0.16); }
+    @media (max-width: 480px) { .back-to-top { width: 56px; height: 56px; bottom: 16px; right: 16px; } .back-to-top svg { width: 24px; height: 24px; } }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <a class="logo" href="../index.html"><img src="../assets/LOGO-W.png" alt="Lior Wenger" style="height:28px;width:auto;display:block;"></a>
+    <nav class="site-nav">
+      <a href="../index.html#work">Work</a>
+      <a href="../about/index.html">About</a>
+      <a href="https://www.linkedin.com/in/liorwenger/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:liorbetser@gmail.com" class="nav-cta">Let's talk</a>
+    </nav>
+  </header>
+
+  <main class="page-body">
+
+    <!-- ── HERO ── -->
+    <section class="hero">
+      <div class="col">
+        <h1 class="hero-title">Wix Reviews Widget</h1>
+
+        <div class="hero-meta-row">
+          <div class="meta-col">
+            <p class="section-label">Overview</p>
+            <p>Wix had no native reviews product. I led the design of their first-party solution - from a blank page to a widget used by 70,000 stores in its first rollout.</p>
+          </div>
+          <div class="meta-col">
+            <p class="section-label">What I Did</p>
+            <ul>
+              <li>Product Design</li>
+              <li>UX Research</li>
+              <li>Interaction Design</li>
+            </ul>
+          </div>
+          <div class="meta-col">
+            <p class="section-label">The Team</p>
+            <ul>
+              <li>Product Manager</li>
+              <li>Data Analysts</li>
+              <li>Content</li>
+              <li>Customer Support</li>
+              <li>Developers</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="placeholder tall" style="margin-top: clamp(40px,6vh,72px); margin-bottom: 0; padding:0; background:none; border:none; overflow:hidden;">
+          <img src="assets/new-hero.png" alt="Wix Reviews Widget - hero view" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CONTEXT ── -->
+    <section class="section">
+      <div class="col">
+        <p class="section-label">Context</p>
+        <div class="title-text-split">
+          <h2 class="section-title">Building Wix's First Native Reviews Product</h2>
+          <div>
+            <p class="body-text">Store owners on Wix were stuck using third-party review apps that looked off-brand, broke on mobile, and took hours to configure. The gap was obvious - Wix needed its own reviews product, built to feel native across millions of different stores. <strong>This project was the answer.</strong></p>          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── THE PROBLEM ── -->
+    <section class="section">
+      <div class="col">
+        <p class="section-label">The Problem</p>
+        <div class="title-text-split">
+          <h2 class="section-title">Third-Party Apps Weren't Good Enough</h2>
+          <p class="body-text">Store owners on Wix had two options: use a third-party reviews app from the App Market, or go without. Both were bad. Third-party apps were hard to integrate, offered limited customization, and never truly matched a site's design.</p>
+        </div>
+
+        <div class="pull-quote">
+          <p>"We want a product reviews application that has the look and feel of Wix."</p>
+          <cite>Direct user feedback from Wix community</cite>
+        </div>
+
+        <p class="body-text" style="max-width:760px;">Users weren't just complaining about aesthetics. The friction of setting up external tools meant many store owners simply didn't collect reviews at all - leaving a huge trust signal off the table.</p>
+      </div>
+    </section>
+
+    <!-- ── KEY DESIGN DECISIONS INTRO ── -->
+    <section class="section" style="padding-bottom:0;">
+      <div class="col">
+        <p class="section-label">Key Design Decisions</p>
+        <h2 class="section-title">Four Things That Were Actually Difficult</h2>
+        <!-- Challenge 01 -->
+        <div class="approach-item">
+          <div class="approach-text">
+            <span class="approach-badge">Challenge 01</span>
+            <p class="body-text approach-body">Every store looks different. Generic felt off-brand.</p>
+            <div class="insight-box">
+              <span class="insight-label">The decision</span>
+              <p>Three layers: <strong>Display</strong>, <strong>Design</strong>, <strong>Layout</strong>.</p>
+            </div>
+          </div>
+          <div class="approach-imgs">
+            <div class="placeholder" style="padding:0; background:none; border:none; overflow:hidden; aspect-ratio:auto;">
+              <img src="assets/widget.gif" alt="Reviews widget customization in action" style="width:100%;border-radius:8px;display:block;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Challenge 02 -->
+        <div class="approach-item">
+          <div class="approach-text">
+            <span class="approach-badge">Challenge 02</span>            <p class="body-text approach-body">Owner and buyer never share a screen. One email connects them.</p>
+            <div class="insight-box">
+              <span class="insight-label">The decision</span>
+              <p>Mapped both flows side-by-side. Added a Reviews tab with full visibility into <strong>Published, Pending, and Rejected</strong>.</p>
+            </div>
+          </div>
+          <div class="approach-imgs">
+            <div class="flow-card" style="width:80%;">
+              <div class="flow-lanes">
+                <div class="flow-lane">
+                  <div class="flow-lane-label"><span class="flow-lane-dot"></span>Site Owner</div>
+                  <div class="flow-steps">
+                    <span class="flow-chip">Add Reviews widget</span>
+                    <span class="flow-chevron">→</span>
+                    <span class="flow-chip">Customise the widget</span>
+                    <span class="flow-chevron">···</span>
+                    <span class="flow-chip">Email - new review</span>
+                    <span class="flow-chevron">→</span>
+                    <span class="flow-chip">Review Published / Rejected</span>
+                  </div>
+                </div>
+
+                <div class="flow-connect-row">
+                  <span style="color:var(--accent); font-size:13px;">↑</span>
+                  <span class="flow-connect-label">Buyer's review triggers the owner's email</span>
+                </div>
+
+                <div class="flow-lane flow-lane--buyer">
+                  <div class="flow-lane-label"><span class="flow-lane-dot"></span>Buyer</div>
+                  <div class="flow-steps">
+                    <span class="flow-chip">Buy a product</span>
+                    <span class="flow-chevron">→</span>
+                    <span class="flow-chip">Receive email to add review</span>
+                    <span class="flow-chevron">→</span>
+                    <span class="flow-chip">Login</span>
+                    <span class="flow-chevron">→</span>
+                    <span class="flow-chip">Add review</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="placeholder" style="width:80%; padding:0; background:none; border:none; overflow:hidden;">
+              <img src="assets/before-tab.png" alt="Dashboard navigation - before Reviews tab" style="width:100%;border-radius:8px;display:block;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Challenge 03 -->
+        <div class="approach-item">
+          <div class="approach-text">
+            <span class="approach-badge">Challenge 03</span>
+            <h3 class="approach-title" style="font-family:inherit; font-size:clamp(15px,1.15vw,18px); font-weight:400; letter-spacing:normal; margin-bottom:clamp(14px,2vh,22px);">Where should it live?</h3>
+            <p class="body-text approach-body"><strong style="color:var(--accent);">App Market</strong>, or the <strong style="color:var(--accent);">Plugin panel</strong> on the product page?</p>
+            <div class="insight-box">
+              <span class="insight-label">The decision</span>
+              <p>Plugin panel - zero context switch, right when intent is highest.</p>
+            </div>
+          </div>
+          <div class="approach-imgs">
+            <div class="placeholder" style="padding:0; background:none; border:none; overflow:hidden; aspect-ratio:auto;">
+              <img src="assets/challenge-03.png" alt="Entry point decision - Plugin panel vs App Market" style="width:100%;border-radius:8px;display:block;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Challenge 04 -->
+        <div class="approach-item">
+          <div class="approach-text">
+            <span class="approach-badge">Challenge 04</span>
+            <h3 class="approach-title" style="font-family:inherit; font-size:clamp(15px,1.15vw,18px); font-weight:400; letter-spacing:normal; margin-bottom:clamp(14px,2vh,22px);">What about zero reviews?</h3>
+            <p class="body-text approach-body">A bare empty state gets removed before it's ever used.</p>
+            <div class="insight-box">
+              <span class="insight-label">The decision</span>
+              <p>Treat it as a <strong>call to action, not a placeholder</strong>.</p>
+            </div>
+          </div>
+          <div class="approach-imgs">
+            <div class="placeholder" style="padding:0; background:none; border:none; overflow:hidden; aspect-ratio:auto;">
+              <video src="assets/empty-state.mov" style="width:100%;border-radius:8px;display:block;" autoplay loop muted playsinline></video>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── FINAL DESIGN ── -->
+    <section class="section">
+      <div class="col">
+        <p class="section-label">Final Design</p>
+        <h2 class="section-title">The Full Product</h2>
+      </div>
+      <div style="width:100%; overflow:hidden;">
+        <img src="assets/final-design2.png" alt="Final design - full UI across mobile, desktop, and Business Manager" style="width:100%;display:block;">
+      </div>
+    </section>
+
+    <!-- ── THE IMPACT ── -->
+    <section class="section">
+      <div class="col">
+        <p class="section-label">Impact</p>
+        <h2 class="section-title">Launch Results</h2>
+
+        <div class="kpi-grid">
+          <div class="kpi-item">
+            <div class="kpi-number">1.8k+</div>
+            <div class="kpi-label">Active installations within 90 days</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-number">76%</div>
+            <div class="kpi-label">Setup completion rate</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-number">82%</div>
+            <div class="kpi-label">Of merchants collected their first review within 14 days</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-number">4.7</div>
+            <div class="kpi-label">Average plugin rating out of 5</div>
+          </div>
+        </div>
+
+        <div class="kpi-grid is-2">
+          <div class="kpi-item">
+            <div class="kpi-number">+27%</div>
+            <div class="kpi-label">Higher conversion rate for stores with active reviews vs. stores without - measured at 6 months post-launch</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-number">+34%</div>
+            <div class="kpi-label">More orders on products with 5+ reviews compared to products with none</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CS NAV ── -->
+    <div class="col">
+      <div class="cs-nav">
+        <a href="../case-study-2/index.html" class="cs-nav-link">← Previous project</a>
+        <a href="../case-study-4/index.html" class="cs-nav-link">Next project →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+  <script>
+    (function(){
+      var btn = document.getElementById('backToTop');
+      if(!btn) return;
+      window.addEventListener('scroll', function(){
+        if(window.scrollY > 600){ btn.classList.add('is-visible'); } else { btn.classList.remove('is-visible'); }
+      });
+      btn.addEventListener('click', function(){
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+    })();
+  </script>
+
+</body>
+</html>

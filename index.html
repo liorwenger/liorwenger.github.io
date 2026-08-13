@@ -1,910 +1,739 @@
 <!DOCTYPE html>
-<html lang="en" data-mode="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lior Wenger - Product Designer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Kaisei+Tokumin&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Martian+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    button { font-size: inherit; }
 
     :root {
-      --accent: #FF03B8;
-      --bg: #111;
-      --text: #fff;
-      --text-muted: rgba(255,255,255,0.35);
-      --header-scrolled-bg: rgba(17,17,17,0.95);
-      --header-scrolled-border: rgba(255,255,255,0.06);
-      --overlay: rgba(0,0,0,0.70);
-      --toggle-bg: rgba(255,255,255,0.18);
-      --toggle-border: rgba(255,255,255,0.25);
-      --toggle-knob: #fff;
-      --swatch-active-ring: rgba(255,255,255,0.9);
+      --bg:    #0A0A09;
+      --ink:   #F2F2EE;
+      --accent:#92E227;
+      --muted: rgba(242,242,238,0.42);
+      --line:  rgba(242,242,238,0.11);
     }
 
-    [data-mode="light"] {
-      --bg: #f0efeb;
-      --text: #111;
-      --text-muted: rgba(0,0,0,0.35);
-      --header-scrolled-bg: rgba(240,239,235,0.95);
-      --header-scrolled-border: rgba(0,0,0,0.06);
-      --overlay: rgba(255,255,255,0.68);
-      --toggle-bg: rgba(0,0,0,0.12);
-      --toggle-border: rgba(0,0,0,0.2);
-      --toggle-knob: #111;
-      --swatch-active-ring: rgba(0,0,0,0.7);
-    }
-
-    html {
-      font-size: 16px;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     body {
-      font-family: 'Avenir', 'Avenir Next', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Avenir', 'Avenir Next', 'Inter', sans-serif;
       background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+      color: var(--ink);
       overflow-x: hidden;
     }
-
     a { color: inherit; text-decoration: none; }
 
-    /* ─── Header ─── */
-    .header {
-      padding: 32px 0;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: transparent;
-      z-index: 100;
-      transition: background 0.3s, box-shadow 0.3s;
+    /* ─── HEADER ─── */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: clamp(20px,2.8vw,32px) clamp(24px,4.5vw,64px);
     }
-
-    .header.scrolled {
-      background: var(--header-scrolled-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 1px 0 var(--header-scrolled-border);
+    .logo { font-size: clamp(14px,1.1vw,17px); font-weight: 600; }
+    .site-nav { display: flex; align-items: center; gap: clamp(14px,1.8vw,26px); }
+    @media (max-width: 480px) { .site-nav { flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; } }
+    .site-nav a {
+      font-family: 'Martian Mono', monospace;
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      opacity: .6; transition: opacity .2s;
     }
-
-    .header-inner {
-      width: 100%;
-      padding: 0 clamp(24px, 8vw, 120px);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .site-nav a:hover { opacity: 1; }
+    .nav-cta {
+      opacity: 1 !important; border: 1px solid var(--ink) !important;
+      border-radius: 100px !important; padding: 7px 18px !important;
+      transition: background .2s, color .2s !important;
     }
+    .nav-cta:hover { background: var(--ink) !important; color: var(--bg) !important; }
 
-    .header-name {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text);
-      transition: color 0.3s;
+    /* ─── HERO ─── */
+    .hero {
+      height: 100vh; display: flex; flex-direction: column;
+      background: #0A0A09;
+      border-bottom: 1px solid rgba(242,242,238,0.1);
+      position: relative; overflow: hidden;
     }
-
-    .header-name a:hover { opacity: 0.6; }
-
-    .header-nav {
-      display: flex;
-      gap: 32px;
-    }
-
-    .header-nav a {
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      transition: color 0.3s;
-    }
-
-    .header-nav a:hover { color: var(--text); }
-
-    /* ─── Interactive Hero ─── */
-    .interactive-hero {
-      width: 100%;
-      min-height: 100vh;
-      position: relative;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      font-size: clamp(32px, 6.4vw, 130px);
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+    .hero-video {
+      position: absolute; inset: 0; z-index: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
       opacity: 0;
-      transition: opacity 0.35s ease;
-      will-change: opacity;
-      transform: translateZ(0);
+      animation: videoReveal 1.2s ease 2s forwards;
+    }
+    @keyframes videoReveal {
+      to { opacity: 0.25; }
+    }
+    .hero-center, .hero-logo-wrap { position: relative; z-index: 2; }
+
+    .hero-center {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: clamp(90px,13vh,140px) clamp(24px,4.5vw,64px) clamp(24px,4vh,48px);
+      text-align: center;
+    }
+    .hero-icon {
+      width: 38px; height: 38px;
+      margin-bottom: clamp(18px,2.8vh,30px);
+      color: rgba(242,242,238,0.45);
+      animation: heroIn .9s ease .1s both;
+    }
+    .hero-para {
+      font-size: clamp(16px,1.45vw,22px); font-weight: 400; line-height: 1.55;
+      color: rgba(242,242,238,0.72); max-width: 480px;
+      animation: heroIn .9s ease .25s both;
+    }
+    .hero-para + .hero-para {
+      margin-top: 1.1em;
+      color: rgba(242,242,238,0.42);
+      animation-delay: .38s;
+    }
+    @keyframes heroIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: none; }
     }
 
-    .hero-bg.active {
-      opacity: 1;
-    }
-
-    .hero-bg::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--overlay);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      padding: 0 clamp(24px, 8vw, 120px);
-      width: 100%;
-    }
-
-    .hero-line {
-      display: flex;
-      align-items: center;
-      flex-wrap: nowrap;
-      gap: 0.28em;
-      line-height: 1;
-      margin-bottom: 0.12em;
-    }
-
-    .hero-serif {
-      font-family: 'Kaisei Tokumin', serif;
-      font-size: 1em;
-      font-weight: 400;
-      color: var(--text);
-      white-space: nowrap;
-      line-height: 1.65;
-    }
-
-    .accent {
-      color: var(--accent);
-    }
-
-    /* ─── Dark/Light Toggle ─── */
-    .mode-toggle {
-      display: inline-flex;
-      align-items: center;
+    /* Hero logo - full bleed */
+    .hero-logo-wrap {
       flex-shrink: 0;
-      width: 1.47em;
-      height: 1em;
-      border-radius: 999px;
-      background: #3a3a3a;
-      border: 0.02em solid rgba(255,255,255,0.08);
-      cursor: pointer;
-      position: relative;
-      vertical-align: middle;
-      margin: 0 0.25em;
-      transition: background 0.25s, border-color 0.25s;
-      padding: 0;
-    }
-
-    [data-mode="light"] .mode-toggle {
-      background: #d0d0d0;
-      border-color: #bbb;
-    }
-
-    .mode-toggle:hover { opacity: 0.85; }
-
-    .toggle-knob {
-      position: absolute;
-      width: 0.82em;
-      height: 0.82em;
-      border-radius: 50%;
-      background: #fff;
-      right: 0.09em;
-      transition: right 0.25s cubic-bezier(.4,0,.2,1), left 0.25s cubic-bezier(.4,0,.2,1), background 0.25s;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.35);
-    }
-
-    [data-mode="light"] .toggle-knob {
-      background: #111;
-      right: auto;
-      left: 0.09em;
-    }
-
-    /* ─── Lior + swatches group (wraps together on mobile) ─── */
-    .lior-group {
-      display: inline-flex;
-      align-items: center;
-      flex-shrink: 0;
-      gap: 0.3em;
-    }
-
-    /* ─── Color Swatches ─── */
-    .color-swatches {
-      display: inline-flex;
-      align-items: stretch;
-      margin-left: 0.22em;
-      vertical-align: middle;
-      gap: 0;
-      flex-shrink: 0;
-    }
-
-    .swatch {
-      width: 70px;
-      height: 1em;
-      border: none;
-      cursor: pointer;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: clamp(8px,1.2vh,16px) 0;
       overflow: hidden;
-      padding: 0;
-      background: var(--swatch-bg);
-      transition: transform 0.15s;
+      animation: logoFly 2.8s cubic-bezier(.16,1,.3,1) 1.1s both;
+    }
+    @keyframes logoFly {
+      from { transform: translateY(120%); }
+      to   { transform: translateY(0); }
+    }
+    .hero-logo { width: 100%; height: auto; display: block; }
+
+    /* Header inversion over dark hero */
+    .header--light .logo,
+    .header--light .site-nav a { color: #F2F2EE; }
+    .header--light .nav-cta { border-color: rgba(242,242,238,0.55) !important; color: #F2F2EE !important; }
+    .header--light .nav-cta:hover { background: #F2F2EE !important; color: #111110 !important; }
+
+
+    /* ─── WORK SECTION ─── */
+    /* height set by JS */
+
+    .work-stage {
+      position: sticky; top: 0;
+      height: 100vh; overflow: hidden;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
     }
 
-    .swatch:hover { transform: translateY(-4px) scale(1.08); z-index: 1; }
-
-    .swatch-code {
-      font-family: 'Inter', monospace;
-      font-size: 0.13em;
-      font-weight: 500;
-      color: rgba(0,0,0,0.65);
-      transform: rotate(-90deg);
-      white-space: nowrap;
-      letter-spacing: 0.01em;
-      user-select: none;
+    /* Horizontal track — all panels in a flex row */
+    .work-track {
+      display: flex; height: 100%;
+      will-change: transform;
+      position: relative; z-index: 1; /* above .work-cta-bg */
     }
 
-    .swatch.active::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      box-shadow: inset 0 0 0 2.5px var(--swatch-active-ring);
+    /* Every panel = 50vw wide */
+    .w-panel {
+      flex: 0 0 50vw; width: 50vw; height: 100%;
+      background: var(--bg); /* must cover the white CTA layer behind */
+      position: relative;
+    }
+    .w-panel::after {
+      content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 1px;
+      background: rgba(242,242,238,0.4);
       pointer-events: none;
     }
 
-    .swatch { background: var(--swatch-bg); }
+    /* ── Intro panel ── */
+    .panel-intro {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: clamp(32px,5vw,72px);
+      text-align: center;
+    }
+    .panel-intro h2 {
+      font-family: 'Familjen Grotesk', sans-serif;
+      font-size: clamp(34px,5.2vw,72px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.0;
+      white-space: pre;
+    }
 
-    /* ─── Word Cycling ─── */
-    .word-wrap {
-      display: inline-block;
+    /* ── Card panels ── */
+    .panel-card {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: clamp(72px,13vh,120px) clamp(40px,5.5vw,72px) clamp(56px,10vh,88px);
+    }
+    .panel-card:hover { color: inherit; }
+
+    /* Card frame */
+    .card-box {
+      display: flex; flex-direction: column;
       overflow: hidden;
-      font-size: 1em;
-      height: 1.65em;
-      vertical-align: bottom;
     }
 
-    .word-slot {
-      font-family: 'Kaisei Tokumin', serif;
-      font-size: 1em;
-      font-weight: 400;
-      display: inline-block;
-      white-space: nowrap;
-      line-height: 1.65;
-      will-change: transform, opacity;
-    }
-
-    .word-slot.anim-out {
-      animation: wordOut 0.55s cubic-bezier(.4,0,1,1) forwards;
-    }
-
-    .word-slot.anim-in {
-      animation: wordIn 0.6s cubic-bezier(0,0,.2,1) forwards;
-    }
-
-    @keyframes wordOut {
-      from { transform: translateY(0); opacity: 1; }
-      to   { transform: translateY(-110%); opacity: 0; }
-    }
-
-    @keyframes wordIn {
-      from { transform: translateY(110%); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
-    }
-
-    /* ─── Pattern Swatches ─── */
-    .pattern-swatches {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.07em;
-      vertical-align: middle;
-      flex-shrink: 0;
-    }
-
-    .pattern-swatch {
-      width: 0.92em;
-      height: 1em;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      overflow: hidden;
-      border-radius: 3px;
-      flex-shrink: 0;
-      position: relative;
-      transition: transform 0.15s;
-    }
-
-    .pattern-swatch:hover { transform: translateY(-5px) scale(1.1); box-shadow: 0 12px 28px rgba(255,3,184,0.25); z-index: 1; }
-
-    .pattern-swatch img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      pointer-events: none;
-    }
-
-    .pattern-swatch.active::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      box-shadow: inset 0 0 0 2.5px var(--text);
-      pointer-events: none;
-      border-radius: 3px;
-      transition: box-shadow 0.25s;
-    }
-
-    .pattern-swatch--none {
-      background: transparent;
-      border: 0.018em solid rgba(255,255,255,0.35);
-      color: rgba(255,255,255,0.35);
-    }
-
-    .pattern-swatch--none.active::after {
-      box-shadow: inset 0 0 0 2.5px var(--text);
-    }
-
-    [data-mode="light"] .pattern-swatch--none {
-      border-color: rgba(0,0,0,0.25);
-      color: rgba(0,0,0,0.25);
-    }
-
-    /* ─── Click sparkle ─── */
-    .sparkle {
-      position: fixed;
-      pointer-events: none;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--accent);
-      transform: translate(-50%, -50%) scale(0);
-      animation: sparkle-pop 0.5s ease forwards;
-      z-index: 999;
-    }
-    @keyframes sparkle-pop {
-      0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-      60%  { transform: translate(-50%, -50%) scale(1.8); opacity: 0.7; }
-      100% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
-    }
-
-
-    /* ─── Scroll hint ─── */
-    .scroll-hint {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      animation: fadeInUp 1s ease 1.5s both;
-      transition: color 0.4s;
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-
-    /* ─── Case Studies ─── */
-    .case-studies {
-      background: #fff;
-      overflow: hidden;
-      padding: clamp(60px, 9vw, 130px) 0;
-    }
-
-    .cs-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: stretch;
-      gap: 0;
-      margin-bottom: 200px;
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .cs-row:last-child { margin-bottom: 0; }
-
-    .cs-row--left { grid-template-columns: 1fr 1fr; }
-
-    .cs-row-content { display: flex; flex-direction: column; min-width: 0; padding: clamp(48px, 7vw, 96px) clamp(24px, 4vw, 60px) clamp(48px, 7vw, 96px) clamp(40px, 13.9vw, 200px); }
-    .cs-row--left .cs-row-content { order: 2; padding: clamp(48px, 7vw, 96px) clamp(40px, 13.9vw, 200px) clamp(48px, 7vw, 96px) clamp(24px, 4vw, 60px); }
-    .cs-row--left .cs-row-image { order: 1; }
-
-    .cs-row-number {
-      font-size: clamp(40px, 6vw, 72px);
-      font-weight: 800;
-      line-height: 1;
-      margin: 0 0 12px;
-      letter-spacing: -0.01em;
-    }
-
-    .cs-row-title {
-      font-size: clamp(20px, 2.2vw, 28px);
-      font-weight: 700;
-      color: #121212;
-      margin: 0 0 8px;
-      line-height: 1.25;
-      letter-spacing: -0.005em;
-    }
-
-    .cs-row-client {
-      font-size: clamp(20px, 2.2vw, 28px);
-      font-weight: 400;
-      line-height: 1.25;
-      color: rgba(18, 18, 18, 0.45);
-      margin: 0 0 18px;
-    }
-
-    .cs-row-desc {
-      font-size: 17px;
-      font-weight: 300;
-      color: rgba(18, 18, 18, 0.7);
-      line-height: 1.6;
-      margin: 0 0 28px;
-      max-width: 480px;
-    }
-
-    .cs-row-cta {
-      display: inline-flex;
-      align-items: center;
-      padding: 12px 22px;
-      border: 1px solid rgba(0, 0, 0, 0.15);
+    /* Image — 4:3 wide placeholder */
+    .card-img {
+      width: 100%; aspect-ratio: 4/3;
+      overflow: hidden; position: relative;
       border-radius: 10px;
-      font-size: 15px;
-      font-weight: 500;
-      color: #121212;
-      align-self: flex-start;
-      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      border: 1px solid rgba(242,242,238,0.28);
+      background-image: repeating-conic-gradient(
+        rgba(242,242,238,0.06) 0% 25%, transparent 0% 50%
+      );
+      background-size: 20px 20px;
+      background-color: var(--bg);
     }
-
-    .cs-row-cta:hover { background: #121212; color: #fff; border-color: #121212; }
-
-    .cs-row-image {
-      position: relative;
-      width: 100%;
-      min-width: 0;
-      overflow: hidden;
-      border-radius: 0;
+    .card-img img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; display: block;
     }
-
-    .cs-row-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.4s ease;
+    .card-video {
+      position: absolute; inset: -2px; width: calc(100% + 4px); height: calc(100% + 4px);
+      object-fit: cover; display: block;
+      opacity: 0; transition: opacity .35s ease;
+      pointer-events: none;
+      border-radius: inherit;
     }
-
-    .cs-row:hover .cs-row-image img { transform: scale(1.02); }
-
-    /* ─── Footer ─── */
-    .footer { border-top: 1px solid rgba(0,0,0,0.1); padding: 40px 0; }
-
-    .footer-inner {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .footer-copyright { font-size: 13px; color: rgba(0,0,0,0.35); }
-
-    .footer-links { display: flex; gap: 24px; }
-
-    .footer-links a {
-      font-size: 13px;
-      color: rgba(0,0,0,0.35);
-      transition: color 0.2s;
-    }
-
-    .footer-links a:hover { color: #111; }
-
-    /* ─── Scroll-to-top ─── */
-    .scroll-top {
-      position: fixed;
-      bottom: 40px;
-      right: 40px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.15);
-      background: #121212;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      z-index: 200;
-    }
-
-    .scroll-top:hover { opacity: 0.6; }
-
-    /* ─── Footer always white ─── */
-    .footer {
+    .panel-card:hover .card-video { opacity: 1; }
+    .card-video.is-contain {
+      inset: 0; width: 100%; height: 100%;
+      object-fit: contain;
       background: #fff;
     }
 
-    /* ─── Responsive ─── */
-    @media (max-width: 768px) {
-      .interactive-hero { font-size: 9vw; align-items: flex-start; }
-      .hero-content { padding-top: 100px; }
-      .hero-line { flex-wrap: wrap; margin-bottom: 0.4em; }
-      .hero-serif { white-space: normal; }
-
-      .color-swatches { display: inline-flex; }
-      .swatch { width: 48px; }
-
-      .pattern-swatches {
-        display: inline-flex;
-        order: 2;
-        margin-right: 0;
-        margin-top: 0.35em;
-        width: 100%;
-      }
-      .pattern-swatch { width: 1.4em; height: 1.5em; }
-
-      .header-inner, .footer-inner { padding: 0 20px; }
-      .case-studies { padding: 56px 0; }
-      .cs-row, .cs-row--left {
-        grid-template-columns: 1fr;
-        gap: 20px;
-        margin-bottom: 56px;
-      }
-      .cs-row-content,
-      .cs-row--left .cs-row-content {
-        order: 2;
-        padding: 28px 20px;
-      }
-      .cs-row-image,
-      .cs-row--left .cs-row-image {
-        order: 1;
-      }
-      .cs-row-number { font-size: 40px; margin-bottom: 8px; }
-      .cs-row-title { font-size: 19px; }
-      .cs-row-client { font-size: 19px; }
-      .cs-row-desc { font-size: 15px; margin-bottom: 20px; }
-      .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
-      .swatch-code { display: none; }
-      .scroll-top { display: none; }
+    /* Info — sits below image, no horizontal padding (inherits from panel) */
+    .card-info {
+      flex: 0 0 auto;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 24px;
+      padding: clamp(36px,5vh,60px) 0 0;
     }
+    .card-left { flex: 1; min-width: 0; }
+    .card-name {
+      font-size: clamp(18px,1.95vw,26px);
+      font-weight: 500; letter-spacing: -0.015em; line-height: 1.15;
+      min-height: 2.3em;
+    }
+    .card-desc {
+      margin-top: 5px;
+      font-size: clamp(12px,.95vw,14px);
+      font-weight: 400; line-height: 1.45; color: var(--ink);
+      max-width: 375px;
+      min-height: 2.9em;
+    }
+    .card-cta {
+      flex-shrink: 0; position: relative;
+      width: 210px;
+      font-family: 'Martian Mono', monospace;
+      font-size: 11px; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase;
+      white-space: nowrap; padding: 0 22px 18px;
+      display: flex; align-items: center; gap: 0.5em;
+    }
+    .cta-line {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 1.5px; background: var(--ink);
+      transform-origin: right center;
+    }
+    .cta-w1, .cta-w2 { display: inline-block; }
+    .cta-arrow {
+      position: absolute; line-height: 1;
+      font-family: 'Martian Mono', monospace; font-size: 17px;
+    }
+    .cta-arrow--l { left: 0; }
+    .cta-arrow--r { right: 0; }
+
+    /* ── CTA letter hover ── */
+    .outro-big .cl {
+      display: inline-block;
+      transition: color 0.12s ease;
+    }
+
+    /* ── CTA behind carousel — revealed as panels slide off left ── */
+    .work-cta-bg {
+      position: absolute; inset: 0; z-index: 0; /* below .work-track */
+      background: #F2F2EE;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .outro-big {
+      font-family: 'Familjen Grotesk', system-ui, sans-serif;
+      font-size: 190px;
+      font-weight: 131; letter-spacing: -0.04em; line-height: 130px;
+      text-align: center; text-transform: uppercase;
+      color: #0A0A09;
+    }
+
+    /* Progress bar */
+    .work-progress {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 2px; background: var(--line); pointer-events: none;
+    }
+    .work-progress span { display: block; height: 100%; width: 0; background: var(--ink); }
+
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 767px) {
+      .work-stage { position: static; height: auto; overflow: visible; border: none; }
+      .work-track { flex-direction: column; transform: none !important; }
+      .w-panel { width: 100%; flex-basis: auto; border-bottom: 1px solid var(--line); }
+      .w-panel::after { display: none; }
+      .panel-intro, .panel-outro { padding: 44px 24px 40px; }
+      .panel-outro { text-align: center; }
+      .panel-card { min-height: 85vh; padding: 20px 0; }
+      .card-info { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .card-box { opacity: 1 !important; transform: none !important; }
+      .hero-para { font-size: 15px; }
+
+    }
+    .back-to-top {
+      position: fixed; bottom: 32px; right: 32px; z-index: 200;
+      width: 96px; height: 96px; border-radius: 50%;
+      background: rgba(242,242,238,0.08); border: 1px solid rgba(242,242,238,0.18);
+      color: var(--ink); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0; pointer-events: none; transform: translateY(8px);
+      transition: opacity .25s ease, transform .25s ease, background .2s ease;
+      backdrop-filter: blur(8px);
+    }
+    .back-to-top.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .back-to-top:hover { background: rgba(242,242,238,0.16); }
+    @media (max-width: 480px) { .back-to-top { width: 56px; height: 56px; bottom: 16px; right: 16px; } .back-to-top svg { width: 24px; height: 24px; } }
   </style>
 </head>
 <body>
 
-  <!-- ─── Header ─── -->
-  <header class="header" id="siteHeader">
-    <div class="header-inner">
-      <div class="header-name"><a href="index.html">Lior Wenger</a></div>
-      <nav class="header-nav">
-        <a href="#projects">Projects</a>
-        <a href="about.html">About</a>
-      </nav>
-    </div>
+  <header class="site-header">
+    <a class="logo" href="index.html"><img id="logoImg" src="assets/LOGO-W.png" alt="Lior Wenger" style="height:28px;width:auto;display:block;"></a>
+    <nav class="site-nav">
+      <a href="#work">Work</a>
+      <a href="about/index.html">About</a>
+      <a href="https://www.linkedin.com/in/liorwenger/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:liorbetser@gmail.com" class="nav-cta">Let's talk</a>
+    </nav>
   </header>
 
-  <!-- ─── Interactive Hero ─── -->
-  <section class="interactive-hero" id="hero">
-    <div class="hero-bg" id="heroBg"></div>
-
-    <div class="hero-content">
-
-      <!-- Line 1: Hi, [toggle] I'm | Lior. [color swatches] -->
-      <div class="hero-line">
-        <span class="hero-serif">Hi,</span>
-        <button class="mode-toggle" id="modeToggle" aria-label="Toggle dark/light mode">
-          <span class="toggle-knob"></span>
-        </button>
-        <span class="hero-serif">I'm</span>
-        <span class="lior-group">
-          <span class="hero-serif accent" style="font-style:italic;">Lior.</span>
-          <span class="color-swatches" id="colorSwatches">
-            <button class="swatch active" data-color="#FF03B8" style="--swatch-bg:#FF03B8;"><span class="swatch-code">#FF03B8</span>
-
-            </button>
-            <button class="swatch" data-color="#46BD61" style="--swatch-bg:#46BD61;"><span class="swatch-code">#46BD61</span>
-
-            </button>
-            <button class="swatch" data-color="#4338CA" style="--swatch-bg:#4338CA;"><span class="swatch-code">#4338CA</span>
-
-            </button>
-            <button class="swatch" data-color="#EB4C15" style="--swatch-bg:#EB4C15;"><span class="swatch-code">#EB4C15</span>
-
-            </button>
-          </span>
-        </span>
-      </div>
-
-      <!-- Line 2: I'm a product designer. -->
-      <div class="hero-line">
-        <span class="hero-serif">I'm a&nbsp;<span class="accent">product designer.</span></span>
-      </div>
-
-      <!-- Line 3: [pattern swatches] I love to [word] -->
-      <div class="hero-line">
-        <span class="pattern-swatches" id="patternSwatches">
-          <button class="pattern-swatch pattern-swatch--none active" data-idx="none" title="No background">
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none" width="100%" height="100%">
-              <line x1="0" y1="100" x2="100" y2="0" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"/>
-            </svg>
-          </button>
-          <button class="pattern-swatch" data-idx="0" title="Pattern 5">
-            <img src="assets/patterns/pattern-5.jpg" alt="">
-          </button>
-          <button class="pattern-swatch" data-idx="1" title="Pattern 6">
-            <img src="assets/patterns/pattern-6.jpg" alt="">
-          </button>
-          <button class="pattern-swatch" data-idx="2" title="Pattern 7">
-            <img src="assets/patterns/pattern-7.jpg" alt="">
-          </button>
-          <button class="pattern-swatch" data-idx="3" title="Pattern 8">
-            <img src="assets/patterns/pattern-8.jpg" alt="">
-          </button>
-        </span>
-        <span class="hero-serif">I love to</span>
-        <span class="word-wrap">
-          <span class="accent word-slot" id="heroWord">solve</span>
-        </span>
-      </div>
-
+  <section class="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="assets/cut_the_begignig_with_text_and.mp4" type="video/mp4">
+    </video>
+    <div class="hero-center">
+      <svg class="hero-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="0.9">
+        <circle cx="20" cy="20" r="18.5"/>
+        <ellipse cx="20" cy="20" rx="8" ry="18.5"/>
+        <ellipse cx="20" cy="20" rx="18.5" ry="7.5"/>
+        <line x1="1.5" y1="20" x2="38.5" y2="20"/>
+      </svg>
+      <p class="hero-para">Self-taught designer. Curious by default.<br>Team player by choice.</p>
+      <p class="hero-para">I love cracking concepts open until<br>the solution users actually love shows up.</p>
     </div>
-
-    <div class="scroll-hint">Scroll to explore</div>
+    <div class="hero-logo-wrap">
+      <img class="hero-logo" src="assets/LiorWenger.png" alt="Lior Wenger">
+    </div>
   </section>
 
-  <!-- ─── Case Studies ─── -->
-  <section class="case-studies" id="projects">
+  <section class="work-section" id="work">
+    <div class="work-stage" id="workStage">
 
-    <!-- Case Study 1 -->
-    <a href="case-study-1/index.html" class="cs-row">
-      <div class="cs-row-content">
-        <p class="cs-row-number" style="color:#4338CA;">01</p>
-        <h3 class="cs-row-title">Associate Network - New Dashboard</h3>
-        <p class="cs-row-client">Azami Global</p>
-        <p class="cs-row-desc">A data-heavy internal tool reframed as a strategic command center for managing partners.</p>
-        <span class="cs-row-cta">View Case Study &gt;</span>
+      <!-- White CTA pinned behind carousel — revealed as panels slide off left -->
+      <div class="work-cta-bg" id="ctaBg">
+        <p class="outro-big" data-cta-line>LET'S</p>
+        <p class="outro-big" data-cta-line>MAKE</p>
+        <p class="outro-big" data-cta-line>AMAZING</p>
+        <p class="outro-big" data-cta-line>THINGS</p>
+        <p class="outro-big" data-cta-line>TOGETHER!</p>
       </div>
-      <div class="cs-row-image">
-        <img src="New Senior version/1-new.png" alt="Associate Network - New Dashboard">
-      </div>
-    </a>
 
-    <!-- Case Study 2 -->
-    <a href="case-study-2/index.html" class="cs-row cs-row--left">
-      <div class="cs-row-image">
-        <img src="New Senior version/2-new.png" alt="Quote Wizard Redesign">
-      </div>
-      <div class="cs-row-content">
-        <p class="cs-row-number" style="color:#46BD61;">02</p>
-        <h3 class="cs-row-title">Quote Wizard Redesign</h3>
-        <p class="cs-row-client">Azami Global</p>
-        <p class="cs-row-desc">One flow to select associates across every region and see the full cost, instead of waiting on a string of emails to find out what a filing will actually cost.</p>
-        <span class="cs-row-cta">View Case Study &gt;</span>
-      </div>
-    </a>
+      <div class="work-track" id="workTrack">
 
-    <!-- Case Study 3 -->
-    <a href="case-study-3/index.html" class="cs-row">
-      <div class="cs-row-content">
-        <p class="cs-row-number" style="color:#FF3AB0;">03</p>
-        <h3 class="cs-row-title">Wix New Domain Tool</h3>
-        <p class="cs-row-client">Wix.com</p>
-        <p class="cs-row-desc">Introducing the new domain results page, an important product that gets 43k visitors a month.</p>
-        <span class="cs-row-cta">View Case Study &gt;</span>
-      </div>
-      <div class="cs-row-image">
-        <img src="New Senior version/3-new.png" alt="Wix New Domain Tool">
-      </div>
-    </a>
+        <!-- 0 · Intro -->
+        <div class="w-panel panel-intro">
+          <h2>Selected work<br>&amp; explorations</h2>
+        </div>
 
-    <!-- Case Study 4 -->
-    <a href="case-study-4/index.html" class="cs-row cs-row--left">
-      <div class="cs-row-image">
-        <img src="New Senior version/4-new.png" alt="Wix Reviews Widget">
-      </div>
-      <div class="cs-row-content">
-        <p class="cs-row-number" style="color:#e64623;">04</p>
-        <h3 class="cs-row-title">Wix Reviews Widget</h3>
-        <p class="cs-row-client">Wix.com</p>
-        <p class="cs-row-desc">Building Wix's first-party reviews solution – a fully customizable widget that replaced fragmented third-party apps for millions of store owners.</p>
-        <span class="cs-row-cta">View Case Study &gt;</span>
-      </div>
-    </a>
+        <!-- 1 -->
+        <a class="w-panel panel-card" href="case-study-1/index.html">
+          <div class="card-box">
+            <div class="card-img">
+              <img src="case-study-1/assets/new-image-1.png" alt="Quote Wizard Redesign">
+              <video class="card-video" src="case-study-1/assets/wizard1.2.mp4" muted loop playsinline preload="metadata"></video>
+            </div>
+            <div class="card-info">
+              <div class="card-left">
+                <h3 class="card-name">Quote Wizard Redesign</h3>
+                <p class="card-desc">From 40% drop-off to a quoting flow people actually finish.</p>
+              </div>
+              <span class="card-cta">
+                <span class="cta-arrow cta-arrow--l" aria-hidden="true">→</span>
+                <span class="cta-w1">Explore</span><span class="cta-w2">Project</span>
+                <span class="cta-arrow cta-arrow--r" aria-hidden="true">→</span>
+                <span class="cta-line"></span>
+              </span>
+            </div>
+          </div>
+        </a>
 
-  </section>
+        <!-- 2 -->
+        <a class="w-panel panel-card" href="case-study-2/index.html">
+          <div class="card-box">
+            <div class="card-img">
+              <img src="case-study-2/assets/associate-network-dashboard.gif" alt="Associate Network Dashboard">
+              <video class="card-video" src="case-study-2/assets/wizard1.2-new2.mp4" muted loop playsinline preload="metadata"></video>
+            </div>
+            <div class="card-info">
+              <div class="card-left">
+                <h3 class="card-name">Associate Network Dashboard</h3>
+                <p class="card-desc">A new dashboard, designed from scratch for a new user added to the system.</p>
+              </div>
+              <span class="card-cta">
+                <span class="cta-arrow cta-arrow--l" aria-hidden="true">→</span>
+                <span class="cta-w1">Explore</span><span class="cta-w2">Project</span>
+                <span class="cta-arrow cta-arrow--r" aria-hidden="true">→</span>
+                <span class="cta-line"></span>
+              </span>
+            </div>
+          </div>
+        </a>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <p class="footer-copyright">&copy; 2026 Lior Wenger</p>
-      <div class="footer-links">
-        <a href="mailto:liorbetser@gmail.com">Email</a>
-        <a href="https://www.linkedin.com/in/liorwenger/" target="_blank" rel="noopener">LinkedIn</a>
+        <!-- 3 -->
+        <a class="w-panel panel-card" href="case-study-5/index.html">
+          <div class="card-box">
+            <div class="card-img">
+              <img src="assets/CS5-HP.png" alt="Wix Reviews Widget">
+            </div>
+            <div class="card-info">
+              <div class="card-left">
+                <h3 class="card-name">Wix Reviews Widget</h3>
+                <p class="card-desc">First-party reviews that replaced fragmented apps for millions of stores.</p>
+              </div>
+              <span class="card-cta">
+                <span class="cta-arrow cta-arrow--l" aria-hidden="true">→</span>
+                <span class="cta-w1">Explore</span><span class="cta-w2">Project</span>
+                <span class="cta-arrow cta-arrow--r" aria-hidden="true">→</span>
+                <span class="cta-line"></span>
+              </span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 4 -->
+        <a class="w-panel panel-card" href="case-study-4/index.html">
+          <div class="card-box">
+            <div class="card-img">
+              <img src="assets/CS4-HP.png" alt="Wix New Domain Tool">
+            </div>
+            <div class="card-info">
+              <div class="card-left">
+                <h3 class="card-name">Wix New Domain Tool</h3>
+                <p class="card-desc">A redesign that made a big impact across every core KPI.</p>
+              </div>
+              <span class="card-cta">
+                <span class="cta-arrow cta-arrow--l" aria-hidden="true">→</span>
+                <span class="cta-w1">Explore</span><span class="cta-w2">Project</span>
+                <span class="cta-arrow cta-arrow--r" aria-hidden="true">→</span>
+                <span class="cta-line"></span>
+              </span>
+            </div>
+          </div>
+        </a>
+
       </div>
+      <div class="work-progress"><span id="workBar"></span></div>
     </div>
-  </footer>
-
-  <!-- ─── Scroll-to-top ─── -->
-  <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-  </button>
+  </section>
 
   <script>
-    // ─── Cycling words – update this list with your exact words ───
-    const WORDS = ['solve', 'build', 'think', 'create', 'iterate', 'design'];
-
-    const PATTERNS = [
-      'assets/patterns/pattern-5.jpg',
-      'assets/patterns/pattern-6.jpg',
-      'assets/patterns/pattern-7.jpg',
-      'assets/patterns/pattern-8.jpg',
-    ];
-
-    // ─── State ───
-    let currentMode = 'dark';
-    let currentColor = '#FF03B8';
-    let currentPattern = null;
-    let wordIndex = 0;
-    let wordAnimating = false;
-
-    // ─── Elements ───
-    const html = document.documentElement;
-    const modeToggle = document.getElementById('modeToggle');
-    const heroBg = document.getElementById('heroBg');
-    const heroWord = document.getElementById('heroWord');
-    const colorSwatches = document.querySelectorAll('.swatch');
-    const patternSwatches = document.querySelectorAll('.pattern-swatch');
-
-    // ─── Set accent color ───
-    function setAccent(color) {
-      currentColor = color;
-      document.documentElement.style.setProperty('--accent', color);
-      colorSwatches.forEach(s => {
-        s.classList.toggle('active', s.dataset.color === color);
-      });
-    }
-
-    // ─── Dark / Light mode toggle ───
-    modeToggle.addEventListener('click', () => {
-      currentMode = currentMode === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-mode', currentMode);
-    });
-
-    // ─── Sparkle ───
-    function spawnSparkle(e) {
-      const s = document.createElement('div');
-      s.className = 'sparkle';
-      s.style.left = e.clientX + 'px';
-      s.style.top = e.clientY + 'px';
-      document.body.appendChild(s);
-      setTimeout(() => s.remove(), 500);
-    }
-
-    // ─── Color swatch clicks ───
-    colorSwatches.forEach(swatch => {
-      swatch.addEventListener('click', (e) => {
-        setAccent(swatch.dataset.color);
-        try { navigator.clipboard.writeText(swatch.dataset.color); } catch(_) {}
-        spawnSparkle(e);
+  (function () {
+    Array.prototype.slice.call(document.querySelectorAll('.panel-card')).forEach(function (card) {
+      var video = card.querySelector('.card-video');
+      if (!video) return;
+      card.addEventListener('mouseenter', function () { video.play(); });
+      card.addEventListener('mouseleave', function () {
+        video.pause();
+        video.currentTime = 0;
       });
     });
+  })();
+  </script>
 
-    // ─── Sparkle on toggle + pattern swatches ───
-    modeToggle.addEventListener('click', (e) => spawnSparkle(e));
-    document.querySelectorAll('.pattern-swatch').forEach(s => {
-      s.addEventListener('click', (e) => spawnSparkle(e));
-    });
+  <script>
+  (function () {
+    var section = document.getElementById('work');
+    var stage   = document.getElementById('workStage');
+    var track   = document.getElementById('workTrack');
+    var bar     = document.getElementById('workBar');
+    var panels  = Array.prototype.slice.call(track.querySelectorAll('.w-panel'));
+    var cards   = Array.prototype.slice.call(track.querySelectorAll('.panel-card'));
+    var logoImg  = document.getElementById('logoImg');
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll('.site-nav a'));
 
-    // ─── Pattern swatch clicks ───
-    function clearPattern() {
-      currentPattern = null;
-      heroBg.style.backgroundImage = '';
-      heroBg.classList.remove('active');
-      patternSwatches.forEach(s => s.classList.remove('active'));
+    // 5 panels: [intro, cs1, cs2, cs3, cs4]
+    // NUM_SHIFTS = NUM_PANELS: slides all panels off-screen left to expose the white CTA behind.
+    var NUM_PANELS  = panels.length;       // 5
+    var NUM_SHIFTS  = NUM_PANELS;          // 5
+
+    var scrollPerShift = window.innerHeight;   // 1 full viewport per card
+    var totalScroll    = NUM_SHIFTS * scrollPerShift;
+
+    function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+
+    function setHeight() {
+      if (window.innerWidth <= 767) { section.style.height = ''; return; }
+      section.style.height = (totalScroll + window.innerHeight) + 'px';
     }
 
-    patternSwatches.forEach(swatch => {
-      swatch.addEventListener('click', () => {
-        const idx = swatch.dataset.idx;
+    function update() {
+      if (window.innerWidth <= 767) return;
 
-        if (idx === 'none') {
-          clearPattern();
-          swatch.classList.add('active');
-          return;
+      var rect     = section.getBoundingClientRect();
+      var scrolled = Math.max(0, -rect.top);
+      var progress = clamp01(scrolled / totalScroll);
+
+      var stageW  = stage.offsetWidth;
+      var stageH  = stage.offsetHeight;
+      var panelW  = stageW / 2;
+      var trackX  = -(progress * NUM_SHIFTS * panelW + progress * 6); /* 6px overshoot clears edge bleed */
+
+      track.style.transform = 'translate3d(' + Math.round(trackX) + 'px,0,0)';
+      bar.style.width = (progress * 100).toFixed(2) + '%';
+
+      // Logo and nav turn dark only once the white CTA bg (revealed as the track
+      // slides off left) has actually swept past each element's own position —
+      // not just anywhere on screen.
+      var trackRightEdge = trackX + NUM_PANELS * panelW;
+
+      if (logoImg) {
+        var logoRight = logoImg.getBoundingClientRect().right;
+        logoImg.src = trackRightEdge <= logoRight ? 'assets/LOGO-W-black.png' : 'assets/LOGO-W.png';
+      }
+
+      // Each nav link switches independently — a single group-wide toggle would
+      // turn left-hand links (still over dark bg) dark-on-dark before the wipe
+      // actually reaches them.
+      navLinks.forEach(function (link) {
+        var exposed = trackRightEdge <= link.getBoundingClientRect().right;
+        link.style.color = exposed ? '#0A0A09' : '#F2F2EE';
+        if (link.classList.contains('nav-cta')) {
+          // .nav-cta's own border is !important, so an inline override needs
+          // !important too, or it's silently ignored.
+          link.style.setProperty('border-color', exposed ? 'rgba(10,10,9,0.45)' : 'rgba(242,242,238,0.55)', 'important');
         }
+      });
 
-        const idxNum = parseInt(idx, 10);
-        const isSame = currentPattern === idxNum;
+      // Card entrance animation — card rises from below stage (clipped by overflow:hidden)
+      cards.forEach(function (card) {
+        var i         = panels.indexOf(card);
+        var panelLeft = i * panelW + trackX;   // left edge x in viewport
 
-        if (isSame) {
-          clearPattern();
+        // entryP: 0 = card just entering right viewport edge
+        //         1 = card settled in right slot (panelLeft = panelW)
+        var entryP;
+        if (panelLeft >= stageW) {
+          entryP = 0;                                        // not yet on screen
+        } else if (panelLeft > panelW) {
+          entryP = clamp01((stageW - panelLeft) / panelW);  // entering right slot
         } else {
-          clearPattern();
-          currentPattern = idxNum;
-          swatch.classList.add('active');
-          heroBg.style.backgroundImage = `url('${PATTERNS[idxNum]}')`;
-          heroBg.classList.add('active');
+          entryP = 1;                                        // in left slot or past
         }
+
+        var box = card.querySelector('.card-box');
+        if (!box) return;
+
+        // Trionn mechanic: card rises from stageH below → 0 as entryP goes 0→1
+        // overflow:hidden on .work-stage clips the card until it rises above stage bottom
+        var oy = (1 - entryP) * stageH;
+        box.style.transform = 'translateY(' + oy.toFixed(2) + 'px)';
+        box.style.opacity   = '1';
       });
-    });
-
-    // ─── Word cycling ───
-    function cycleWord() {
-      if (wordAnimating) return;
-      wordAnimating = true;
-
-      heroWord.classList.add('anim-out');
-
-      setTimeout(() => {
-        heroWord.classList.remove('anim-out');
-        wordIndex = (wordIndex + 1) % WORDS.length;
-        heroWord.textContent = WORDS[wordIndex];
-        heroWord.classList.add('anim-in');
-
-        setTimeout(() => {
-          heroWord.classList.remove('anim-in');
-          wordAnimating = false;
-        }, 600);
-      }, 550);
     }
 
-    setInterval(cycleWord, 2000);
-
-    // ─── Preload all pattern images so clicks are instant ───
-    PATTERNS.forEach(src => { const img = new Image(); img.src = src; });
-
-    // ─── Lock word-wrap width to the longest word so layout never shifts ───
-    function fixWordWidth() {
-      const heroEl = document.querySelector('.interactive-hero');
-      const wrapEl = document.querySelector('.word-wrap');
-      if (!heroEl || !wrapEl) return;
-
-      const fontSize = parseFloat(getComputedStyle(heroEl).fontSize);
-      const probe = document.createElement('span');
-      probe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;white-space:nowrap;' +
-        'font-family:"Kaisei Tokumin",serif;font-weight:400;font-size:' + fontSize + 'px;';
-      document.body.appendChild(probe);
-
-      let maxWidth = 0;
-      WORDS.forEach(w => { probe.textContent = w; maxWidth = Math.max(maxWidth, probe.offsetWidth); });
-      probe.remove();
-
-      wrapEl.style.width = maxWidth + 'px';
-    }
-
-    document.fonts.ready.then(fixWordWidth);
-    window.addEventListener('resize', fixWordWidth, { passive: true });
-
-    // ─── Header scroll state ───
-    const header = document.getElementById('siteHeader');
-    const hero = document.getElementById('hero');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > hero.offsetHeight - 100) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(function () { update(); ticking = false; });
       }
     }, { passive: true });
 
+    window.addEventListener('resize', function () {
+      scrollPerShift = window.innerHeight;
+      totalScroll    = NUM_SHIFTS * scrollPerShift;
+      setHeight();
+      update();
+    });
+
+    setHeight();
+    update();
+  }());
+
+  // Header color: white over dark hero. (Dark-over-CTA is handled in the
+  // work-section script above, in sync with where the white bg actually is.)
+  (function () {
+    var header = document.querySelector('.site-header');
+    var hero   = document.querySelector('.hero');
+
+    function check() {
+      var heroH    = hero ? hero.offsetHeight : window.innerHeight;
+      var overHero = window.scrollY < heroH - 60;
+
+      header.classList.toggle('header--light', overHero);
+    }
+
+    window.addEventListener('scroll', check, { passive: true });
+    check();
+  }());
+
+  // ── Headline blur-reveal (defocus → sharp, randomised char order) ──
+  (function () {
+    if (typeof gsap === 'undefined') return;
+    var h2 = document.querySelector('.panel-intro h2');
+    if (!h2) return;
+
+    // Split h2 into per-char spans, preserving <br>
+    var childNodes = Array.prototype.slice.call(h2.childNodes);
+    h2.innerHTML = '';
+    var chars = [];
+    childNodes.forEach(function (node) {
+      if (node.nodeType === 3) {
+        node.textContent.split('').forEach(function (ch) {
+          var s = document.createElement('span');
+          s.textContent = ch;
+          s.style.display = 'inline-block';
+          h2.appendChild(s);
+          chars.push(s);
+        });
+      } else {
+        h2.appendChild(node.cloneNode(true));
+      }
+    });
+
+    var fired = false;
+    function runReveal() {
+      if (fired) return;
+      fired = true;
+      gsap.fromTo(chars,
+        { filter: 'blur(8px)', opacity: 0.15 },
+        { filter: 'blur(0px)', opacity: 1,
+          duration: 0.5, ease: 'power2.out',
+          stagger: { each: 0.04, from: 'random' } }
+      );
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { runReveal(); io.disconnect(); }
+    }, { threshold: 0.05 });
+    io.observe(document.getElementById('work') || h2);
+  }());
+
+  // Fit hero description text to exactly fill the bar width
+  (function () {
+    var bar = document.querySelector('.hero-bar');
+    var p   = document.querySelector('.hero-bar p');
+    function fit() {
+      if (!bar || !p) return;
+      var available = bar.clientWidth;
+      if (!available) return;
+      var lo = 1, hi = 300, mid;
+      while (hi - lo > 0.25) {
+        mid = (lo + hi) / 2;
+        p.style.fontSize = mid + 'px';
+        if (p.scrollWidth <= available) lo = mid; else hi = mid;
+      }
+      p.style.fontSize = lo.toFixed(2) + 'px';
+    }
+    document.fonts.ready.then(fit);
+    window.addEventListener('resize', fit);
+  }());
+
+  // ── CTA hover: text stretches to fill container, arrow flips right → left ──
+  (function () {
+    if (typeof gsap === 'undefined') return;
+
+    function initCTA(cta) {
+      var arrowL = cta.querySelector('.cta-arrow--l');
+      var arrowR = cta.querySelector('.cta-arrow--r');
+      var w1     = cta.querySelector('.cta-w1');
+      var w2     = cta.querySelector('.cta-w2');
+      var line   = cta.querySelector('.cta-line');
+      if (!arrowL || !arrowR || !w1 || !w2 || !line) return;
+
+      cta.style.width = '210px';
+
+      gsap.set(arrowL, { opacity: 0, x: 4 });
+      gsap.set(arrowR, { opacity: 1, x: 0 });
+
+      var tl = gsap.timeline({ paused: true });
+      tl
+        // Text stretches to fill right edge
+        .fromTo([w1, w2], { letterSpacing: '0.06em' }, { letterSpacing: '0.38em', duration: 1.0, ease: 'power2.inOut' }, 0)
+        // Right arrow fades out as text expands
+        .fromTo(arrowR, { opacity: 1, x: 0 }, { opacity: 0, x: -4, duration: 0.45, ease: 'power2.in' }, 0)
+        // Line shrinks from right, then re-draws from left
+        .to(line, { scaleX: 0, duration: 0.6, ease: 'power2.in',  transformOrigin: 'right center' }, 0.2)
+        .to(line, { scaleX: 1, duration: 0.6, ease: 'power2.out', transformOrigin: 'left center'  }, 0.8)
+        // Left arrow arrives as line finishes drawing
+        .fromTo(arrowL, { opacity: 0, x: 8 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' }, 1.4);
+
+      cta.addEventListener('mouseenter', function () { tl.play(); });
+      cta.addEventListener('mouseleave', function () { tl.reverse(); });
+    }
+
+    document.fonts.ready.then(function () {
+      document.querySelectorAll('.card-cta').forEach(initCTA);
+    });
+  }());
+
+  // ── CTA letter hover: nearest letter turns #1CFF33 ──
+  (function () {
+    var bg = document.getElementById('ctaBg');
+    if (!bg) return;
+
+    var GREEN = '#1CFF33';
+    var BLACK = '#0A0A09';
+    var RADIUS = 80; // px — glow radius
+    var allSpans = [];
+
+    // Split each line into per-character spans
+    bg.querySelectorAll('[data-cta-line]').forEach(function (p) {
+      var text = p.textContent;
+      p.textContent = '';
+      text.split('').forEach(function (ch) {
+        var s = document.createElement('span');
+        s.className = 'cl';
+        s.textContent = ch;
+        p.appendChild(s);
+        allSpans.push(s);
+      });
+    });
+
+    bg.addEventListener('mousemove', function (e) {
+      var mx = e.clientX, my = e.clientY;
+      allSpans.forEach(function (s) {
+        var r  = s.getBoundingClientRect();
+        var cx = r.left + r.width  / 2;
+        var cy = r.top  + r.height / 2;
+        var d  = Math.sqrt((mx - cx) * (mx - cx) + (my - cy) * (my - cy));
+        s.style.color = d < RADIUS ? GREEN : BLACK;
+      });
+    });
+
+    bg.addEventListener('mouseleave', function () {
+      allSpans.forEach(function (s) { s.style.color = BLACK; });
+    });
+  }());
+  </script>
+
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+  <script>
+    (function(){
+      var btn = document.getElementById('backToTop');
+      if(!btn) return;
+      window.addEventListener('scroll', function(){
+        if(window.scrollY > 600){ btn.classList.add('is-visible'); } else { btn.classList.remove('is-visible'); }
+      });
+      btn.addEventListener('click', function(){
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+    })();
   </script>
 
 </body>

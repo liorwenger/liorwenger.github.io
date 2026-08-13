@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iPeer – Create New Quote (Redesign)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f5f8; --bg-soft:#eef0f4; --card:#ffffff;
+  --border:#e7e8ee; --border-strong:#dadce4;
+  --text:#15161f; --text-soft:#5a5b6b; --text-mute:#8c8da0;
+  --primary:#5b4fe0; --primary-2:#4f7ef5;
+  --primary-grad:linear-gradient(135deg,#7c5cbf,#4f7ef5);
+  --primary-soft:#eeebfc; --primary-border:#d9d2f7;
+  --green-bg:#e3f9ea; --green:#16a34a;
+  --red-bg:#fdeaea; --red:#dc2626;
+  --amber-bg:#fff4e0; --amber:#b9760a;
+  --radius:14px; --radius-sm:9px;
+  --shadow-card:0 1px 2px rgba(20,20,40,.05),0 1px 1px rgba(20,20,40,.03);
+  --shadow-pop:0 18px 50px rgba(30,20,70,.18);
+  --wiz-maxw:1460px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:14px;-webkit-font-smoothing:antialiased;overflow-y:scroll;scrollbar-gutter:stable;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+::-webkit-scrollbar{width:7px;height:7px;}
+::-webkit-scrollbar-thumb{background:#d4d5de;border-radius:4px;}
+button{font-family:inherit;}
+input,select,textarea{font-family:inherit;}
+
+/* ── Nav ───────────────────────────────────────── */
+.nav{height:54px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;position:sticky;top:0;z-index:200;}
+.logo{display:flex;align-items:center;gap:9px;margin-right:36px;}
+.logo-img{height:22px;width:auto;display:block;}
+.nav-tabs{display:flex;gap:3px;}
+.nav-tab{font-size:13px;color:var(--text-mute);padding:7px 13px;border-radius:8px;cursor:pointer;}
+.nav-tab.active{background:var(--bg-soft);color:var(--text);font-weight:600;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.nav-cta{font-family:inherit;font-size:12.5px;font-weight:600;color:var(--primary);background:#fff;border:1.5px solid var(--primary-border);border-radius:9px;padding:0 14px;height:34px;cursor:pointer;transition:all .15s;}
+.nav-cta:hover{border-color:var(--primary);background:var(--primary-soft);}
+.icon-btn{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-mute);background:#fff;cursor:pointer;position:relative;}
+.icon-btn .dot{position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:#ef4444;border:1.5px solid #fff;}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--primary-grad);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+
+/* ── Wizard header ─────────────────────────────── */
+.wiz-head{background:#fff;border-bottom:1px solid var(--border);padding:11px 32px;position:sticky;top:54px;z-index:150;}
+.wiz-head-top{display:flex;align-items:flex-start;justify-content:space-between;max-width:var(--wiz-maxw);margin:0 auto;}
+.wiz-title-row{display:flex;align-items:center;gap:10px;}
+.wiz-title{font-size:21px;font-weight:700;letter-spacing:-.02em;}
+.autosave{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text-mute);background:#fff;border:1px solid var(--border-strong);padding:4px 9px 4px 7px;border-radius:99px;}
+.autosave .sdot{width:6px;height:6px;border-radius:50%;background:var(--green);}
+.wiz-close{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--text-mute);cursor:pointer;border:1px solid transparent;}
+.wiz-close:hover{background:var(--bg-soft);border-color:var(--border);}
+
+/* Steps rail (vertical, left side) */
+.steps-rail{display:flex;flex-direction:column;position:sticky;top:109px;}
+.step{display:flex;align-items:flex-start;gap:12px;cursor:pointer;}
+.step-circle{width:26px;height:26px;border-radius:50%;border:2px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:var(--text-mute);background:#fff;transition:all .2s;flex-shrink:0;}
+.step.done .step-circle{background:var(--primary);border-color:var(--primary);color:#fff;}
+.step.active .step-circle{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 0 0 4px var(--primary-soft);}
+.step-label{font-size:13px;font-weight:600;color:var(--text-mute);padding-top:4px;line-height:1.3;}
+.step.done .step-label,.step.active .step-label{color:var(--text);}
+.step-line{width:2px;flex-shrink:0;height:26px;margin:2px 0 2px 12px;background:var(--border-strong);position:relative;}
+.step-line::after{content:'';position:absolute;inset:0;background:var(--primary);height:var(--p,0%);width:100%;transition:height .35s;}
+
+/* ── Layout ────────────────────────────────────── */
+.wiz-body{max-width:var(--wiz-maxw);margin:0 auto;padding:28px 32px 130px;display:grid;grid-template-columns:200px 1fr 320px;gap:24px;align-items:start;}
+body.no-summary .wiz-body{grid-template-columns:200px 1fr;}
+body.no-summary .sidebar{display:none;}
+.main-col{min-width:0;}
+body.no-summary .main-col{max-width:896px;}
+.step-panel{display:none;animation:fadeUp .35s cubic-bezier(.4,0,.2,1);}
+.step-panel.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.step-intro{margin-bottom:20px;}
+.step-eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--primary);margin-bottom:6px;}
+.step-h{font-size:19px;font-weight:700;letter-spacing:-.01em;margin-bottom:5px;}
+.step-sub{font-size:13px;color:var(--text-soft);line-height:1.5;}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);margin-bottom:16px;}
+.card-pad{padding:20px 22px;}
+
+/* form bits */
+.field{margin-bottom:16px;}
+.field label{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--text);margin-bottom:7px;}
+.req{color:var(--red);}
+input[type=text],input[type=date],input[type=number],select,textarea{
+  width:100%;padding:9px 12px;border:1.5px solid var(--border-strong);border-radius:9px;
+  font-size:13px;color:var(--text);background:#fff;outline:none;transition:border-color .15s,box-shadow .15s;
+}
+select{
+  appearance:none;-webkit-appearance:none;-moz-appearance:none;
+  padding-right:36px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' stroke='%238c8da0' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+}
+select:invalid{color:#a8a9b8;}
+input::placeholder{color:#a8a9b8;}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);}
+.field-hint{font-size:11px;color:var(--text-mute);margin-top:5px;line-height:1.5;}
+.field-valid{display:none;font-size:11px;color:var(--green);margin-top:5px;align-items:center;gap:4px;font-weight:600;}
+.field-valid.show{display:flex;}
+.ai-loading,.ai-done{display:none;align-items:center;gap:7px;font-size:11.5px;color:var(--primary);margin-top:9px;background:var(--primary-soft);border:1px solid var(--primary-border);border-radius:9px;padding:8px 11px;line-height:1.5;}
+.ai-loading.show,.ai-done.show{display:flex;}
+.ai-spinner{width:12px;height:12px;border-radius:50%;border:2px solid var(--primary-border);border-top-color:var(--primary);flex-shrink:0;animation:aiSpin .7s linear infinite;}
+@keyframes aiSpin{to{transform:rotate(360deg);}}
+.ai-badge{font-size:9.5px;font-weight:800;color:var(--primary);background:var(--primary-soft);border:1px solid var(--primary-border);padding:2px 7px;border-radius:6px;display:none;align-items:center;gap:3px;white-space:nowrap;}
+body.ai-filled .ai-badge{display:inline-flex;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+/* Step 1 (Services) – more breathing room */
+[data-panel="0"] .step-intro{margin-bottom:30px;}
+[data-panel="0"] .card-pad{padding:32px 30px;}
+[data-panel="0"] .field{margin-bottom:26px;}
+[data-panel="0"] .grid-2{gap:22px;margin-bottom:26px;}
+[data-panel="0"] .card-pad>.field:last-child,[data-panel="0"] .card-pad>.grid-2:last-child{margin-bottom:0;}
+[data-panel="0"] .svc-grid{gap:12px;margin-bottom:14px;}
+[data-panel="0"] .field label{margin-bottom:10px;}
+
+/* service cards */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px;}
+.svc-card{border:1.5px solid var(--border-strong);border-radius:11px;padding:13px 14px;cursor:pointer;transition:all .15s;background:#fff;}
+.svc-card:hover{border-color:#c4bdf2;}
+.svc-card.sel{border-color:var(--primary);background:var(--primary-soft);box-shadow:0 0 0 3px rgba(91,79,224,.08);}
+.svc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.svc-name{font-size:13px;font-weight:700;}
+.svc-radio{width:17px;height:17px;border-radius:50%;border:2px solid var(--border-strong);flex-shrink:0;position:relative;}
+.svc-card.sel .svc-radio{border-color:var(--primary);}
+.svc-card.sel .svc-radio::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--primary);}
+.svc-desc{font-size:11.5px;color:var(--text-soft);line-height:1.45;}
+.show-more-btn{font-size:12px;font-weight:600;color:var(--primary);cursor:pointer;display:inline-flex;align-items:center;gap:4px;}
+.svc-grid.collapsed .svc-extra{display:none;}
+
+.callout{display:flex;gap:10px;padding:12px 14px;border-radius:10px;font-size:12px;line-height:1.55;}
+.callout.blue{background:#eef3ff;border:1px solid #d6e2ff;color:#2750c2;}
+.callout svg{flex-shrink:0;margin-top:1px;}
+.toggle-link{font-size:12px;font-weight:600;color:var(--primary);cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:2px;}
+.formats-box{background:var(--bg-soft);border-radius:10px;padding:12px 14px;font-size:11.5px;color:var(--text-soft);margin-top:10px;line-height:1.7;display:none;}
+.formats-box.open{display:block;}
+
+/* Regions step */
+.region-search{display:flex;align-items:center;gap:9px;padding:10px 13px;border:1.5px solid var(--border-strong);border-radius:10px;background:#fff;}
+.region-search svg{color:var(--text-mute);flex-shrink:0;}
+.region-search input{border:none;outline:none;flex:1;font-size:13px;padding:0 0 0 4px;}
+.region-panel-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);}
+.region-panel-title{font-size:12.5px;font-weight:700;color:var(--primary);}
+.region-panel-count{font-size:11px;color:var(--text-mute);font-weight:600;}
+.clear-all{font-size:11.5px;font-weight:600;color:var(--red);cursor:pointer;}
+.region-list{max-height:340px;overflow-y:auto;}
+.region-row{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid #f0f0f4;cursor:pointer;transition:background .12s;}
+.region-row:last-child{border-bottom:none;}
+.region-row:hover{background:var(--bg-soft);}
+.region-flag{font-size:17px;line-height:1;flex-shrink:0;}
+.region-name{font-size:12.5px;font-weight:600;flex:1;}
+.region-deadline{font-size:10.5px;color:var(--text-mute);background:var(--bg-soft);padding:3px 8px;border-radius:6px;font-weight:600;}
+.region-fee{font-size:10.5px;color:var(--text-mute);}
+.add-circle{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border-strong);display:flex;align-items:center;justify-content:center;color:var(--text-mute);flex-shrink:0;}
+.region-row:hover .add-circle{border-color:var(--primary);color:var(--primary);}
+.empty-state{padding:30px 16px;text-align:center;font-size:12px;color:var(--text-mute);}
+.sel-region-row{display:flex;align-items:center;gap:11px;padding:12px 16px;border-bottom:1px solid #f0f0f4;}
+.region-group-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-mute);background:var(--bg-soft);padding:7px 16px;border-bottom:1px solid #f0f0f4;}
+.sel-region-row:last-child{border-bottom:none;}
+.sel-region-main{flex:1;min-width:0;}
+.sel-region-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px;}
+.sel-region-meta{font-size:11px;color:var(--text-mute);margin-top:3px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.sel-region-meta span{display:flex;align-items:center;}
+.guide-link{color:var(--text);font-weight:600;text-decoration:none;}
+@property --ai-angle{syntax:'<angle>';inherits:false;initial-value:0deg;}
+@property --ai-angle2{syntax:'<angle>';inherits:false;initial-value:0deg;}
+@keyframes aiBorderSpin{to{--ai-angle:360deg;}}
+@keyframes aiBorderSpin2{to{--ai-angle2:360deg;}}
+.ai-gradient-border{position:relative;z-index:0;border-color:transparent;}
+.ai-gradient-border::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:2px;background:conic-gradient(from var(--ai-angle),#8B5CF6 0deg,#FF7A00 90deg,#2563EB 180deg,#22C55E 270deg,#8B5CF6 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:aiBorderSpin 9s linear infinite;pointer-events:none;}
+.ai-gradient-border::after{content:'';position:absolute;inset:0;border-radius:inherit;padding:2px;background:conic-gradient(from var(--ai-angle2),transparent 0deg,transparent 290deg,rgba(255,255,255,.9) 320deg,#fff 340deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:aiBorderSpin2 4s linear infinite;pointer-events:none;filter:drop-shadow(0 0 5px rgba(255,255,255,.85));}
+.ai-suggest-card{margin-top:38px;}
+.ai-card-badge{display:none;position:absolute;top:-24px;left:-18px;width:52px;height:52px;border-radius:50%;background:#fff;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(31,23,71,.18),0 0 0 1px var(--border);z-index:2;}
+.ai-suggest-card .ai-card-badge{display:flex;}
+.ai-card-badge svg{animation:aiIconBreathe 2.2s ease-in-out infinite;transform-origin:center;}
+@keyframes aiIconBreathe{0%,100%{transform:scale(1);}50%{transform:scale(1.16);}}
+.ai-suggest-card .region-panel-head{padding-left:46px;padding-top:30px;}
+.ai-suggest-card .region-list{padding-bottom:18px;}
+.remove-x{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-mute);cursor:pointer;flex-shrink:0;}
+.remove-x:hover{background:var(--red-bg);color:var(--red);}
+.add-more-search{padding:12px 16px;border-bottom:1px solid var(--border);}
+.min-warn{font-size:11.5px;color:var(--red);font-weight:600;margin-top:0;display:flex;align-items:center;gap:5px;padding:10px 16px;border-top:1px solid #fdeaea;}
+.sug-subtitle{font-size:11px;color:var(--text-mute);margin-top:2px;}
+.sug-row{display:flex;align-items:center;gap:11px;padding:12px 16px;border-bottom:1px solid #f0f0f4;cursor:pointer;transition:background .12s;user-select:none;}
+.sug-row:last-child{border-bottom:none;}
+.sug-row:hover{background:var(--bg-soft);}
+.sug-check{width:18px;height:18px;border-radius:5px;border:2px solid var(--border-strong);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;background:#fff;}
+.sug-row.checked{background:#f8f8fa;box-shadow:inset 3px 0 0 var(--text);}
+.sug-row.checked .sug-check{background:var(--text);border-color:var(--text);color:#fff;}
+.sug-main{flex:1;min-width:0;}
+.sug-name{font-size:13px;font-weight:700;}
+.sug-meta{font-size:11px;color:var(--text-mute);margin-top:2px;display:flex;align-items:center;gap:7px;}
+.manual-divider{height:1px;background:var(--border);margin:4px 16px;}
+.manual-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-mute);padding:8px 16px 0;}
+
+/* accordion (Details) */
+.accordion-item{border:1px solid var(--border);border-radius:var(--radius);background:#fff;margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-card);}
+.accordion-head{display:flex;align-items:center;gap:11px;padding:15px 18px;cursor:pointer;}
+.acc-num{width:24px;height:24px;border-radius:50%;background:var(--bg-soft);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-mute);flex-shrink:0;}
+.acc-num.complete{background:var(--green-bg);color:var(--green);}
+.acc-num.needs-input{background:var(--red-bg);color:var(--red);}
+.acc-titles{flex:1;}
+.acc-title{font-size:13.5px;font-weight:700;}
+.acc-sub{font-size:11px;color:var(--text-mute);margin-top:1px;}
+.acc-status{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--bg-soft);color:var(--text-mute);}
+.acc-status.complete{background:var(--green-bg);color:var(--green);}
+.acc-status.needs-input{background:var(--red-bg);color:var(--red);}
+.acc-chev{color:var(--text-mute);transition:transform .25s;flex-shrink:0;}
+.accordion-item.open .acc-chev{transform:rotate(180deg);}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);}
+.accordion-body-in{padding:4px 18px 20px;border-top:1px solid var(--border);padding-top:18px;}
+.ipc-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.ipc-chip{font-size:10.5px;font-weight:700;background:var(--primary-soft);color:var(--primary);padding:4px 9px;border-radius:6px;}
+.calc-hint{font-size:11px;color:var(--text-mute);margin-top:5px;background:var(--bg-soft);border-radius:7px;padding:7px 10px;display:inline-flex;align-items:center;gap:6px;}
+.radio-row{display:flex;gap:16px;}
+.radio-opt{display:flex;align-items:center;gap:6px;font-size:12.5px;cursor:pointer;}
+.radio-opt input{width:15px;height:15px;accent-color:var(--primary);}
+
+/* Agents step */
+.region-tabs{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;}
+.rtab{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:99px;border:1.5px solid var(--border-strong);font-size:12.5px;font-weight:600;cursor:pointer;background:#fff;}
+.rtab.active{border-color:var(--primary);color:var(--primary);}
+.rtab .check{width:15px;height:15px;border-radius:50%;background:var(--green);display:none;align-items:center;justify-content:center;color:#fff;}
+.rtab.picked .check{display:flex;}
+.agent-cols{display:flex;flex-direction:column;gap:14px;}
+.agent-col-head{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.agent-col-head.network{background:var(--primary-soft);}
+.agent-col-head.extended{background:var(--amber-bg);}
+.agent-col-title{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.agent-col-sub{font-size:10.5px;color:var(--text-soft);margin-top:2px;}
+.agent-col-head-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.agent-col-count{font-size:11px;font-weight:700;color:var(--text-mute);}
+.agent-sort{font-size:11px;font-weight:600;color:var(--text-soft);background:#fff;border:1px solid var(--border-strong);border-radius:7px;padding:4px 22px 4px 8px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%235a5b6b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;}
+.agent-list{padding:0;}
+
+/* Directory-style row: framed logo mark, name / rating / price stacked beside it. One per row so the logo can run big. */
+.agent-row{border-bottom:1px solid var(--border);border-radius:0;transition:box-shadow .12s,background-color .12s;}
+.agent-row:last-child{border-bottom:none;}
+.agent-row:hover{background:var(--bg-soft);}
+.agent-row.sel{box-shadow:inset 0 0 0 1.5px var(--primary);border-bottom-color:transparent;}
+.agent-row.sel.open:hover{background:none;}
+.agent-row-main{display:flex;align-items:center;gap:20px;padding:16px 18px;cursor:pointer;border-radius:10px;}
+.agent-checkbox{width:19px;height:19px;border-radius:5px;border:1.5px solid var(--border-strong);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;transition:background-color .12s,border-color .12s;}
+.agent-checkbox svg{opacity:0;transition:opacity .12s;}
+.agent-row.sel .agent-checkbox{border-color:var(--primary);background:var(--primary);}
+.agent-row.sel .agent-checkbox svg{opacity:1;}
+.agent-logo-box{width:132px;height:132px;border-radius:11px;border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;padding:10px;flex-shrink:0;position:relative;overflow:hidden;}
+.agent-logo-img{max-width:100%;max-height:100%;object-fit:contain;display:block;}
+.agent-row-meta{min-width:0;display:flex;flex-direction:column;gap:6px;flex:1;}
+.agent-row-name{font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.agent-row-name .match-dot{margin-left:3px;font-size:12px;}
+.agent-row-sub{display:flex;align-items:center;gap:7px;min-width:0;}
+.agent-row-sub .sub-text{font-size:12.5px;color:var(--text-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rating-chip{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:2.5px 8px;border-radius:6px;flex-shrink:0;}
+.rating-chip.gold{background:#fff3d6;color:#9a6a05;}
+.rating-chip.gray{background:var(--bg-soft);color:var(--text-mute);}
+.agent-row-price-row{display:flex;align-items:center;gap:5px;}
+.agent-row-price{font-family:inherit;font-size:14.5px;font-weight:700;color:var(--primary);font-variant-numeric:tabular-nums;}
+.agent-col-head.extended ~ .agent-list .agent-row-price{color:var(--amber);}
+.agent-calc-arrow{width:21px;height:21px;border-radius:6px;border:none;background:none;display:inline-flex;align-items:center;justify-content:center;color:var(--primary);cursor:pointer;padding:0;flex-shrink:0;transition:background-color .12s;}
+.agent-calc-arrow:hover{background:var(--primary-soft);}
+.agent-col-head.extended ~ .agent-list .agent-calc-arrow{color:var(--amber);}
+.agent-col-head.extended ~ .agent-list .agent-calc-arrow:hover{background:var(--amber-bg);}
+.agent-row-expand-btn{margin-left:auto;flex-shrink:0;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--primary);background:none;border:none;padding:7px 12px;border-radius:8px;cursor:pointer;text-decoration:none;text-underline-offset:3px;}
+.agent-row-expand-btn:hover{text-decoration:underline;text-decoration-color:var(--primary);}
+.agent-row-details{max-height:0;overflow:hidden;transition:max-height .22s cubic-bezier(.4,0,.2,1);padding:0 18px;}
+.agent-row.open .agent-row-details{max-height:210px;padding:0 18px 18px 209px;}
+.agent-badges{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:11px;}
+.abadge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;}
+.abadge.gray{background:var(--bg-soft);color:var(--text-mute);}
+.abadge.green{background:var(--green-bg);color:var(--green);}
+.abadge.gold{background:#fff3d6;color:#9a6a05;}
+.agent-trust{font-size:13px;font-weight:500;color:var(--text-soft);margin-bottom:9px;display:flex;align-items:center;gap:6px;line-height:1.5;}
+.agent-trust:last-child{margin-bottom:0;}
+.rec-tag{position:absolute;}
+
+/* Review step */
+.rev-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f0f0f4;font-size:12.5px;}
+.rev-row:last-child{border-bottom:none;}
+.rev-label{color:var(--text-mute);}
+.rev-val{font-weight:600;text-align:right;}
+.rev-edit{font-size:11px;color:var(--primary);font-weight:600;cursor:pointer;}
+.card-head-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);}
+.card-head-title{font-size:13px;font-weight:700;}
+.dropzone{border:1.5px dashed var(--border-strong);border-radius:10px;padding:18px;text-align:center;color:var(--text-mute);font-size:12px;cursor:pointer;}
+.dropzone:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft);}
+.chip-input{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1.5px solid var(--border-strong);border-radius:9px;}
+.email-chip{display:flex;align-items:center;gap:5px;background:var(--bg-soft);font-size:11.5px;font-weight:600;padding:4px 6px 4px 10px;border-radius:99px;}
+.email-chip .x{cursor:pointer;color:var(--text-mute);}
+.chip-input input{border:none;outline:none;flex:1;min-width:120px;font-size:12.5px;padding:4px;}
+
+/* Sidebar */
+.sidebar{position:sticky;top:109px;}
+.sb-card{background:var(--card);border:1.5px solid var(--primary-border);border-radius:var(--radius);box-shadow:0 10px 32px rgba(91,79,224,.14),0 2px 8px rgba(91,79,224,.08);overflow:hidden;position:relative;}
+.sb-head{padding:16px 18px 13px;border-bottom:1px solid var(--border);}
+.sb-head-label{font-size:12.5px;font-weight:700;letter-spacing:0;color:var(--text);}
+.sb-total{font-size:25px;font-weight:800;letter-spacing:-.02em;color:var(--primary);}
+.sb-total-sub{font-size:11px;color:var(--text-mute);margin-top:3px;}
+.sb-total-section{padding:16px 18px;border-top:1px solid var(--border);}
+.sb-section{padding:13px 18px;border-bottom:1px solid var(--border);}
+.sb-section:last-child{border-bottom:none;}
+.sb-srow{display:flex;align-items:center;justify-content:between;gap:8px;font-size:11.5px;margin-bottom:5px;}
+.sb-srow:last-child{margin-bottom:0;}
+.sb-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-mute);margin-bottom:7px;}
+.sb-svc{font-size:12.5px;font-weight:700;}
+.sb-svc-sub{font-size:11px;color:var(--text-mute);margin-top:2px;}
+.sb-region-line{display:flex;align-items:flex-start;justify-content:space-between;font-size:12px;padding:5px 0;gap:8px;}
+.sb-region-name{display:flex;align-items:center;flex-wrap:wrap;gap:6px;color:var(--text);font-weight:600;}
+.sb-region-price{color:var(--text-mute);font-size:11px;white-space:nowrap;padding-top:1px;}
+.sb-region-price.set{color:var(--text);font-weight:700;}
+.sb-empty{font-size:11.5px;color:var(--text-mute);font-style:italic;}
+.sb-deadline-flag{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:700;color:#b3251f;background:var(--red-bg);padding:2px 6px;border-radius:5px;white-space:nowrap;}
+.sb-tip{margin:14px 2px 0;font-size:11px;color:var(--text-mute);line-height:1.55;font-style:italic;}
+.sb-tip b{color:var(--text-soft);font-style:normal;}
+
+/* Footer */
+.wiz-footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;z-index:150;}
+.footer-inner{max-width:var(--wiz-maxw);margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;width:100%;}
+#btnCancel{justify-self:start;}
+.btn{font-size:13px;font-weight:600;padding:10px 18px;border-radius:9px;cursor:pointer;border:1.5px solid transparent;display:inline-flex;align-items:center;gap:7px;transition:all .15s;}
+.btn-ghost{background:#fff;border-color:var(--border-strong);color:var(--text-soft);}
+.btn-ghost:hover{border-color:var(--text-mute);color:var(--text);}
+.btn-primary{background:var(--primary-grad);color:#fff;box-shadow:0 4px 16px rgba(91,79,224,.3);}
+.btn-primary:hover{opacity:.92;}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
+.btn-text{color:var(--text-mute);}
+.btn-text:hover{color:var(--text);}
+.footer-center{display:flex;gap:10px;justify-self:center;}
+.footer-right{display:flex;gap:10px;justify-self:end;}
+
+/* Success screen */
+.success-wrap{display:none;max-width:640px;margin:60px auto;text-align:center;padding:44px 40px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);}
+.success-wrap.active{display:block;}
+.success-check{width:74px;height:74px;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;color:var(--green);animation:popIn .45s cubic-bezier(.34,1.56,.64,1);position:relative;}
+.success-check::before,.success-check::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid var(--green);opacity:0;animation:ringPulse 1.1s ease-out .25s;}
+.success-check::after{animation-delay:.5s;}
+@keyframes popIn{from{transform:scale(.6);opacity:0;}to{transform:scale(1);opacity:1;}}
+@keyframes ringPulse{0%{transform:scale(1);opacity:.55;}100%{transform:scale(1.7);opacity:0;}}
+.success-check svg polyline{stroke-dasharray:100;stroke-dashoffset:100;animation:drawCheck .5s ease .3s forwards;}
+@keyframes drawCheck{to{stroke-dashoffset:0;}}
+.success-h{font-size:23px;font-weight:800;margin-bottom:8px;letter-spacing:-.02em;opacity:0;animation:fadeSlideUp .45s ease .55s forwards;}
+.success-sub{font-size:13.5px;color:var(--text-soft);margin-bottom:28px;line-height:1.6;opacity:0;animation:fadeSlideUp .45s ease .65s forwards;}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.case-list{text-align:left;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:26px;}
+.case-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid #f0f0f4;background:#fff;opacity:0;animation:caseRowIn .4s ease forwards;}
+.case-row:last-child{border-bottom:none;}
+@keyframes caseRowIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+.case-id{font-size:12px;font-weight:800;color:var(--primary);background:var(--primary-soft);padding:4px 9px;border-radius:7px;}
+.case-region{flex:1;font-size:12.5px;font-weight:600;}
+.case-status{font-size:10.5px;font-weight:700;color:var(--green);background:var(--green-bg);padding:3px 9px;border-radius:99px;}
+.success-actions{display:flex;gap:10px;justify-content:center;opacity:0;animation:fadeSlideUp .4s ease .95s forwards;}
+
+/* Step 3 gate (before AI fill) */
+.step3-gate{display:none;background:#fffbf0;border:1.5px solid #f0d080;border-radius:12px;padding:16px 18px;margin-bottom:20px;align-items:flex-start;gap:13px;}
+.step3-gate.show{display:flex;}
+.step3-gate-body{flex:1;}
+.step3-gate-title{font-size:13px;font-weight:700;color:#9a6a05;margin-bottom:4px;}
+.step3-gate-sub{font-size:12px;color:#b38714;line-height:1.6;}
+.step3-gate-link{font-size:12px;font-weight:700;color:var(--primary);cursor:pointer;text-decoration:underline;margin-top:7px;display:inline-block;}
+
+/* AI impact banner (after AI fill) */
+@keyframes bannerIn{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+.ai-impact-banner{display:none;background:#fff;border-radius:14px;padding:30px 20px 20px 46px;margin-bottom:20px;box-shadow:0 6px 28px rgba(91,79,224,.1),0 1px 4px rgba(91,79,224,.06);}
+.ai-impact-banner.show{display:block;animation:bannerIn .4s cubic-bezier(.4,0,.2,1);}
+.ai-impact-body{flex:1;}
+.ai-impact-title{font-size:14px;font-weight:800;color:var(--text);margin-bottom:5px;letter-spacing:-.01em;}
+.ai-impact-meta{font-size:12px;color:var(--text-soft);line-height:1.55;margin-bottom:12px;}
+.ai-impact-stats{display:flex;gap:7px;flex-wrap:wrap;}
+.ai-stat{font-size:11px;font-weight:700;background:rgba(255,255,255,.85);border:1px solid var(--primary-border);color:var(--text-soft);padding:3px 10px;border-radius:99px;display:inline-flex;align-items:center;gap:3px;line-height:1;}
+.ai-stat b{color:var(--primary);}
+@keyframes ctaPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(91,79,224,0);transform:scale(1);}
+  50%{box-shadow:0 0 0 6px rgba(91,79,224,.18);transform:scale(1.03);}
+}
+.ai-stat-btn{cursor:pointer;border-color:var(--primary);color:var(--primary);transition:background .15s,transform .15s;display:inline-flex;align-items:center;gap:5px;line-height:1;animation:ctaPulse 2s ease-in-out infinite;}
+.ai-stat-btn:hover{background:var(--primary-soft);transform:translateY(-1px);box-shadow:0 3px 10px rgba(91,79,224,.2);animation:none;}
+.ai-stat-btn b,.ai-stat-btn svg{line-height:1;}
+/* Required-but-empty field highlight */
+.field-needs-input input,.field-needs-input select{border:1.5px solid #e07a2f!important;background:#fffaf5!important;box-shadow:0 0 0 3px rgba(224,122,47,.1)!important;}
+.field-needs-input label{color:#b85e1a;font-weight:700;}
+.field-needs-input label .req{color:#e07a2f;}
+.ai-stat-btn:hover{background:var(--primary-soft);transform:translateY(-1px);box-shadow:0 3px 10px rgba(91,79,224,.2);}
+.ai-stat-btn svg{flex-shrink:0;transition:transform .15s;}
+.ai-stat-btn:hover svg{transform:translateX(2px);}
+@keyframes fieldPulse{
+  0%{border-color:var(--border-strong);box-shadow:none;}
+  25%{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft);}
+  70%{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft);}
+  100%{border-color:var(--border-strong);box-shadow:none;}
+}
+.field-pulse select,.field-pulse input{animation:fieldPulse 1.4s ease forwards;}
+
+/* Field flash when AI populates */
+@keyframes aiFieldFlash{
+  0%{border-color:var(--border-strong);background:#fff;box-shadow:none;}
+  30%{border-color:var(--primary);background:var(--primary-soft);box-shadow:0 0 0 3px var(--primary-soft);}
+  100%{border-color:var(--border-strong);background:#fff;box-shadow:none;}
+}
+.field-ai-filling input,.field-ai-filling select{animation:aiFieldFlash .85s ease forwards;}
+
+/* ── Cases board screen ───────────────────────── */
+.cases-screen{display:none;max-width:1520px;margin:0 auto;padding:28px 32px 60px;}
+.cases-screen.active{display:block;}
+.cases-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:22px;}
+.cases-title{font-size:23px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px;}
+.cases-sub{font-size:13px;color:var(--text-soft);}
+.cases-top-actions{display:flex;gap:10px;flex-shrink:0;}
+
+.cases-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.cstat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;}
+.cstat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--bg-soft);color:var(--text-mute);}
+.cstat.accent .cstat-icon{background:var(--primary-soft);color:var(--primary);}
+.cstat.warn .cstat-icon{background:var(--amber-bg);color:var(--amber);}
+.cstat.danger .cstat-icon{background:var(--red-bg);color:var(--red);}
+.cstat.good .cstat-icon{background:var(--green-bg);color:var(--green);}
+.cstat-val{font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.15;}
+.cstat-label{font-size:11.5px;color:var(--text-mute);font-weight:600;margin-top:2px;}
+.cstat.accent .cstat-val{color:var(--primary);}
+.cstat.warn .cstat-val{color:var(--amber);}
+.cstat.danger .cstat-val{color:var(--red);}
+.cstat.good .cstat-val{color:var(--green);}
+
+.cases-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.cases-search{display:flex;align-items:center;gap:8px;padding:0 11px;height:32px;border:1.5px solid var(--border-strong);border-radius:9px;background:#fff;flex:1;min-width:220px;max-width:320px;}
+.cases-search svg{color:var(--text-mute);flex-shrink:0;}
+.cases-search input{border:none;outline:none;flex:1;font-size:13px;height:100%;}
+.cases-filters-btn{font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text-soft);background:#fff;border:1.5px solid var(--border-strong);padding:0 14px;height:32px;border-radius:9px;display:inline-flex;align-items:center;gap:7px;}
+.cases-view-toggle{margin-left:auto;display:flex;gap:3px;background:var(--bg-soft);border-radius:9px;padding:3px;}
+.cvt-btn{font-size:12px;font-weight:600;color:var(--text-mute);padding:6px 12px;border-radius:7px;cursor:pointer;}
+.cvt-btn.active{background:#fff;color:var(--text);box-shadow:0 1px 2px rgba(20,20,40,.08);}
+
+.cases-table-wrap{display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);overflow:auto;}
+.cases-table-wrap.active{display:block;}
+.cases-table{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap;}
+.cases-table thead th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#e4e4e9;padding:13px 16px;border-bottom:1px solid #5a5a66;cursor:pointer;user-select:none;background:#54545e;position:sticky;top:0;z-index:1;transition:background-color .12s;}
+.cases-table thead th:hover{color:#fff;background:#46464f;}
+.cases-table th .sort-arrow{margin-left:4px;font-size:9px;opacity:.6;}
+.cases-table th.sorted{color:#fff;}
+.cases-table th.sorted .sort-arrow{opacity:1;color:#a9a1ff;}
+.cases-table td{padding:13px 16px;border-bottom:1px solid #f0f0f4;color:var(--text);vertical-align:middle;}
+.cases-table tbody tr:last-child td{border-bottom:none;}
+.cases-table tbody tr:nth-child(even){background:#fbfbfd;}
+.cases-table tbody tr:hover{background:var(--primary-soft);}
+.ct-region{display:flex;align-items:center;gap:7px;font-weight:700;}
+.ct-firm{display:flex;align-items:center;gap:7px;}
+.ct-sub{color:var(--text-mute);font-size:11px;}
+.status-pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap;}
+.status-pill.sent{background:var(--primary-soft);color:var(--primary);}
+.status-pill.progress{background:var(--amber-bg);color:var(--amber);}
+.status-pill.action{background:var(--red-bg);color:var(--red);}
+.status-pill.filed{background:var(--green-bg);color:var(--green);}
+.ct-new-tag{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#fff;color:var(--primary);border:1.3px solid var(--primary);padding:1.5px 5.5px;border-radius:5px;margin-left:6px;}
+.cases-table-empty{padding:40px;text-align:center;color:var(--text-mute);font-size:12.5px;}
+
+.kanban-board{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:start;}
+.kanban-col-head{display:flex;align-items:center;gap:8px;padding:2px 4px 12px;}
+.kanban-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.kanban-col-title{font-size:12.5px;font-weight:700;letter-spacing:-.01em;}
+.kanban-col-count{margin-left:auto;font-size:11px;font-weight:700;color:var(--text-mute);background:var(--bg-soft);padding:2px 8px;border-radius:99px;}
+.kanban-col-body{display:flex;flex-direction:column;gap:10px;min-height:40px;}
+
+.case-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--border-strong);border-radius:12px;box-shadow:var(--shadow-card);padding:14px 15px;cursor:pointer;transition:box-shadow .15s,transform .15s;position:relative;}
+.case-card:hover{box-shadow:0 8px 24px rgba(20,20,40,.1);transform:translateY(-1px);}
+.case-card.col-sent{border-left-color:var(--primary);}
+.case-card.col-progress{border-left-color:var(--amber);}
+.case-card.col-action{border-left-color:var(--red);}
+.case-card.col-filed{border-left-color:var(--green);}
+.cc-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.cc-region{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;min-width:0;}
+.cc-region .flag{font-size:15px;flex-shrink:0;}
+.cc-new-tag{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#fff;color:var(--primary);border:1.3px solid var(--primary);padding:1.5px 5.5px;border-radius:5px;flex-shrink:0;}
+.cc-ref{font-size:10px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;background:#54545e;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:9px;}
+.cc-firms{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+.cc-firm-names{font-size:11.5px;color:var(--text-soft);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cc-firm-names b{color:var(--text);font-weight:700;}
+.cc-arrow{color:var(--text-mute);flex-shrink:0;}
+.cc-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:10px;border-top:1px solid #f0f0f4;}
+.cc-updated{font-size:10.5px;color:var(--text-mute);}
+.cc-deadline{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--bg-soft);color:var(--text-soft);white-space:nowrap;}
+.cc-deadline.urgent{background:var(--red-bg);color:var(--red);}
+.cc-deadline.soon{background:var(--amber-bg);color:var(--amber);}
+.cc-deadline.filed{background:var(--green-bg);color:var(--green);}
+.cc-progress{display:flex;gap:4px;margin-top:11px;}
+.cc-progress i{flex:1;height:4px;border-radius:3px;background:#eceef3;}
+.cc-progress i.on{background:var(--primary);}
+.case-card.col-progress .cc-progress i.on{background:var(--amber);}
+.case-card.col-action .cc-progress i.on{background:var(--red);}
+.case-card.col-filed .cc-progress i.on{background:var(--green);}
+.kanban-empty{font-size:11.5px;color:var(--text-mute);font-style:italic;text-align:center;padding:20px 10px;border:1.5px dashed var(--border);border-radius:10px;}
+
+@media(max-width:1180px){.kanban-board{grid-template-columns:1fr 1fr;}}
+@media(max-width:700px){.kanban-board{grid-template-columns:1fr;}.cases-stats{grid-template-columns:1fr 1fr;}}
+
+@media(max-width:980px){.wiz-body{grid-template-columns:1fr;}.sidebar{position:static;}.steps-rail{position:static;flex-direction:row;flex-wrap:wrap;gap:10px 18px;margin-bottom:8px;}.step-line{display:none;}.svc-grid{grid-template-columns:1fr 1fr;}.grid-2{grid-template-columns:1fr;}.agent-logo-box{width:96px;height:96px;}}
+@media(max-width:600px){.nav{overflow-x:auto;}.svc-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="aiCardIconGrad" x1="35" y1="19" x2="35" y2="51" gradientUnits="userSpaceOnUse"><stop stop-color="#8B5CF6"/><stop offset="1" stop-color="#FF7A00"/></linearGradient></defs></svg>
+
+<nav class="nav">
+  <div class="logo"><img class="logo-img" src="assets/ipeer_logo.93e48459 1.png" alt="iPeer"></div>
+  <div class="nav-tabs">
+    <div class="nav-tab">My Associates</div>
+    <div class="nav-tab">Saved Quotes</div>
+    <div class="nav-tab">Cases</div>
+  </div>
+  <div class="nav-right">
+    <button class="nav-cta" id="btnNavNewQuote">+ New Quote</button>
+    <div class="icon-btn"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+    <div class="icon-btn"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="dot"></span></div>
+    <div class="avatar">A</div>
+  </div>
+</nav>
+
+<!-- ── Wizard Header ─────────────────────────── -->
+<div class="wiz-head" id="wizHead">
+  <div class="wiz-head-top">
+    <div>
+      <div class="wiz-title-row">
+        <div class="wiz-title">Create New Quote</div>
+        <div class="autosave"><span class="sdot"></span>Draft saved</div>
+      </div>
+    </div>
+    <div class="wiz-close" title="Close">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ── Body ─────────────────────────────────── -->
+<div id="wizardRoot">
+<div class="wiz-body">
+  <div class="steps-rail" id="stepper">
+    <div class="step" data-step="0"><div class="step-circle">1</div><div class="step-label">Services</div></div>
+    <div class="step-line"></div>
+    <div class="step" data-step="1"><div class="step-circle">2</div><div class="step-label">Regions</div></div>
+    <div class="step-line"></div>
+    <div class="step" data-step="2"><div class="step-circle">3</div><div class="step-label">Details</div></div>
+    <div class="step-line"></div>
+    <div class="step" data-step="3"><div class="step-circle">4</div><div class="step-label">Associate Selection</div></div>
+    <div class="step-line"></div>
+    <div class="step" data-step="4"><div class="step-circle">5</div><div class="step-label">Review &amp; Send</div></div>
+  </div>
+  <div class="main-col">
+
+    <!-- STEP 1: SERVICES -->
+    <div class="step-panel active" data-panel="0">
+      <div class="step-intro">
+        <div class="step-eyebrow">Step 1 of 5</div>
+        <div class="step-h">Services</div>
+        <div class="step-sub">Let's start with the basics – pick a filing service and tell us a little about the application.</div>
+      </div>
+      <div class="card card-pad">
+        <div class="field">
+          <label>Filing Service Type <span class="req">*</span></label>
+          <div class="svc-grid" id="svcGrid">
+            <div class="svc-card" data-svc="pct">
+              <div class="svc-top"><span class="svc-name">PCT National Phase</span><div class="svc-radio"></div></div>
+              <div class="svc-desc">Enter national phase from an existing PCT application in each selected jurisdiction.</div>
+            </div>
+            <div class="svc-card" data-svc="paris">
+              <div class="svc-top"><span class="svc-name">Paris Convention</span><div class="svc-radio"></div></div>
+              <div class="svc-desc">File a new application claiming priority directly, without a PCT phase.</div>
+            </div>
+            <div class="svc-card" data-svc="ev">
+              <div class="svc-top"><span class="svc-name">European Validation</span><div class="svc-radio"></div></div>
+              <div class="svc-desc">Validate a granted EP patent in non-EPC member and extension states.</div>
+            </div>
+            <div class="svc-extra svc-card" data-svc="pct-intl">
+              <div class="svc-top"><span class="svc-name">PCT International Filing</span><div class="svc-radio"></div></div>
+              <div class="svc-desc">File a new international (PCT) application at the receiving office.</div>
+            </div>
+            <div class="svc-extra svc-card" data-svc="direct">
+              <div class="svc-top"><span class="svc-name">Direct National Filing</span><div class="svc-radio"></div></div>
+              <div class="svc-desc">File directly with a national office, no prior PCT or Paris filing.</div>
+            </div>
+            <div class="svc-extra svc-card" data-svc="div">
+              <div class="svc-top"><span class="svc-name">Divisional Application</span><div class="svc-radio"></div></div>
+              <div class="svc-desc">Split claims from a pending parent application into a new filing.</div>
+            </div>
+          </div>
+          <div class="show-more-btn" id="showMoreSvc">Show 3 more services <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>Responsible Attorney <span class="req">*</span></label>
+            <select id="attorneySel" required>
+              <option value="" disabled selected hidden>Select attorney</option>
+              <option>Aaron Wexler</option>
+              <option>Priya Shah</option>
+              <option>Marcus Lee</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Client Reference Number</label>
+            <input type="text" placeholder="Enter a reference number" id="clientRef">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Application / Publication Number <span class="req">*</span></label>
+          <input type="text" id="appNumber" placeholder="e.g. PCT/AU2025/050781" style="max-width:340px;">
+          <div class="field-valid" id="appValid"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span id="appValidText">Recognized PCT National Phase format</span></div>
+          <div class="ai-loading" id="aiLoading"><span class="ai-spinner"></span>Analyzing application…</div>
+          <div class="ai-done" id="aiDone">✨ <b>AI pre-filled application details</b> and suggested 4 regions based on similar PCT filings.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: REGIONS -->
+    <div class="step-panel" data-panel="1">
+      <div class="step-intro">
+        <div class="step-eyebrow">Step 2 of 5</div>
+        <div class="step-h">Regions</div>
+        <div class="step-sub">We've suggested regions based on this application number – remove or add more if you'd like.</div>
+      </div>
+
+      <div class="card" id="regionsCard" style="margin-bottom:16px;">
+        <div class="ai-card-badge" id="aiCardBadge" title="AI suggested">
+          <svg width="46" height="46" viewBox="0 0 70 70" fill="none">
+            <path d="M33.4436 20.4555C33.5114 20.0923 33.7042 19.7642 33.9884 19.5282C34.2727 19.2921 34.6305 19.1629 35 19.1629C35.3695 19.1629 35.7274 19.2921 36.0116 19.5282C36.2958 19.7642 36.4886 20.0923 36.5564 20.4555L38.2205 29.2557C38.3387 29.8813 38.6427 30.4568 39.093 30.907C39.5432 31.3573 40.1187 31.6613 40.7443 31.7795L49.5445 33.4436C49.9077 33.5114 50.2358 33.7042 50.4718 33.9884C50.7079 34.2727 50.8371 34.6305 50.8371 35C50.8371 35.3695 50.7079 35.7274 50.4718 36.0116C50.2358 36.2958 49.9077 36.4886 49.5445 36.5564L40.7443 38.2205C40.1187 38.3387 39.5432 38.6427 39.093 39.093C38.6427 39.5432 38.3387 40.1187 38.2205 40.7443L36.5564 49.5445C36.4886 49.9077 36.2958 50.2358 36.0116 50.4718C35.7274 50.7079 35.3695 50.8371 35 50.8371C34.6305 50.8371 34.2727 50.7079 33.9884 50.4718C33.7042 50.2358 33.5114 49.9077 33.4436 49.5445L31.7795 40.7443C31.6613 40.1187 31.3573 39.5432 30.907 39.093C30.4568 38.6427 29.8813 38.3387 29.2557 38.2205L20.4555 36.5564C20.0923 36.4886 19.7642 36.2958 19.5282 36.0116C19.2921 35.7274 19.1629 35.3695 19.1629 35C19.1629 34.6305 19.2921 34.2727 19.5282 33.9884C19.7642 33.7042 20.0923 33.5114 20.4555 33.4436L29.2557 31.7795C29.8813 31.6613 30.4568 31.3573 30.907 30.907C31.3573 30.4568 31.6613 29.8813 31.7795 29.2557L33.4436 20.4555Z" stroke="url(#aiCardIconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M47.6667 19.1667V25.5" stroke="url(#aiCardIconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M50.8333 22.3333H44.5" stroke="url(#aiCardIconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22.3333 50.8333C24.0822 50.8333 25.5 49.4156 25.5 47.6667C25.5 45.9178 24.0822 44.5 22.3333 44.5C20.5844 44.5 19.1667 45.9178 19.1667 47.6667C19.1667 49.4156 20.5844 50.8333 22.3333 50.8333Z" stroke="url(#aiCardIconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="region-panel-head">
+          <div>
+            <div class="region-panel-title">Filing regions <span id="selCount"></span></div>
+            <div class="sug-subtitle" id="aiSelHint"></div>
+          </div>
+          <span class="clear-all" id="clearAll">Clear all</span>
+        </div>
+        <div class="region-list" id="selList" style="max-height:none;overflow:visible;"></div>
+        <div class="min-warn" id="minWarn" style="display:none;">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          At least 1 region must be selected to continue
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:0;">
+        <div class="region-panel-head">
+          <span class="region-panel-title">Add more regions</span>
+          <span class="region-panel-count" id="availCount"></span>
+        </div>
+        <div class="add-more-search">
+          <div class="region-search">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="regionSearch" placeholder="Search regions">
+          </div>
+        </div>
+        <div class="region-list" id="availList"></div>
+      </div>
+    </div>
+
+    <!-- STEP 3: DETAILS -->
+    <div class="step-panel" data-panel="2">
+      <div class="step-intro">
+        <div class="step-eyebrow">Step 3 of 5</div>
+        <div class="step-h">Application Details</div>
+        <div class="step-sub">Just a few more details and we'll have accurate costs ready for you.</div>
+      </div>
+
+      <!-- Gate: shown when AI hasn't run yet -->
+      <div class="step3-gate" id="step3Gate">
+        <span style="font-size:20px;flex-shrink:0;margin-top:2px;">⚠️</span>
+        <div class="step3-gate-body">
+          <div class="step3-gate-title">AI analysis hasn't run yet – this is where quotes used to stall</div>
+          <div class="step3-gate-sub">Enter your application or publication number in Step 1 and AI will auto-complete 11 of 13 fields here in seconds. Previously, this manual step caused 40% of quotes to be abandoned. You can also fill fields manually below.</div>
+          <span class="step3-gate-link" id="gateBackLink">← Go back to Step 1 to enter the application number</span>
+        </div>
+      </div>
+
+      <!-- Banner: shown after AI fill -->
+      <div class="ai-impact-banner ai-gradient-border ai-suggest-card" id="step3Banner">
+        <div class="ai-card-badge" title="AI-filled">
+          <svg width="46" height="46" viewBox="0 0 70 70" fill="none">
+            <path d="M33.4436 20.4555C33.5114 20.0923 33.7042 19.7642 33.9884 19.5282C34.2727 19.2921 34.6305 19.1629 35 19.1629C35.3695 19.1629 35.7274 19.2921 36.0116 19.5282C36.2958 19.7642 36.4886 20.0923 36.5564 20.4555L38.2205 29.2557C38.3387 29.8813 38.6427 30.4568 39.093 30.907C39.5432 31.3573 40.1187 31.6613 40.7443 31.7795L49.5445 33.4436C49.9077 33.5114 50.2358 33.7042 50.4718 33.9884C50.7079 34.2727 50.8371 34.6305 50.8371 35C50.8371 35.3695 50.7079 35.7274 50.4718 36.0116C50.2358 36.2958 49.9077 36.4886 49.5445 36.5564L40.7443 38.2205C40.1187 38.3387 39.5432 38.6427 39.093 39.093C38.6427 39.5432 38.3387 40.1187 38.2205 40.7443L36.5564 49.5445C36.4886 49.9077 36.2958 50.2358 36.0116 50.4718C35.7274 50.7079 35.3695 50.8371 35 50.8371C34.6305 50.8371 34.2727 50.7079 33.9884 50.4718C33.7042 50.2358 33.5114 49.9077 33.4436 49.5445L31.7795 40.7443C31.6613 40.1187 31.3573 39.5432 30.907 39.093C30.4568 38.6427 29.8813 38.3387 29.2557 38.2205L20.4555 36.5564C20.0923 36.4886 19.7642 36.2958 19.5282 36.0116C19.2921 35.7274 19.1629 35.3695 19.1629 35C19.1629 34.6305 19.2921 34.2727 19.5282 33.9884C19.7642 33.7042 20.0923 33.5114 20.4555 33.4436L29.2557 31.7795C29.8813 31.6613 30.4568 31.3573 30.907 30.907C31.3573 30.4568 31.6613 29.8813 31.7795 29.2557L33.4436 20.4555Z" stroke="url(#aiCardIconGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M47.6667 19.1667V25.5" stroke="url(#aiCardIconGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M50.8333 22.3333H44.5" stroke="url(#aiCardIconGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22.3333 50.8333C24.0822 50.8333 25.5 49.4156 25.5 47.6667C25.5 45.9178 24.0822 44.5 22.3333 44.5C20.5844 44.5 19.1667 45.9178 19.1667 47.6667C19.1667 49.4156 20.5844 50.8333 22.3333 50.8333Z" stroke="url(#aiCardIconGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="ai-impact-body">
+          <div class="ai-impact-title">AI completed 11 of 13 fields</div>
+          <div class="ai-impact-meta">Pulled from the WIPO publication database. Review each value before continuing – you're accountable for their accuracy when instructing associates.</div>
+          <div class="ai-impact-stats">
+            <span class="ai-stat">⏱ <b>~18 min</b> saved</span>
+            <span class="ai-stat">📋 <b>11</b> fields auto-filled</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="acc-app">
+        <div class="accordion-head" data-acc="acc-app">
+          <div class="acc-num" id="acc-app-num">1</div>
+          <div class="acc-titles"><div class="acc-title">Application Details</div><div class="acc-sub">Title, applicant, priority dates and language</div></div>
+          <div class="acc-status" id="acc-app-status">Required</div>
+          <svg class="acc-chev" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-in">
+            <div class="grid-2">
+              <div class="field"><label>Title of Application <span class="req">*</span></label><input type="text" id="appTitle" placeholder="e.g. Nucleic Acids Delivered By HD-MAP"></div>
+              <div class="field"><label>Applicant Name <span class="req">*</span></label><input type="text" id="appApplicant" placeholder="e.g. Vaxxas Pty Limited"></div>
+              <div class="field"><label>Earliest Priority Date</label><input type="date" id="priorityDate"></div>
+              <div class="field"><label>International Filing Date</label><input type="date" id="intlFilingDate"></div>
+              <div class="field"><label>Number of Priorities</label><input type="number" id="numPriorities" placeholder="e.g. 2"></div>
+              <div class="field"><label>Publication Number</label><input type="text" id="pubNumber" placeholder="e.g. WO/2026/020195"></div>
+              <div class="field">
+                <label>Entity Size <span class="req">*</span></label>
+                <select id="entitySize"><option value="" disabled selected hidden>Select entity size</option><option>Large Entity</option><option>Small Entity</option><option>Micro Entity</option></select>
+                <div class="field-hint">Affects official filing fees in fee-tiered jurisdictions (e.g. USPTO).</div>
+              </div>
+              <div class="field"><label>Application Language <span class="req">*</span></label><select id="appLanguage"><option>English</option><option>French</option><option>German</option></select></div>
+              <div class="field"><label>Location of Search</label><select id="locSearch"><option>Other</option><option>USPTO</option><option>EPO</option><option>JPO</option></select></div>
+            </div>
+            <div class="grid-2">
+              <div class="field"><label>China Extension Fee</label><div class="radio-row"><label class="radio-opt"><input type="radio" name="cef" checked>No</label><label class="radio-opt"><input type="radio" name="cef">Yes</label></div></div>
+              <div class="field"><label>Chapter II Demand</label><div class="radio-row"><label class="radio-opt"><input type="radio" name="ch2" checked>No</label><label class="radio-opt"><input type="radio" name="ch2">Yes</label></div></div>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>IPC Classification</label>
+              <div class="ipc-chips" id="ipcChips"><span style="font-size:12px;color:var(--text-mute);font-style:italic;">AI will populate IPC codes from your application</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="acc-doc">
+        <div class="accordion-head" data-acc="acc-doc">
+          <div class="acc-num" id="acc-doc-num">2</div>
+          <div class="acc-titles"><div class="acc-title">Document Metrics</div><div class="acc-sub">Word count and page composition</div></div>
+          <div class="acc-status" id="acc-doc-status">Required</div>
+          <svg class="acc-chev" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-in">
+            <div class="grid-2">
+              <div class="field"><label>Total Word Count <span class="req">*</span></label><input type="number" id="wordCount" placeholder="e.g. 11731"></div>
+              <div class="field"><label>Total Pages <span class="req">*</span></label><input type="number" id="totalPages" placeholder="e.g. 47"></div>
+              <div class="field"><label>Pages of Sequences</label><input type="number" id="seqPages" placeholder="0"></div>
+              <div class="field"><label>Pages of Drawings</label><input type="number" id="drawPages" placeholder="e.g. 9"></div>
+            </div>
+            <div class="calc-hint" id="calcHint">📐 Body-only pages (auto-calculated): <b id="calcVal">–</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item" id="acc-claims">
+        <div class="accordion-head" data-acc="acc-claims">
+          <div class="acc-num" id="acc-claims-num">3</div>
+          <div class="acc-titles"><div class="acc-title">Claims Details</div><div class="acc-sub">Independent and dependent claim counts</div></div>
+          <div class="acc-status" id="acc-claims-status">Required</div>
+          <svg class="acc-chev" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="accordion-body">
+          <div class="accordion-body-in">
+            <div class="grid-2">
+              <div class="field"><label>Number of Claims <span class="req">*</span></label><input type="number" id="numClaims" placeholder="e.g. 14"></div>
+              <div class="field"><label>Number of Independent Claims <span class="req">*</span></label><input type="number" id="numIndepClaims" placeholder="e.g. 2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: AGENTS -->
+    <div class="step-panel" data-panel="3">
+      <div class="step-intro">
+        <div class="step-eyebrow">Step 4 of 5</div>
+        <div class="step-h">Associate Selection</div>
+        <div class="step-sub">Choose who you'd like handling each region – switch between them using the tabs below.</div>
+      </div>
+      <div class="region-tabs" id="regionTabs"></div>
+      <div id="agentPanes"></div>
+    </div>
+
+    <!-- STEP 5: REVIEW -->
+    <div class="step-panel" data-panel="4">
+      <div class="step-intro">
+        <div class="step-eyebrow">Step 5 of 5</div>
+        <div class="step-h">Review &amp; Send</div>
+        <div class="step-sub">Nearly there! Double-check everything below, attach any documents, and send instructions to your associates.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-head-row"><span class="card-head-title">Application Summary</span><span class="rev-edit" data-goto="0">Edit</span></div>
+        <div class="card-pad" style="padding-top:6px;">
+          <div class="rev-row"><span class="rev-label">Service</span><span class="rev-val" id="revService">PCT National Phase</span></div>
+          <div class="rev-row"><span class="rev-label">Application / Publication No.</span><span class="rev-val" id="revAppNum">PCT/AU2025/050781</span></div>
+          <div class="rev-row"><span class="rev-label">Responsible Attorney</span><span class="rev-val" id="revAttorney">Aaron Wexler</span></div>
+          <div class="rev-row"><span class="rev-label">Applicant</span><span class="rev-val">Vaxxas Pty Limited</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head-row"><span class="card-head-title">Regions &amp; Associates</span><span class="rev-edit" data-goto="3">Edit</span></div>
+        <div id="revRegions"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head-row"><span class="card-head-title">Attachments</span></div>
+        <div class="card-pad">
+          <div class="dropzone">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" style="margin:0 auto 8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div><b>Click to upload</b> or drag and drop</div>
+            <div style="margin-top:2px;font-size:11px;">Excel, Word, PDF or image – up to 50MB per file</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head-row"><span class="card-head-title">Contact &amp; Notifications</span></div>
+        <div class="card-pad">
+          <div class="grid-2">
+            <div class="field"><label>Case Contact Name</label><input type="text" value="Aaron Wexler"></div>
+            <div class="field"><label>Comments for your Associates</label><input type="text" placeholder="Optional notes…"></div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>Notify these recipients</label>
+            <div class="chip-input" id="chipInput">
+              <span class="email-chip">aaron.wexler@firm.com<span class="x">×</span></span>
+              <input type="text" placeholder="Add an email and press Enter…">
+            </div>
+            <div class="toggle-link" style="margin-top:8px;">+ Add CC / BCC recipients</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Sidebar ─────────────────────────────── -->
+  <div class="sidebar">
+    <div class="sb-card">
+      <div class="sb-head">
+        <div class="sb-head-label">Quote Summary</div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Service</div>
+        <div class="sb-svc" id="sbSvc">PCT National Phase</div>
+        <div class="sb-svc-sub" id="sbSvcSub">PCT/AU2025/050781</div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Regions (<span id="sbRegionCount">4</span>)</div>
+        <div id="sbRegionList"></div>
+      </div>
+      <div class="sb-total-section">
+        <div class="sb-total" id="sbTotal">$0</div>
+        <div class="sb-total-sub" id="sbTotalSub">Estimated – finalized at Associate Selection</div>
+      </div>
+    </div>
+    <div class="sb-tip" id="sbTip">💡 <b>Tip:</b> select your filing service and confirm the application number to get started.</div>
+  </div>
+</div>
+</div>
+
+<!-- ── Success Screen ──────────────────────── -->
+<div class="success-wrap" id="successWrap">
+  <div class="success-check"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" pathLength="100"/></svg></div>
+  <div class="success-h">Instructions sent</div>
+  <div class="success-sub">We've emailed your chosen associates in each region and created the following cases. You can track progress from the Cases tab.</div>
+  <div class="case-list" id="caseList"></div>
+  <div class="success-actions">
+    <button class="btn btn-ghost">Create Another Quote</button>
+    <button class="btn btn-primary" id="btnViewCases">View Cases</button>
+  </div>
+</div>
+
+<!-- ── Cases Board Screen ───────────────────── -->
+<div class="cases-screen" id="casesScreen">
+  <div class="cases-top">
+    <div>
+      <div class="cases-title">Cases</div>
+      <div class="cases-sub">Every case created from a sent quote, tracked from instruction to filing.</div>
+    </div>
+  </div>
+
+  <div class="cases-stats" id="casesStats"></div>
+
+  <div class="cases-toolbar">
+    <div class="cases-search">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="casesSearch" placeholder="Search region, associate, or reference…">
+    </div>
+    <button type="button" class="cases-filters-btn">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+      Filters
+    </button>
+    <div class="cases-view-toggle">
+      <span class="cvt-btn" data-view="table">Table</span>
+      <span class="cvt-btn" data-view="board">Board</span>
+    </div>
+  </div>
+
+  <div class="cases-table-wrap" id="casesTableWrap">
+    <table class="cases-table">
+      <thead>
+        <tr>
+          <th data-key="name">Region</th>
+          <th data-key="ref">Reference</th>
+          <th data-key="clientFirm">Client Firm</th>
+          <th data-key="assocFirm">Associate</th>
+          <th data-key="service">Service</th>
+          <th data-key="status">Status</th>
+          <th data-key="deadlineDays">Deadline</th>
+          <th data-key="updatedDaysAgo">Updated</th>
+        </tr>
+      </thead>
+      <tbody id="casesTableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="kanban-board" id="kanbanBoard"></div>
+</div>
+
+<!-- ── Footer ───────────────────────────────── -->
+<div class="wiz-footer" id="wizFooter">
+  <div class="footer-inner">
+    <button class="btn btn-text" id="btnCancel">Cancel</button>
+    <div class="footer-center">
+      <button class="btn btn-ghost" id="btnBack">‹ Back</button>
+      <button class="btn btn-primary" id="btnNext">Next ›</button>
+    </div>
+    <div class="footer-right">
+      <button class="btn btn-ghost" id="btnSaveClose">Save &amp; Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Data ─────────────────────────────────────────────── */
+const ALL_REGIONS = [
+  // Asia-Pacific
+  {code:'JP',name:'Japan',           flag:'🇯🇵',deadline:'30 mo',feeLo:2400,feeHi:4800},
+  {code:'CN',name:'China',           flag:'🇨🇳',deadline:'30 mo',feeLo:2000,feeHi:4200},
+  {code:'KR',name:'South Korea',     flag:'🇰🇷',deadline:'31 mo',feeLo:2200,feeHi:4000},
+  {code:'AU',name:'Australia',       flag:'🇦🇺',deadline:'31 mo',feeLo:1900,feeHi:3500},
+  {code:'IN',name:'India',           flag:'🇮🇳',deadline:'31 mo',feeLo:1500,feeHi:3000},
+  {code:'SG',name:'Singapore',       flag:'🇸🇬',deadline:'30 mo',feeLo:2000,feeHi:3800},
+  {code:'TW',name:'Taiwan',          flag:'🇹🇼',deadline:'30 mo',feeLo:1800,feeHi:3400},
+  {code:'NZ',name:'New Zealand',     flag:'🇳🇿',deadline:'31 mo',feeLo:1700,feeHi:3200},
+  {code:'MY',name:'Malaysia',        flag:'🇲🇾',deadline:'30 mo',feeLo:1400,feeHi:2800},
+  {code:'TH',name:'Thailand',        flag:'🇹🇭',deadline:'30 mo',feeLo:1300,feeHi:2600},
+  {code:'VN',name:'Vietnam',         flag:'🇻🇳',deadline:'31 mo',feeLo:1200,feeHi:2400},
+  {code:'ID',name:'Indonesia',       flag:'🇮🇩',deadline:'31 mo',feeLo:1300,feeHi:2600},
+  {code:'PH',name:'Philippines',     flag:'🇵🇭',deadline:'30 mo',feeLo:1100,feeHi:2200},
+  {code:'HK',name:'Hong Kong',       flag:'🇭🇰',deadline:'30 mo',feeLo:1600,feeHi:3200},
+  {code:'PK',name:'Pakistan',        flag:'🇵🇰',deadline:'30 mo',feeLo:900, feeHi:1800},
+  {code:'BD',name:'Bangladesh',      flag:'🇧🇩',deadline:'30 mo',feeLo:800, feeHi:1600},
+  {code:'LK',name:'Sri Lanka',       flag:'🇱🇰',deadline:'30 mo',feeLo:800, feeHi:1600},
+  // Americas
+  {code:'US',name:'United States',   flag:'🇺🇸',deadline:'30 mo',feeLo:2600,feeHi:5000},
+  {code:'CA',name:'Canada',          flag:'🇨🇦',deadline:'30 mo',feeLo:1700,feeHi:3300},
+  {code:'MX',name:'Mexico',          flag:'🇲🇽',deadline:'30 mo',feeLo:1400,feeHi:2800},
+  {code:'BR',name:'Brazil',          flag:'🇧🇷',deadline:'30 mo',feeLo:1800,feeHi:3600},
+  {code:'CO',name:'Colombia',        flag:'🇨🇴',deadline:'31 mo',feeLo:1600,feeHi:3100},
+  {code:'AR',name:'Argentina',       flag:'🇦🇷',deadline:'30 mo',feeLo:1500,feeHi:3000},
+  {code:'CL',name:'Chile',           flag:'🇨🇱',deadline:'30 mo',feeLo:1400,feeHi:2800},
+  {code:'PE',name:'Peru',            flag:'🇵🇪',deadline:'30 mo',feeLo:1200,feeHi:2400},
+  {code:'EC',name:'Ecuador',         flag:'🇪🇨',deadline:'30 mo',feeLo:1100,feeHi:2200},
+  {code:'UY',name:'Uruguay',         flag:'🇺🇾',deadline:'30 mo',feeLo:1200,feeHi:2400},
+  {code:'VE',name:'Venezuela',       flag:'🇻🇪',deadline:'30 mo',feeLo:1000,feeHi:2000},
+  {code:'BO',name:'Bolivia',         flag:'🇧🇴',deadline:'30 mo',feeLo:1000,feeHi:2000},
+  {code:'CU',name:'Cuba',            flag:'🇨🇺',deadline:'30 mo',feeLo:900, feeHi:1800},
+  {code:'GT',name:'Guatemala',       flag:'🇬🇹',deadline:'30 mo',feeLo:900, feeHi:1800},
+  {code:'CR',name:'Costa Rica',      flag:'🇨🇷',deadline:'30 mo',feeLo:1000,feeHi:2000},
+  // Europe
+  {code:'DE',name:'Germany',         flag:'🇩🇪',deadline:'31 mo',feeLo:2800,feeHi:5400},
+  {code:'FR',name:'France',          flag:'🇫🇷',deadline:'31 mo',feeLo:2600,feeHi:5000},
+  {code:'GB',name:'United Kingdom',  flag:'🇬🇧',deadline:'31 mo',feeLo:2500,feeHi:4800},
+  {code:'IT',name:'Italy',           flag:'🇮🇹',deadline:'31 mo',feeLo:2400,feeHi:4600},
+  {code:'ES',name:'Spain',           flag:'🇪🇸',deadline:'31 mo',feeLo:2200,feeHi:4200},
+  {code:'NL',name:'Netherlands',     flag:'🇳🇱',deadline:'31 mo',feeLo:2300,feeHi:4400},
+  {code:'CH',name:'Switzerland',     flag:'🇨🇭',deadline:'31 mo',feeLo:2800,feeHi:5200},
+  {code:'SE',name:'Sweden',          flag:'🇸🇪',deadline:'31 mo',feeLo:2200,feeHi:4000},
+  {code:'NO',name:'Norway',          flag:'🇳🇴',deadline:'31 mo',feeLo:2100,feeHi:3900},
+  {code:'DK',name:'Denmark',         flag:'🇩🇰',deadline:'31 mo',feeLo:2100,feeHi:3900},
+  {code:'FI',name:'Finland',         flag:'🇫🇮',deadline:'31 mo',feeLo:2000,feeHi:3800},
+  {code:'BE',name:'Belgium',         flag:'🇧🇪',deadline:'31 mo',feeLo:2100,feeHi:3900},
+  {code:'AT',name:'Austria',         flag:'🇦🇹',deadline:'31 mo',feeLo:2100,feeHi:3900},
+  {code:'PL',name:'Poland',          flag:'🇵🇱',deadline:'31 mo',feeLo:1700,feeHi:3200},
+  {code:'CZ',name:'Czech Republic',  flag:'🇨🇿',deadline:'31 mo',feeLo:1600,feeHi:3000},
+  {code:'PT',name:'Portugal',        flag:'🇵🇹',deadline:'31 mo',feeLo:1800,feeHi:3400},
+  {code:'IE',name:'Ireland',         flag:'🇮🇪',deadline:'31 mo',feeLo:2000,feeHi:3800},
+  {code:'TR',name:'Turkey',          flag:'🇹🇷',deadline:'30 mo',feeLo:1400,feeHi:2800},
+  {code:'RU',name:'Russia',          flag:'🇷🇺',deadline:'31 mo',feeLo:1800,feeHi:3400},
+  {code:'HU',name:'Hungary',         flag:'🇭🇺',deadline:'31 mo',feeLo:1600,feeHi:3000},
+  {code:'RO',name:'Romania',         flag:'🇷🇴',deadline:'31 mo',feeLo:1500,feeHi:2800},
+  {code:'GR',name:'Greece',          flag:'🇬🇷',deadline:'31 mo',feeLo:1700,feeHi:3200},
+  {code:'HR',name:'Croatia',         flag:'🇭🇷',deadline:'31 mo',feeLo:1500,feeHi:2800},
+  {code:'SK',name:'Slovakia',        flag:'🇸🇰',deadline:'31 mo',feeLo:1500,feeHi:2800},
+  {code:'SI',name:'Slovenia',        flag:'🇸🇮',deadline:'31 mo',feeLo:1500,feeHi:2800},
+  {code:'UA',name:'Ukraine',         flag:'🇺🇦',deadline:'31 mo',feeLo:1200,feeHi:2400},
+  // Middle East
+  {code:'IL',name:'Israel',          flag:'🇮🇱',deadline:'30 mo',feeLo:2000,feeHi:3800},
+  {code:'AE',name:'UAE',             flag:'🇦🇪',deadline:'30 mo',feeLo:1800,feeHi:3400},
+  {code:'SA',name:'Saudi Arabia',    flag:'🇸🇦',deadline:'30 mo',feeLo:1700,feeHi:3200},
+  {code:'JO',name:'Jordan',          flag:'🇯🇴',deadline:'30 mo',feeLo:1100,feeHi:2200},
+  {code:'IR',name:'Iran',            flag:'🇮🇷',deadline:'30 mo',feeLo:1000,feeHi:2000},
+  // Africa
+  {code:'ZA',name:'South Africa',    flag:'🇿🇦',deadline:'30 mo',feeLo:1500,feeHi:2800},
+  {code:'EG',name:'Egypt',           flag:'🇪🇬',deadline:'30 mo',feeLo:1200,feeHi:2400},
+  {code:'NG',name:'Nigeria',         flag:'🇳🇬',deadline:'30 mo',feeLo:1000,feeHi:2000},
+  {code:'KE',name:'Kenya',           flag:'🇰🇪',deadline:'30 mo',feeLo:900, feeHi:1800},
+  {code:'NA',name:'Namibia',         flag:'🇳🇦',deadline:'31 mo',feeLo:1200,feeHi:2400},
+  {code:'GH',name:'Ghana',           flag:'🇬🇭',deadline:'30 mo',feeLo:900, feeHi:1800},
+  {code:'MA',name:'Morocco',         flag:'🇲🇦',deadline:'30 mo',feeLo:1100,feeHi:2200},
+  {code:'TZ',name:'Tanzania',        flag:'🇹🇿',deadline:'30 mo',feeLo:800, feeHi:1600},
+  {code:'ET',name:'Ethiopia',        flag:'🇪🇹',deadline:'30 mo',feeLo:800, feeHi:1600},
+  {code:'UG',name:'Uganda',          flag:'🇺🇬',deadline:'30 mo',feeLo:800, feeHi:1600},
+  {code:'TN',name:'Tunisia',         flag:'🇹🇳',deadline:'30 mo',feeLo:1000,feeHi:2000},
+  {code:'DZ',name:'Algeria',         flag:'🇩🇿',deadline:'30 mo',feeLo:1000,feeHi:2000},
+];
+const CASE_SPECIALTY = 'Biotech & Life Sciences';
+const AGENT_DATA = {
+  JP: {
+    mine:[
+      {name:'Atsumi & Sakai',                 price:4150,rating:3.8,  badges:['Worked with applicant · 2y ago','Responds quickly'],cases:84, onTime:97,responseHrs:6, specialty:'Biotech & Life Sciences'},
+      {name:'Mori Hamada & Matsumoto',        price:4320,rating:4.7,  badges:['Fast turnaround'],                                   cases:98, onTime:95,responseHrs:7, specialty:'Chemical & Pharma'},
+      {name:'Anderson Mōri & Tomotsune',      price:3750,rating:4.6,  badges:['Budget friendly'],                                   cases:76, onTime:93,responseHrs:8, specialty:'Mechanical & Electronics'},
+      {name:'Nagashima Ohno & Tsunematsu',    price:3980,rating:2,    badges:['Responds quickly'],                                  cases:112,onTime:96,responseHrs:5, specialty:'Biotech & Life Sciences'},
+    ],
+    ext:[
+      {name:'Yuasa & Hara',               price:2650,rating:4.9,  badges:['Responds quickly'],   cases:210,onTime:95,responseHrs:8, specialty:'Mechanical & Electronics'},
+      {name:'Shiga International Patent', price:2890,rating:4.7,  badges:['Fast turnaround'],    cases:130,onTime:99,responseHrs:5, specialty:'Biotech & Life Sciences'},
+      {name:'Nakamura & Mihara',          price:2740,rating:4.6,  badges:['Top rated'],          cases:88, onTime:92,responseHrs:10,specialty:'Software & AI'},
+      {name:'Kishimoto & Partners',       price:2580,rating:4.4,  badges:['Budget friendly'],    cases:54, onTime:90,responseHrs:12,specialty:'Chemical & Pharma'},
+      {name:'Tokkyo.net Patent Office',   price:3100,rating:4.5,  badges:['Fast turnaround'],   cases:72, onTime:91,responseHrs:11,specialty:'General Practice'},
+    ]
+  },
+  CN: {
+    mine:[
+      {name:'Beijing Wan Hui Da',         price:3120,rating:4.7,  badges:['Worked with applicant · 8mo ago','Responds quickly'],cases:95, onTime:96,responseHrs:7, specialty:'Biotech & Life Sciences'},
+      {name:'Unitalen Attorneys at Law',  price:3340,rating:4.8,  badges:['Top rated'],                                         cases:142,onTime:97,responseHrs:6, specialty:'Biotech & Life Sciences'},
+      {name:'China Patent Agency (HK)',   price:2980,rating:4.6,  badges:['Responds quickly'],                                  cases:118,onTime:94,responseHrs:8, specialty:'Chemical & Pharma'},
+      {name:'SinoIP Partners',            price:2850,rating:4.5,  badges:['Fast turnaround'],                                   cases:86, onTime:92,responseHrs:10,specialty:'Mechanical & Electronics'},
+      {name:'Lifang & Partners',          price:3050,rating:4.4,  badges:['Budget friendly'],                                   cases:73, onTime:91,responseHrs:11,specialty:'Software & AI'},
+    ],
+    ext:[
+      {name:'Shanghai Patent Alliance',   price:2640,rating:4.6,  badges:['Fast turnaround'],   cases:160,onTime:93,responseHrs:10,specialty:'Software & AI'},
+      {name:'CCPIT Patent & Trademark',   price:2890,rating:4.8,  badges:['Top rated'],         cases:310,onTime:98,responseHrs:6, specialty:'Chemical & Pharma'},
+      {name:'Peksung IP',                 price:2510,rating:4.5,  badges:['Budget friendly'],   cases:95, onTime:90,responseHrs:13,specialty:'General Practice'},
+      {name:'Sanyou Intellectual Prop.',  price:2760,rating:4.4,  badges:['Responds quickly'],  cases:80, onTime:89,responseHrs:14,specialty:'Mechanical & Electronics'},
+      {name:'Lung Tin IP Agency',         price:2920,rating:4.3,  badges:['Budget friendly'],   cases:67, onTime:88,responseHrs:16,specialty:'Chemical & Pharma'},
+    ]
+  },
+  CO: {
+    mine:[
+      {name:'Olarte Moreno IP',           price:1980,rating:4.8,  badges:['Worked with applicant · 1y ago'],cases:41,onTime:94,responseHrs:9, specialty:'Biotech & Life Sciences'},
+      {name:'Cavelier Abogados IP',       price:2150,rating:4.7,  badges:['Top rated'],                     cases:58,onTime:95,responseHrs:8, specialty:'General Practice'},
+      {name:'Posse Herrera Ruiz IP',      price:2050,rating:4.6,  badges:['Responds quickly'],              cases:47,onTime:93,responseHrs:9, specialty:'Biotech & Life Sciences'},
+      {name:'Cardenas & Cardenas IP',     price:1850,rating:4.5,  badges:['Budget friendly'],               cases:36,onTime:91,responseHrs:11,specialty:'Chemical & Pharma'},
+      {name:'Lloreda Camacho IP',         price:1920,rating:4.4,  badges:['Fast turnaround'],              cases:33,onTime:90,responseHrs:12,specialty:'Mechanical & Electronics'},
+    ],
+    ext:[
+      {name:'Bogotá IP Partners',         price:1750,rating:4.5,  badges:['Budget friendly'],   cases:58,onTime:90,responseHrs:12,specialty:'General Practice'},
+      {name:'Clarke Modet Colombia',      price:1880,rating:4.6,  badges:['Top rated'],         cases:74,onTime:92,responseHrs:10,specialty:'Biotech & Life Sciences'},
+      {name:'Arias & Muñoz',             price:1690,rating:4.3,  badges:['Budget friendly'],   cases:45,onTime:88,responseHrs:14,specialty:'General Practice'},
+      {name:'Martinez Quintero & Assoc', price:1820,rating:4.4,  badges:['Responds quickly'],  cases:38,onTime:90,responseHrs:12,specialty:'Mechanical & Electronics'},
+      {name:'Philippi Prietocarrizosa',   price:1960,rating:4.5,  badges:['Fast turnaround'],  cases:52,onTime:91,responseHrs:11,specialty:'Chemical & Pharma'},
+    ]
+  },
+  NA: {
+    mine:[],
+    ext:[
+      {name:'Spoor & Fisher Namibia',     price:1640,rating:4.6,  badges:['Responds quickly'],   cases:37,onTime:92,responseHrs:14,specialty:'General Practice'},
+      {name:'Namibia Patent Co.',         price:1420,rating:4.3,  badges:['Budget friendly'],    cases:22,onTime:88,responseHrs:18,specialty:'Mechanical & Electronics'},
+      {name:'Du Plessis & Associates',    price:1580,rating:4.5,  badges:['Fast turnaround'],    cases:31,onTime:90,responseHrs:15,specialty:'General Practice'},
+      {name:'African IP Partners',        price:1350,rating:4.2,  badges:['Budget friendly'],    cases:18,onTime:86,responseHrs:20,specialty:'General Practice'},
+      {name:'Eisenberg & Meyer IP',       price:1720,rating:4.4,  badges:['Responds quickly'],   cases:28,onTime:89,responseHrs:16,specialty:'Mechanical & Electronics'},
+      {name:'Cronjé & Partners',          price:1490,rating:4.1,  badges:['Budget friendly'],    cases:14,onTime:85,responseHrs:22,specialty:'General Practice'},
+      {name:'SA IP Consortium Namibia',   price:1600,rating:4.3,  badges:['Fast turnaround'],    cases:20,onTime:87,responseHrs:18,specialty:'Mechanical & Electronics'},
+      {name:'Frontier Patent Agents',     price:1380,rating:4.0,  badges:['Budget friendly'],    cases:11,onTime:84,responseHrs:24,specialty:'General Practice'},
+      {name:'Windhoek IP Bureau',         price:1550,rating:4.2,  badges:['Responds quickly'],   cases:16,onTime:86,responseHrs:19,specialty:'General Practice'},
+      {name:'Cape Cross Associates',      price:1460,rating:4.1,  badges:['Budget friendly'],    cases:9, onTime:83,responseHrs:26,specialty:'General Practice'},
+    ]
+  },
+  DE: { mine:[{name:'Vossius & Partner',price:5180,rating:4.9,badges:['Worked with applicant · 4mo ago','Responds quickly'],cases:142,onTime:98,responseHrs:5,specialty:'Biotech & Life Sciences'}],
+        ext:[{name:'Maiwald Patent Attorneys',price:4750,rating:4.7,badges:['Top rated'],cases:188,onTime:97,responseHrs:6,specialty:'Chemical & Pharma'},{name:'Grünecker IP',price:4390,rating:4.6,badges:['Fast turnaround'],cases:165,onTime:95,responseHrs:7,specialty:'Software & AI'}]},
+  BR: { mine:[],
+        ext:[{name:'Dannemann Siemsen',price:3380,rating:4.8,badges:['Top rated'],cases:120,onTime:96,responseHrs:8,specialty:'Biotech & Life Sciences'},{name:'Kasznar Leonardos',price:3120,rating:4.5,badges:['Budget friendly'],cases:99,onTime:91,responseHrs:11,specialty:'General Practice'}]},
+  IN: { mine:[{name:'Anand and Anand',price:2740,rating:4.8,badges:['Worked with applicant · 1y ago'],cases:76,onTime:95,responseHrs:9,specialty:'Biotech & Life Sciences'}],
+        ext:[{name:'Remfry & Sagar',price:2590,rating:4.7,badges:['Fast turnaround'],cases:134,onTime:96,responseHrs:8,specialty:'Chemical & Pharma'},{name:'LexOrbis',price:2310,rating:4.4,badges:['Budget friendly'],cases:110,onTime:90,responseHrs:13,specialty:'Software & AI'}]},
+  KR: { mine:[],
+        ext:[{name:'Kim & Chang',price:3780,rating:4.9,badges:['Top rated'],cases:205,onTime:98,responseHrs:5,specialty:'Biotech & Life Sciences'},{name:'Y.P.Lee, Mock & Partners',price:3420,rating:4.6,badges:['Responds quickly'],cases:88,onTime:93,responseHrs:10,specialty:'Mechanical & Electronics'}]},
+  MX: { mine:[{name:'Olivares',price:2560,rating:4.7,badges:['Worked with applicant · 6mo ago','Responds quickly'],cases:67,onTime:95,responseHrs:8,specialty:'Biotech & Life Sciences'}],
+        ext:[{name:'Uhthoff, Gomez Vega & Uhthoff',price:2280,rating:4.5,badges:['Budget friendly'],cases:84,onTime:90,responseHrs:13,specialty:'General Practice'}]},
+  AU: { mine:[{name:'Spruson & Ferguson',price:3290,rating:4.8,badges:['Worked with applicant · 3mo ago','Responds quickly'],cases:158,onTime:98,responseHrs:5,specialty:'Biotech & Life Sciences'}],
+        ext:[{name:'Davies Collison Cave',price:3050,rating:4.6,badges:['Fast turnaround'],cases:140,onTime:96,responseHrs:7,specialty:'Chemical & Pharma'},{name:'FB Rice',price:2870,rating:4.5,badges:['Budget friendly'],cases:92,onTime:92,responseHrs:11,specialty:'Software & AI'}]},
+  CA: { mine:[],
+        ext:[{name:'Smart & Biggar',price:3050,rating:4.7,badges:['Top rated'],cases:132,onTime:97,responseHrs:6,specialty:'Biotech & Life Sciences'},{name:'Bereskin & Parr',price:2890,rating:4.6,badges:['Responds quickly'],cases:101,onTime:94,responseHrs:9,specialty:'Mechanical & Electronics'}]},
+  US: { mine:[{name:'Fish & Richardson',price:4680,rating:4.9,badges:['Worked with applicant · 2mo ago','Responds quickly'],cases:240,onTime:98,responseHrs:4,specialty:'Biotech & Life Sciences'}],
+        ext:[{name:'Knobbe Martens',price:4320,rating:4.7,badges:['Top rated'],cases:198,onTime:96,responseHrs:6,specialty:'Chemical & Pharma'},{name:'Finnegan',price:4590,rating:4.6,badges:['Fast turnaround'],cases:175,onTime:95,responseHrs:7,specialty:'Software & AI'}]},
+};
+const QUICK_ADD = ['JP','CN','DE','US'];
+const AI_SUGGESTED_REGIONS = ['JP','CN','CO','NA'];
+let selected = [];
+let aiSuggested = [];
+let aiFilled = false;
+let agentPick = {}; // regionCode -> {network:'mine'/'ext', idx}
+let agentExpanded = {}; // "code-network-idx" -> bool, which rows are expanded
+let agentSort = {}; // "code-network" -> sort mode
+
+let currentStep = 0;
+const stepNames = ['Services','Regions','Details','Associate Selection','Review & Send'];
+
+/* ── Step navigation ──────────────────────────────────── */
+function renderStepper(){
+  document.querySelectorAll('.step').forEach((el,i)=>{
+    el.classList.toggle('active', i===currentStep);
+    el.classList.toggle('done', i<currentStep);
+    const circle = el.querySelector('.step-circle');
+    circle.textContent = i<currentStep ? '✓' : (i+1);
+  });
+  document.querySelectorAll('.step-line').forEach((el,i)=>{
+    el.style.setProperty('--p', i<currentStep ? '100%':'0%');
+  });
+}
+function goToStep(i){
+  currentStep = i;
+  document.querySelectorAll('.step-panel').forEach(p=>p.classList.toggle('active', +p.dataset.panel===i));
+  renderStepper();
+  const btnNext = document.getElementById('btnNext');
+  const btnBack = document.getElementById('btnBack');
+  btnBack.style.visibility = i===0 ? 'hidden':'visible';
+  btnNext.textContent = i===4 ? 'Send Instructions ›' : 'Next ›';
+  if(i===1) renderRegionsStep();
+  if(i===2){ renderStep3Gate(); syncAllAccordionHeights(true); }
+  if(i===3) renderAgentsStep();
+  if(i===4) renderReview();
+  window.scrollTo({top:0,behavior:'smooth'});
+  updateSidebar();
+}
+document.querySelectorAll('.step').forEach(el=>{
+  el.addEventListener('click',()=>{ const i=+el.dataset.step; if(i<=currentStep || el.classList.contains('done')) goToStep(i); });
+});
+document.getElementById('btnNext').addEventListener('click',()=>{
+  if(currentStep===1 && selected.length===0){ document.getElementById('minWarn').style.display='flex'; return; }
+  if(currentStep===4){ showSuccess(); return; }
+  goToStep(Math.min(currentStep+1,4));
+});
+document.getElementById('btnBack').addEventListener('click',()=> goToStep(Math.max(currentStep-1,0)));
+document.querySelectorAll('.rev-edit').forEach(el=> el.addEventListener('click',()=> goToStep(+el.dataset.goto)));
+
+/* ── Step 1: Services ─────────────────────────────────── */
+document.querySelectorAll('.svc-card').forEach(c=>{
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('.svc-card').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel');
+    updateSidebar();
+  });
+});
+document.getElementById('showMoreSvc').addEventListener('click',(e)=>{
+  document.getElementById('svcGrid').classList.toggle('collapsed-off');
+  document.querySelectorAll('.svc-extra').forEach(x=>x.style.display = x.style.display==='block' ? '' : 'block');
+  e.target.style.display='none';
+});
+document.querySelectorAll('.svc-extra').forEach(x=> x.style.display='none');
+
+/* ── AI auto-fill ─────────────────────────────────────── */
+let aiTimer = null;
+function runAiLookup(){
+  if(!document.getElementById('appNumber').value.trim()) return;
+  clearTimeout(aiTimer);
+  document.body.classList.remove('ai-filled');
+  document.getElementById('aiDone').classList.remove('show');
+  document.getElementById('aiLoading').classList.add('show');
+  aiTimer = setTimeout(()=>{
+    document.getElementById('aiLoading').classList.remove('show');
+    document.getElementById('aiDone').classList.add('show');
+    document.body.classList.add('ai-filled');
+    aiFilled = true;
+    aiSuggested = [...AI_SUGGESTED_REGIONS];
+    AI_SUGGESTED_REGIONS.forEach(c=>{ if(!selected.includes(c)) selected.push(c); });
+    animateStep3Fill();
+    renderRegionsStep();
+    renderStepper();
+    updateSidebar();
+    if(currentStep===2) renderStep3Gate();
+  }, 1100);
+}
+document.getElementById('appNumber').addEventListener('input',()=>{ clearTimeout(aiTimer); aiTimer=setTimeout(runAiLookup, 500); });
+
+function checkAppNumberFormat(){
+  const v = document.getElementById('appNumber').value.trim();
+  const validEl = document.getElementById('appValid');
+  if(/^PCT\//i.test(v)){
+    document.getElementById('appValidText').textContent = 'Recognized PCT National Phase format';
+    validEl.classList.add('show');
+  } else if(/^WO\//i.test(v)){
+    document.getElementById('appValidText').textContent = 'Recognized WIPO publication format';
+    validEl.classList.add('show');
+  } else {
+    validEl.classList.remove('show');
+  }
+}
+document.getElementById('appNumber').addEventListener('input', checkAppNumberFormat);
+
+/* ── Step 2: Regions ──────────────────────────────────── */
+function regionByCode(c){ return ALL_REGIONS.find(r=>r.code===c); }
+function toggleRegion(code){
+  if(selected.includes(code)) selected = selected.filter(c=>c!==code);
+  else selected.push(code);
+  renderRegionsStep();
+}
+function regionRowHtml(code, isAI){
+  const r = regionByCode(code);
+  return `<div class="sel-region-row ${isAI?'ai-row':''}">
+      <span class="region-flag">${r.flag}</span>
+      <div class="sel-region-main">
+        <div class="sel-region-name">${r.name}</div>
+        <div class="sel-region-meta">
+          <span>${r.deadline} deadline</span><span>·</span>
+          <span>Est. $${r.feeLo.toLocaleString()}–$${r.feeHi.toLocaleString()}</span><span>·</span>
+          <a class="guide-link" href="#" onclick="return false;">Filing Guide ↗</a>
+        </div>
+      </div>
+      <div class="remove-x" data-code="${code}">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>`;
+}
+function renderRegionsStep(){
+  const q = (document.getElementById('regionSearch').value||'').toLowerCase();
+
+  const aiSelected = selected.filter(c=>aiSuggested.includes(c)).sort((a,b)=>regionByCode(a).name.localeCompare(regionByCode(b).name));
+  const manualSelected = selected.filter(c=>!aiSuggested.includes(c)).sort((a,b)=>regionByCode(a).name.localeCompare(regionByCode(b).name));
+  const mixed = aiSelected.length>0 && manualSelected.length>0;
+
+  document.getElementById('regionsCard').classList.toggle('ai-suggest-card', aiSelected.length>0);
+  document.getElementById('regionsCard').classList.toggle('ai-gradient-border', aiSelected.length>0);
+  document.getElementById('selCount').textContent = selected.length > 0 ? '('+selected.length+')' : '';
+  document.getElementById('aiSelHint').textContent = aiSelected.length>0 ? 'AI pre-selected these for this filing – remove any that don\'t apply' : '';
+
+  document.getElementById('selList').innerHTML = selected.length ? (
+    (mixed ? '<div class="region-group-label">AI-suggested</div>' : '') +
+    aiSelected.map(code=>regionRowHtml(code,true)).join('') +
+    (mixed ? '<div class="region-group-label">Added by you</div>' : '') +
+    manualSelected.map(code=>regionRowHtml(code,false)).join('')
+  ) : `<div class="empty-state">No regions selected yet – add from below</div>`;
+
+  document.getElementById('minWarn').style.display = selected.length===0 ? 'flex':'none';
+
+  document.querySelectorAll('#selList .remove-x').forEach(x=>x.addEventListener('click',(e)=>{ e.stopPropagation(); toggleRegion(x.dataset.code); }));
+
+  // Add more
+  const avail = ALL_REGIONS.filter(r=>!selected.includes(r.code) && r.name.toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
+  document.getElementById('availCount').textContent = avail.length+' available';
+  document.getElementById('availList').innerHTML = avail.length ? avail.map(r=>`
+    <div class="region-row" data-code="${r.code}">
+      <span class="region-flag">${r.flag}</span>
+      <span class="region-name">${r.name}</span>
+      <span class="region-fee">Est. $${r.feeLo.toLocaleString()}–$${r.feeHi.toLocaleString()}</span>
+      <span class="region-deadline">${r.deadline}</span>
+      <span class="add-circle">+</span>
+    </div>`).join('') : `<div class="empty-state">No matching regions</div>`;
+  document.querySelectorAll('#availList .region-row').forEach(row=>row.addEventListener('click',()=>toggleRegion(row.dataset.code)));
+
+  updateSidebar();
+}
+document.getElementById('regionSearch').addEventListener('input', renderRegionsStep);
+document.getElementById('clearAll').addEventListener('click',()=>{ selected=[]; renderRegionsStep(); });
+
+/* ── Step 3: Details accordion ────────────────────────── */
+function setAccordionOpen(item, open){
+  item.classList.toggle('open', open);
+  syncAccordionHeight(item);
+}
+function syncAccordionHeight(item, instant){
+  const body = item.querySelector('.accordion-body');
+  const inner = item.querySelector('.accordion-body-in');
+  // Skip while hidden (e.g. still on Step 1/2) – scrollHeight would read 0 and bake in a wrong value.
+  if(inner.offsetParent === null) return;
+  if(instant) body.style.transition = 'none';
+  body.style.maxHeight = item.classList.contains('open') ? inner.scrollHeight + 'px' : '0px';
+  if(instant){ body.getBoundingClientRect(); body.style.transition = ''; }
+}
+function syncAllAccordionHeights(instant){
+  document.querySelectorAll('.accordion-item').forEach(item=>syncAccordionHeight(item, instant));
+}
+document.querySelectorAll('.accordion-head').forEach(h=>{
+  h.addEventListener('click',()=>{
+    const item = document.getElementById(h.dataset.acc);
+    setAccordionOpen(item, !item.classList.contains('open'));
+  });
+});
+function calcBodyPages(){
+  const total = +document.getElementById('totalPages').value || 0;
+  const seq = +document.getElementById('seqPages').value || 0;
+  const draw = +document.getElementById('drawPages').value || 0;
+  document.getElementById('calcVal').textContent = total ? Math.max(total-seq-draw,0) : '–';
+}
+['totalPages','seqPages','drawPages'].forEach(id=> document.getElementById(id).addEventListener('input', calcBodyPages));
+calcBodyPages();
+
+/* ── Step 4: Agents ───────────────────────────────────── */
+function renderAgentsStep(){
+  const tabs = document.getElementById('regionTabs');
+  tabs.innerHTML = selected.map((code,i)=>{
+    const r = regionByCode(code); const picked = !!agentPick[code];
+    return `<div class="rtab ${i===0?'active':''} ${picked?'picked':''}" data-code="${code}"><span class="check">✓</span>${r.flag} ${r.name}</div>`;
+  }).join('');
+  tabs.querySelectorAll('.rtab').forEach(t=> t.addEventListener('click',()=>{
+    tabs.querySelectorAll('.rtab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    renderAgentPane(t.dataset.code);
+  }));
+  renderAgentPane(selected[0]);
+}
+function agentInitials(name){
+  return name.split(/\s|&/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+}
+/* Real firm logo art, assigned deterministically per associate name. Tile background is picked
+   from each logo image's own corner color, so the artwork sits flush with no visible seam. */
+const LOGO_DIR = 'assets/law%20firms%20logos/cropped/';
+const LOGO_FILES = [
+  {file:'007885acc06259db8bb6ed6d2a891ff3-crop.jpg', bg:'#f5f6f8'},
+  {file:'12cb163addb23d7aa1bfaf8091bf995b-crop.jpg', bg:'#6c211b'},
+  {file:'318e14c6d31ffac79b37cdc59c2f589a-crop.jpg', bg:'#a06b29'},
+  {file:'454677e21e011477b27b1e9ad99d6a33-crop.jpg', bg:'#ffffff'},
+  {file:'4f0aa39bfd6d2b3205c8ede469754c9b-crop.jpg', bg:'#ffffff'},
+  {file:'5cc538af1011f5f24654f535f00703b1-crop.jpg', bg:'#eff2dd'},
+  {file:'677df156480713df5f8ecd57254995ec-crop.jpg', bg:'#1a2e23'},
+  {file:'7402bbd11e43e877b24112e6ea9bcff4-crop.jpg', bg:'#dbedf9'},
+  {file:'8c91c95e39fbc77f8f78d0e6dc594268-crop.jpg', bg:'#ffffff'},
+  {file:'9c3c7806ce2e09e68ec8f5b436836410-crop.jpg', bg:'#ffffff'},
+  {file:'bfc62b3f612517660913e8fd07f5c4a6-crop.jpg', bg:'#02343b'},
+  {file:'d070d701fdc14e2d3f4c0d5294c68e84-crop.jpg', bg:'#bfd6e8'},
+  {file:'df13f276ca6b491d8a78ff9644607f2a-crop.jpg', bg:'#fefefe'},
+  {file:'f569085d090ff5a8f1cda2400c0ae90f-crop.jpg', bg:'#460710'},
+];
+function agentHash(name){
+  let h = 0;
+  for(const c of name) h = (h*31 + c.charCodeAt(0)) >>> 0;
+  return h;
+}
+function logoObj(L){ return {src: LOGO_DIR + L.file, bg: L.bg}; }
+/* Real firms with their own dedicated logo file, matched by exact name — checked before the
+   shared hash-pool below, so these never get swapped out for a generic mark. */
+const LOGO_OVERRIDES = {
+  'Atsumi & Sakai':               {file:'atsumi-sakai-crop.jpg',                 bg:'#ffffff'},
+  'Nagashima Ohno & Tsunematsu':  {file:'nagashima-ohno-tsunematsu-crop.jpg',    bg:'#ffffff'},
+  'Mori Hamada & Matsumoto':      {file:'mori-hamada-matsumoto-crop.jpg',        bg:'#ffffff'},
+  'Anderson Mōri & Tomotsune':    {file:'anderson-mori-tomotsune-crop.jpg',      bg:'#ffffff'},
+};
+/* Assign each associate in a list a distinct logo (by name hash, first-come), only repeating
+   once every logo has already been used against the shared `used` set — so a region's My Network
+   and Extended Network rows, rendered together on screen, don't hand out the same logo twice. */
+function assignLogos(list, used){
+  return list.map(a=>{
+    if(LOGO_OVERRIDES[a.name]) return logoObj(LOGO_OVERRIDES[a.name]);
+    const start = agentHash(a.name) % LOGO_FILES.length;
+    let i = start;
+    while(used.has(i) && used.size < LOGO_FILES.length){
+      i = (i+1) % LOGO_FILES.length;
+    }
+    used.add(i);
+    return logoObj(LOGO_FILES[i]);
+  });
+}
+const SORT_LABELS = {recommended:'Recommended', rating_desc:'Highest rated', price_asc:'Price: low to high', price_desc:'Price: high to low'};
+function sortedAgentIndices(list, mode){
+  const idxs = list.map((a,i)=>i);
+  if(mode==='rating_desc') idxs.sort((x,y)=> (list[y].rating||0)-(list[x].rating||0));
+  else if(mode==='price_asc') idxs.sort((x,y)=> list[x].price-list[y].price);
+  else if(mode==='price_desc') idxs.sort((x,y)=> list[y].price-list[x].price);
+  return idxs; // 'recommended' keeps authored order
+}
+function renderAgentPane(code){
+  const data = AGENT_DATA[code] || {mine:[],ext:[]};
+  const pick = agentPick[code];
+  const usedLogos = new Set(); // shared across My Network + Extended so visible rows don't repeat a logo
+  function row(a, network, idx, logo){
+    const isSel = pick && pick.network===network && pick.idx===idx;
+    const isOpen = !!agentExpanded[`${code}-${network}-${idx}`];
+    const matches = a.specialty===CASE_SPECIALTY;
+    const ratingChip = a.rating ? `<span class="rating-chip gold">★ ${a.rating}</span>` : `<span class="rating-chip gray">Not rated yet</span>`;
+    const subText = a.badges.length ? a.badges[0] : '';
+    return `<div class="agent-row ${isSel?'sel':''} ${isOpen?'open':''}" data-network="${network}" data-idx="${idx}" data-code="${code}">
+      <div class="agent-row-main" data-role="select">
+        <div class="agent-checkbox"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="agent-logo-box" style="background:${logo.bg}">
+          <img class="agent-logo-img" src="${logo.src}" alt="${a.name} logo" loading="lazy">
+        </div>
+        <div class="agent-row-meta">
+          <div class="agent-row-name">${a.name}${matches ? '<span class="match-dot" title="Matches this case\'s specialty">🎯</span>' : ''}</div>
+          <div class="agent-row-sub">${ratingChip}${subText ? `<span class="sub-text">${subText}</span>` : ''}</div>
+          <div class="agent-row-price-row">
+            <div class="agent-row-price">$${a.price.toLocaleString(undefined,{minimumFractionDigits:a.price%1?2:0})}</div>
+            <button type="button" class="agent-calc-arrow" data-role="calc" aria-label="Show calculation">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 8l7 7 7-7" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+        <button type="button" class="agent-row-expand-btn" data-role="expand" aria-label="Show details">${isOpen ? 'Read less' : 'Read more'}</button>
+      </div>
+      <div class="agent-row-details">
+        <div class="agent-badges">
+          ${a.badges.map(b=>`<span class="abadge green">${b}</span>`).join('')}
+          ${matches ? `<span class="abadge green">🎯 ${a.specialty} – matches this case</span>` : `<span class="abadge gray">Focus: ${a.specialty}</span>`}
+        </div>
+        <div class="agent-trust">📂 ${a.cases} cases filed in ${regionByCode(code).name} ( last 12 months )</div>
+        <div class="agent-trust">⏱ ${a.onTime}% on-time · 💬 ~${a.responseHrs}h avg. response</div>
+      </div>
+    </div>`;
+  }
+  function section(list, network, headClass, icon, title, sub){
+    if(!list.length) return '';
+    const sortKey = `${code}-${network}`;
+    const mode = agentSort[sortKey] || 'rating_desc';
+    const order = sortedAgentIndices(list, mode);
+    const logos = assignLogos(list, usedLogos); // authored order keeps assignment stable across re-sorts
+    const sortSelect = list.length > 3 ? `<select class="agent-sort" data-code="${code}" data-network="${network}">
+        ${Object.entries(SORT_LABELS).map(([v,l])=>`<option value="${v}" ${mode===v?'selected':''}>${l}</option>`).join('')}
+      </select>` : '';
+    return `<div class="card" style="margin-bottom:0;">
+      <div class="agent-col-head ${headClass}">
+        <div><div class="agent-col-title">${icon} ${title}</div><div class="agent-col-sub">${sub}</div></div>
+        <div class="agent-col-head-right">${sortSelect}<div class="agent-col-count">${list.length}</div></div>
+      </div>
+      <div class="agent-list">${order.map(i=>row(list[i],network,i,logos[i])).join('')}</div>
+    </div>`;
+  }
+  const mineHtml = section(data.mine, 'mine', 'network', '🛡️', 'My Network', 'Trusted associates with verified expertise');
+  const extHtml = section(data.ext, 'ext', 'extended', '⭐', 'iPeer+ Extended Network', 'Vetted associates outside your network');
+  document.getElementById('agentPanes').innerHTML = `
+    <div class="agent-cols">
+      ${mineHtml}${extHtml}
+      ${(!mineHtml && !extHtml) ? '<div class="card" style="margin-bottom:0;"><div class="empty-state">No associates available in this region yet</div></div>' : ''}
+    </div>`;
+  document.querySelectorAll('.agent-row').forEach(r=>{
+    const selectArea = r.querySelector('[data-role="select"]');
+    const expandBtn = r.querySelector('[data-role="expand"]');
+    const calcBtn = r.querySelector('[data-role="calc"]');
+    const key = `${r.dataset.code}-${r.dataset.network}-${r.dataset.idx}`;
+    selectArea.addEventListener('click', (e)=>{
+      if(e.target.closest('[data-role="expand"]') || e.target.closest('[data-role="calc"]')) return;
+      agentPick[r.dataset.code] = {network:r.dataset.network, idx:+r.dataset.idx};
+      renderAgentPane(r.dataset.code);
+      renderAgentsStep_tabsOnly();
+      updateSidebar();
+    });
+    expandBtn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      agentExpanded[key] = !agentExpanded[key];
+      r.classList.toggle('open', agentExpanded[key]);
+      expandBtn.textContent = agentExpanded[key] ? 'Read less' : 'Read more';
+    });
+    calcBtn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+    });
+  });
+  document.querySelectorAll('.agent-sort').forEach(sel=>{
+    sel.addEventListener('click', e=> e.stopPropagation());
+    sel.addEventListener('change', ()=>{
+      agentSort[`${sel.dataset.code}-${sel.dataset.network}`] = sel.value;
+      renderAgentPane(sel.dataset.code);
+    });
+  });
+}
+function renderAgentsStep_tabsOnly(){
+  document.querySelectorAll('.rtab').forEach(t=> t.classList.toggle('picked', !!agentPick[t.dataset.code]));
+}
+
+/* ── Step 5: Review ───────────────────────────────────── */
+function agentLabel(code){
+  const pick = agentPick[code];
+  if(!pick) return null;
+  const a = AGENT_DATA[code][pick.network][pick.idx];
+  return a;
+}
+function renderReview(){
+  document.getElementById('revRegions').innerHTML = selected.map(code=>{
+    const r = regionByCode(code); const a = agentLabel(code);
+    return `<div class="rev-row" style="padding:12px 18px;">
+      <span class="rev-label">${r.flag} ${r.name}</span>
+      <span class="rev-val">${a ? a.name+' – $'+a.price.toLocaleString(undefined,{minimumFractionDigits:a.price%1?2:0}) : '<span style="color:var(--red)">No associate selected</span>'}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ── Sidebar ──────────────────────────────────────────── */
+function updateSidebar(){
+  document.body.classList.toggle('no-summary', currentStep===0);
+  if(currentStep===0) return;
+
+  const svc = document.querySelector('.svc-card.sel .svc-name')?.textContent || '–';
+  document.getElementById('sbSvc').textContent = svc;
+  document.getElementById('sbSvcSub').textContent = document.getElementById('appNumber').value;
+
+  const tips = [
+    'Select your filing service and confirm the application number to get started.',
+    'Search or use quick-add chips to file in multiple regions at once.',
+    '',
+    'Pick an associate per region – "My Network" firms show your filing history together.',
+    'Double-check recipients before sending – associates are notified immediately.'
+  ];
+  const tip = tips[currentStep];
+  const sbTip = document.getElementById('sbTip');
+  sbTip.style.display = tip ? '' : 'none';
+  if(tip) sbTip.innerHTML = '💡 <b>Tip:</b> '+tip;
+
+  document.getElementById('sbRegionCount').textContent = selected.length;
+
+  let total = 0, anyFinal = false;
+  document.getElementById('sbRegionList').innerHTML = selected.length ? [...selected].sort((a,b)=>regionByCode(a).name.localeCompare(regionByCode(b).name)).map(code=>{
+    const r = regionByCode(code); const a = agentLabel(code);
+    if(a){ total += a.price; anyFinal = true; }
+    return `<div class="sb-region-line">
+      <span class="sb-region-name">${r.flag} ${r.name}</span>
+      <span class="sb-region-price ${a?'set':''}">${a ? '$'+a.price.toLocaleString(undefined,{maximumFractionDigits:0}) : 'Est. $'+r.feeLo.toLocaleString()+'–$'+r.feeHi.toLocaleString()}</span>
+    </div>`;
+  }).join('') : '<div class="sb-empty">No regions selected yet</div>';
+
+  if(anyFinal){
+    document.getElementById('sbTotal').textContent = '$'+total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+    document.getElementById('sbTotalSub').textContent = selected.every(c=>agentPick[c]) ? 'Final – all associates selected' : 'Partial – some regions still need an associate';
+  } else {
+    const lo = selected.reduce((s,c)=>s+regionByCode(c).feeLo,0), hi = selected.reduce((s,c)=>s+regionByCode(c).feeHi,0);
+    document.getElementById('sbTotal').textContent = selected.length ? '$'+lo.toLocaleString()+'–$'+hi.toLocaleString() : '$0';
+    document.getElementById('sbTotalSub').textContent = 'Estimated – finalized at Associate Selection';
+  }
+
+}
+
+/* ── Success ──────────────────────────────────────────── */
+function showSuccess(){
+  document.getElementById('wizardRoot').style.display='none';
+  document.getElementById('wizHead').style.display='none';
+  document.getElementById('wizFooter').style.display='none';
+  const wrap = document.getElementById('successWrap');
+  wrap.classList.add('active');
+  let rowIdx = 0;
+  document.getElementById('caseList').innerHTML = selected.map((code,i)=>{
+    const pick = agentPick[code];
+    if(!pick) return null;
+    const agent = (AGENT_DATA[code] && AGENT_DATA[code][pick.network] || [])[pick.idx];
+    if(!agent) return null;
+    const r = regionByCode(code);
+    const delay = (0.85 + rowIdx*0.08).toFixed(2);
+    rowIdx++;
+    return `<div class="case-row" style="animation-delay:${delay}s"><span class="case-id">PH${4000+i*317}</span><span class="case-region">${r.flag} ${r.name}</span><span class="case-status">Sent to associate</span></div>`;
+  }).filter(Boolean).join('');
+}
+
+/* ── Step 3: Gate & AI banner ─────────────────────────── */
+function renderStep3Gate(){
+  document.getElementById('step3Gate').classList.toggle('show', !aiFilled);
+  document.getElementById('step3Banner').classList.toggle('show', aiFilled);
+}
+
+function animateStep3Fill(){
+  const fields = [
+    {id:'appTitle',      val:'Nucleic Acids Delivered By HD-MAP'},
+    {id:'appApplicant',  val:'Vaxxas Pty Limited'},
+    {id:'priorityDate',  val:'2024-07-23'},
+    {id:'intlFilingDate',val:'2025-07-23'},
+    {id:'numPriorities', val:'2'},
+    {id:'pubNumber',     val:'WO/2026/020195'},
+    {id:'appLanguage',   val:'English'},
+    {id:'wordCount',     val:'11731'},
+    {id:'totalPages',    val:'47'},
+    {id:'seqPages',      val:'0'},
+    {id:'drawPages',     val:'9'},
+    {id:'numClaims',     val:'14'},
+    {id:'numIndepClaims',val:'2'},
+  ];
+  fields.forEach((f, idx) => {
+    setTimeout(() => {
+      const el = document.getElementById(f.id);
+      if(!el) return;
+      el.value = f.val;
+      const fieldEl = el.closest('.field');
+      if(fieldEl){ fieldEl.classList.add('field-ai-filling'); setTimeout(()=>fieldEl.classList.remove('field-ai-filling'), 950); }
+    }, idx * 115);
+  });
+  setTimeout(() => {
+    // acc-app has 1 unfilled required field
+    document.getElementById('acc-app-num').classList.add('needs-input');
+    document.getElementById('acc-app-num').textContent = '✕';
+    document.getElementById('acc-app-status').classList.add('needs-input');
+    document.getElementById('acc-app-status').textContent = 'Required';
+    // acc-doc and acc-claims are fully filled
+    ['acc-doc','acc-claims'].forEach(id=>{
+      document.getElementById(id+'-num').classList.add('complete');
+      document.getElementById(id+'-num').textContent = '✓';
+      document.getElementById(id+'-status').classList.add('complete');
+      document.getElementById(id+'-status').textContent = 'Complete';
+    });
+    document.getElementById('ipcChips').innerHTML = '<span class="ipc-chip">A61K 39/00</span><span class="ipc-chip">A61B 17/20</span><span class="ipc-chip">A61M 37/00</span><span class="ipc-chip">A61P 35/00</span>';
+    // highlight required fields that still need user input
+    document.getElementById('entitySize').closest('.field').classList.add('field-needs-input');
+    setAccordionOpen(document.getElementById('acc-app'), true);
+    calcBodyPages();
+    renderStepper();
+  }, fields.length * 115 + 300);
+}
+
+/* ── Cases board ──────────────────────────────────────── */
+
+const CASE_COLUMNS = [
+  {key:'sent',     title:'Instructions Sent', color:'var(--primary)'},
+  {key:'progress', title:'In Progress',       color:'var(--amber)'},
+  {key:'action',   title:'Action Required',   color:'var(--red)'},
+  {key:'filed',    title:'Filed',             color:'var(--green)'},
+];
+
+const STATUS_LABEL = {sent:'Instructions Sent', progress:'In Progress', action:'Action Required', filed:'Filed'};
+
+const SAMPLE_CASES = [
+  {ref:'PN91460', flag:'🇮🇱',name:'Israel',        clientFirm:'Surfside Legal', clientPerson:'Adam Graiser',   assocFirm:'Azami Global',            assocPerson:'Andrew Schindel', service:'PCT National Phase', updated:'20 Jun', updatedDaysAgo:26, deadlineDays:-6,  status:'action'},
+  {ref:'PN92810', flag:'🇿🇦',name:'South Africa',  clientFirm:'Azami Global',   clientPerson:'Lior Wenger',     assocFirm:'Oliveira Legal Solutions',assocPerson:'Oliveira Tulum',  service:'PCT National Phase', updated:'20 Jun', updatedDaysAgo:26, deadlineDays:null,status:'sent'},
+  {ref:'PN91580', flag:'🇬🇲',name:'Gambia',        clientFirm:'Surfside Legal', clientPerson:'Adam Graiser',   assocFirm:'Azami Global',            assocPerson:'Andrew Schindel', service:'PCT National Phase', updated:'20 Jun', updatedDaysAgo:26, deadlineDays:22,  status:'progress'},
+  {ref:'PN102315',flag:'🇿🇦',name:'South Africa',  clientFirm:'Azami Global',   clientPerson:'Lior Wenger',     assocFirm:'Oliveira Legal Solutions',assocPerson:'Oliveira Tulum',  service:'PCT National Phase', updated:'20 Jun', updatedDaysAgo:26, deadlineDays:null,status:'sent'},
+  {ref:'PN102315',flag:'🇯🇵',name:'Japan',         clientFirm:'Azami Global',   clientPerson:'Lior Wenger',     assocFirm:'Takahashi & Partners',    assocPerson:'Takahashi Partners',service:'PCT National Phase', updated:'20 Jun', updatedDaysAgo:26, deadlineDays:64,  status:'progress'},
+  {ref:'PN94997', flag:'🇿🇦',name:'South Africa',  clientFirm:'Azami Global',   clientPerson:'Aaron Wexler',    assocFirm:'Oliveira Legal Solutions',assocPerson:'Oliveira Tulum',  service:'PCT National Phase', updated:'11 Mar', updatedDaysAgo:127,deadlineDays:null,status:'filed'},
+  {ref:'PN94996', flag:'🇯🇵',name:'Japan',         clientFirm:'Azami Global',   clientPerson:'Lior Wenger',     assocFirm:'Takahashi & Partners',    assocPerson:'Takahashi Partners',service:'PCT National Phase', updated:'11 Mar', updatedDaysAgo:127,deadlineDays:null,status:'filed'},
+  {ref:'PN93125', flag:'🇯🇵',name:'Japan',         clientFirm:'Azami Global',   clientPerson:'Lior Wenger',     assocFirm:'Takahashi & Partners',    assocPerson:'Takahashi Partners',service:'PCT National Phase', updated:'18 Feb', updatedDaysAgo:148,deadlineDays:null,status:'filed'},
+];
+
+function buildNewCases(){
+  return selected.map((code,i)=>{
+    const r = regionByCode(code);
+    const pick = agentPick[code];
+    if(!pick) return null;
+    const agent = (AGENT_DATA[code] && AGENT_DATA[code][pick.network] || [])[pick.idx];
+    if(!agent) return null;
+    const months = r && r.deadline ? parseInt(r.deadline) : 30;
+    return {ref:'PH'+(4000+i*317), flag:r.flag, name:r.name, clientFirm:'Your Firm', clientPerson:document.getElementById('attorneySel').value||'You',
+      assocFirm:agent.name, assocPerson:'Assigned associate', service:document.querySelector('.svc-card.sel .svc-name')?.textContent||'PCT National Phase',
+      updated:'Just now', updatedDaysAgo:0, deadlineDays:months*30, status:'sent', isNew:true};
+  }).filter(Boolean);
+}
+
+function deadlineText(c){
+  if(c.status==='filed') return {txt:'Filed', cls:'filed'};
+  if(c.deadlineDays==null) return {txt:'No deadline', cls:''};
+  if(c.deadlineDays<0) return {txt:'Overdue', cls:'urgent'};
+  if(c.deadlineDays<=30) return {txt:`Due in ${c.deadlineDays}d`, cls:'urgent'};
+  if(c.deadlineDays<=90) return {txt:`Due in ${c.deadlineDays}d`, cls:'soon'};
+  const d=new Date(Date.now()+c.deadlineDays*86400000);
+  return {txt:'Due '+d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}), cls:''};
+}
+
+function caseCardHTML(c){
+  const dl = deadlineText(c);
+  const stepIdx = {sent:0,progress:1,action:1,filed:3}[c.status];
+  return `<div class="case-card col-${c.status}">
+    <div class="cc-top">
+      <div class="cc-region"><span class="flag">${c.flag}</span><span>${c.name}</span></div>
+      ${c.isNew ? '<span class="cc-new-tag">New</span>' : ''}
+    </div>
+    <span class="cc-ref">${c.ref}</span>
+    <div class="cc-firms">
+      <div class="cc-firm-names"><b>${c.assocFirm}</b> · ${c.assocPerson}</div>
+    </div>
+    <div class="cc-progress">${[0,1,2,3].map(i=>`<i class="${i<=stepIdx?'on':''}"></i>`).join('')}</div>
+    <div class="cc-bottom">
+      <span class="cc-updated">Updated ${c.updated}</span>
+      <span class="cc-deadline ${dl.cls}">${dl.txt}</span>
+    </div>
+  </div>`;
+}
+
+function caseRowHTML(c){
+  const dl = deadlineText(c);
+  return `<tr>
+    <td><div class="ct-region"><span>${c.flag}</span><span>${c.name}</span></div></td>
+    <td><span class="cc-ref">${c.ref}</span>${c.isNew ? '<span class="ct-new-tag">New</span>' : ''}</td>
+    <td>${c.clientFirm}<div class="ct-sub">${c.clientPerson}</div></td>
+    <td><div class="ct-firm"><span>${c.assocFirm}</span></div><div class="ct-sub">${c.assocPerson}</div></td>
+    <td>${c.service}</td>
+    <td><span class="status-pill ${c.status}">${STATUS_LABEL[c.status]}</span></td>
+    <td><span class="cc-deadline ${dl.cls}">${dl.txt}</span></td>
+    <td class="ct-sub">${c.updated}</td>
+  </tr>`;
+}
+
+let casesView = 'table';
+let sortState = {key:'deadlineDays', dir:'asc'};
+
+function renderCasesScreen(){
+  const q = (document.getElementById('casesSearch').value||'').trim().toLowerCase();
+  const all = [...buildNewCases(), ...SAMPLE_CASES];
+
+  let filtered = all.filter(c=>{
+    if(q && !([c.ref,c.name,c.clientFirm,c.assocFirm,c.service].join(' ').toLowerCase().includes(q))) return false;
+    return true;
+  });
+
+  const stats = document.getElementById('casesStats');
+  stats.innerHTML = `
+    <div class="cstat"><div><div class="cstat-val">${all.length}</div><div class="cstat-label">Total cases</div></div><div class="cstat-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg></div></div>
+    <div class="cstat accent"><div><div class="cstat-val">${all.filter(c=>c.status==='sent').length}</div><div class="cstat-label">Awaiting associate</div></div><div class="cstat-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div></div>
+    <div class="cstat danger"><div><div class="cstat-val">${all.filter(c=>c.status==='action').length}</div><div class="cstat-label">Action required</div></div><div class="cstat-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div></div>
+    <div class="cstat good"><div><div class="cstat-val">${all.filter(c=>c.status==='filed').length}</div><div class="cstat-label">Filed</div></div><div class="cstat-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div></div>`;
+
+  // Board
+  const board = document.getElementById('kanbanBoard');
+  board.innerHTML = CASE_COLUMNS.map(col=>{
+    const items = filtered.filter(c=>c.status===col.key);
+    return `<div class="kanban-col">
+      <div class="kanban-col-head"><span class="kanban-dot" style="background:${col.color}"></span><span class="kanban-col-title">${col.title}</span><span class="kanban-col-count">${items.length}</span></div>
+      <div class="kanban-col-body">${items.length ? items.map(caseCardHTML).join('') : '<div class="kanban-empty">No cases</div>'}</div>
+    </div>`;
+  }).join('');
+
+  // Table (new cases always first, then sorted)
+  const sorted = [...filtered].sort((a,b)=>{
+    if(!!a.isNew !== !!b.isNew) return a.isNew ? -1 : 1;
+    let av = a[sortState.key], bv = b[sortState.key];
+    if(av==null) av = sortState.key==='deadlineDays' ? Infinity : '';
+    if(bv==null) bv = sortState.key==='deadlineDays' ? Infinity : '';
+    if(typeof av==='string') { av=av.toLowerCase(); bv=bv.toLowerCase(); }
+    if(av<bv) return sortState.dir==='asc' ? -1 : 1;
+    if(av>bv) return sortState.dir==='asc' ? 1 : -1;
+    return 0;
+  });
+  document.getElementById('casesTableBody').innerHTML = sorted.length ? sorted.map(caseRowHTML).join('')
+    : '<tr><td colspan="8"><div class="cases-table-empty">No cases match your filters</div></td></tr>';
+  document.querySelectorAll('.cases-table th').forEach(th=>{
+    th.classList.toggle('sorted', th.dataset.key===sortState.key);
+    th.querySelector('.sort-arrow')?.remove();
+    if(th.dataset.key===sortState.key){
+      th.insertAdjacentHTML('beforeend', `<span class="sort-arrow">${sortState.dir==='asc'?'▲':'▼'}</span>`);
+    }
+  });
+}
+
+document.querySelectorAll('.cases-table th').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const key = th.dataset.key;
+    if(sortState.key===key) sortState.dir = sortState.dir==='asc' ? 'desc' : 'asc';
+    else sortState = {key, dir:'asc'};
+    renderCasesScreen();
+  });
+});
+document.querySelectorAll('.cvt-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    casesView = btn.dataset.view;
+    document.querySelectorAll('.cvt-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    document.getElementById('casesTableWrap').classList.toggle('active', casesView==='table');
+    document.getElementById('kanbanBoard').style.display = casesView==='board' ? 'grid' : 'none';
+  });
+});
+['casesSearch'].forEach(id=> document.getElementById(id).addEventListener('input', renderCasesScreen));
+
+document.getElementById('btnViewCases').addEventListener('click', ()=>{
+  document.getElementById('successWrap').classList.remove('active');
+  document.getElementById('casesScreen').classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab')[2].classList.add('active');
+  document.querySelectorAll('.cvt-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===casesView));
+  document.getElementById('casesTableWrap').classList.toggle('active', casesView==='table');
+  document.getElementById('kanbanBoard').style.display = casesView==='board' ? 'grid' : 'none';
+  renderCasesScreen();
+});
+document.getElementById('btnNavNewQuote').addEventListener('click', ()=> location.href = location.pathname);
+document.getElementById('casesSearch').addEventListener('input', (e)=> renderCasesBoard(e.target.value));
+
+/* ── Init ─────────────────────────────────────────────── */
+renderStepper();
+renderRegionsStep();
+renderStep3Gate();
+updateSidebar();
+document.getElementById('gateBackLink').addEventListener('click', ()=> goToStep(0));
+
+document.getElementById('btnBack').style.visibility = 'hidden';
+
+/* TEST HOOK – remove before shipping: ?step=N jumps to step, ?step=success shows success screen */
+const __qp = new URLSearchParams(location.search);
+if(__qp.get('step')==='cases'){
+  if(!selected.length) selected=[...AI_SUGGESTED_REGIONS];
+  selected.forEach(code=>{ if(!agentPick[code] && AGENT_DATA[code]){ const net = AGENT_DATA[code].mine.length?'mine':'ext'; if(AGENT_DATA[code][net].length) agentPick[code]={network:net,idx:0}; } });
+  showSuccess(); document.getElementById('btnViewCases').click();
+}
+else if(__qp.get('step')==='success'){ showSuccess(); }
+else if(__qp.get('step')!==null){ goToStep(+__qp.get('step')); document.getElementById('btnBack').style.visibility = currentStep===0?'hidden':'visible'; }
+</script>
+</body>
+</html>

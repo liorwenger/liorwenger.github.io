@@ -71,7 +71,7 @@
     }
     .hero-title {
       font-family: 'Familjen Grotesk', sans-serif;
-      font-size: clamp(38px,7.5vw,80px); font-weight: 700;
+      font-size: 80px; font-weight: 700;
       letter-spacing: -0.03em; line-height: 1.05;
       margin-bottom: clamp(8px,1.2vh,14px);
     }
@@ -83,7 +83,12 @@
     }
     .meta-col p:not(.section-label) { font-size: clamp(14px,1.05vw,17px); line-height: 1.7; }
     .meta-col ul { list-style: none; font-size: clamp(14px,1.05vw,17px); line-height: 1.9; }
-    @media (max-width: 700px) { .hero-meta-row { grid-template-columns: 1fr; gap: 28px; } }
+    @media (max-width: 700px) {
+      .hero-meta-row { grid-template-columns: 1fr; gap: 28px; }
+      .hero-title { font-size: clamp(34px,10vw,48px); line-height: 1.05; }
+      .hero .col { display: flex; flex-direction: column; }
+      .hero .col > .placeholder { order: -1; margin-top: 0; margin-bottom: clamp(24px,4vh,40px); }
+    }
 
     /* ── TITLE / TEXT SPLIT ── */
     .title-text-split {
@@ -329,7 +334,7 @@
         </div>
 
         <div class="placeholder tall" style="margin-top: clamp(40px,6vh,72px); margin-bottom: 0; padding:0; background:none; border:none; overflow:hidden;">
-          <img src="assets/new-hero.png" alt="Wix Reviews Widget - hero view" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">
+          <img src="assets/new-hero.jpg" srcset="assets/new-hero-mobile.jpg 900w, assets/new-hero.jpg 2400w" sizes="100vw" fetchpriority="high" alt="Wix Reviews Widget - hero view" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">
         </div>
       </div>
     </section>
@@ -396,41 +401,7 @@
             </div>
           </div>
           <div class="approach-imgs">
-            <div class="flow-card" style="width:80%;">
-              <div class="flow-lanes">
-                <div class="flow-lane">
-                  <div class="flow-lane-label"><span class="flow-lane-dot"></span>Site Owner</div>
-                  <div class="flow-steps">
-                    <span class="flow-chip">Add Reviews widget</span>
-                    <span class="flow-chevron">→</span>
-                    <span class="flow-chip">Customise the widget</span>
-                    <span class="flow-chevron">···</span>
-                    <span class="flow-chip">Email - new review</span>
-                    <span class="flow-chevron">→</span>
-                    <span class="flow-chip">Review Published / Rejected</span>
-                  </div>
-                </div>
-
-                <div class="flow-connect-row">
-                  <span style="color:var(--accent); font-size:13px;">↑</span>
-                  <span class="flow-connect-label">Buyer's review triggers the owner's email</span>
-                </div>
-
-                <div class="flow-lane flow-lane--buyer">
-                  <div class="flow-lane-label"><span class="flow-lane-dot"></span>Buyer</div>
-                  <div class="flow-steps">
-                    <span class="flow-chip">Buy a product</span>
-                    <span class="flow-chevron">→</span>
-                    <span class="flow-chip">Receive email to add review</span>
-                    <span class="flow-chevron">→</span>
-                    <span class="flow-chip">Login</span>
-                    <span class="flow-chevron">→</span>
-                    <span class="flow-chip">Add review</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="placeholder" style="width:80%; padding:0; background:none; border:none; overflow:hidden;">
+            <div class="placeholder" style="width:80%; margin-left:auto; margin-right:auto; padding:0; background:none; border:none; overflow:hidden;">
               <img src="assets/before-tab.png" alt="Dashboard navigation - before Reviews tab" style="width:100%;border-radius:8px;display:block;">
             </div>
           </div>

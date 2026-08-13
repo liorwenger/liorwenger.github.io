@@ -301,9 +301,6 @@
       .card-cta .cta-arrow--l { display: none; }
       .card-cta .cta-arrow--r { position: static; opacity: 1; transform: none; }
 
-      /* CS1 thumbnail defaults to its video instead of the static image */
-      a[href="case-study-1/index.html"] .card-video { opacity: 1; }
-
       .hero-para { font-size: 15px; }
       .outro-big { font-size: clamp(32px, 11vw, 56px); line-height: 1.1; }
     }
@@ -473,12 +470,6 @@
         video.currentTime = 0;
       });
     });
-
-    // Mobile has no hover — CS1's thumbnail shows its video by default instead of the static image
-    if (window.innerWidth <= 767) {
-      var cs1Video = document.querySelector('a[href="case-study-1/index.html"] .card-video');
-      if (cs1Video) cs1Video.play().catch(function () {});
-    }
   })();
   </script>
 

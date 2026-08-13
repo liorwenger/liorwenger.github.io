@@ -272,8 +272,9 @@
 
     /* ─── MOBILE ─── */
     @media (max-width: 767px) {
-      .work-stage { position: static; height: auto; overflow: visible; border: none; }
-      .work-track { flex-direction: column; transform: none !important; }
+      .work-stage { position: relative; height: auto; overflow: visible; border: none; display: flex; flex-direction: column; }
+      .work-cta-bg { position: static; order: 2; inset: auto; padding: 56px 24px; }
+      .work-track { flex-direction: column; transform: none !important; order: 1; }
       .w-panel { width: 100%; flex-basis: auto; border-bottom: 1px solid var(--line); }
       .w-panel::after { display: none; }
       .panel-intro, .panel-outro { padding: 44px 24px 40px; }
@@ -282,7 +283,7 @@
       .card-info { flex-direction: column; align-items: flex-start; gap: 10px; }
       .card-box { opacity: 1 !important; transform: none !important; }
       .hero-para { font-size: 15px; }
-
+      .outro-big { font-size: clamp(32px, 11vw, 56px); line-height: 1.1; }
     }
     .back-to-top {
       position: fixed; bottom: 32px; right: 32px; z-index: 200;

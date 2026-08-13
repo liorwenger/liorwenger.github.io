@@ -301,9 +301,6 @@
       .card-cta .cta-arrow--l { display: none; }
       .card-cta .cta-arrow--r { position: static; opacity: 1; transform: none; }
 
-      /* Video thumbnails play by default on mobile — poster matches the static image so there's no visible swap */
-      .card-video { opacity: 1; }
-
       .hero-para { font-size: 15px; }
       .outro-big { font-size: clamp(32px, 11vw, 56px); line-height: 1.1; }
     }
@@ -322,6 +319,14 @@
   </style>
 </head>
 <body>
+
+  <script>
+    // iOS Safari requires a first tap to trigger :hover on links with hover
+    // listeners before a second tap will actually follow them. Registering
+    // any touchstart listener disables that "hover first" quirk, so the
+    // "Explore Project" cards navigate on the first tap.
+    document.addEventListener('touchstart', function () {}, { passive: true });
+  </script>
 
   <header class="site-header">
     <a class="logo" href="index.html"><img id="logoImg" src="assets/LOGO-W.png" alt="Lior Wenger" style="height:28px;width:auto;display:block;"></a>
@@ -473,13 +478,6 @@
         video.currentTime = 0;
       });
     });
-
-    // Mobile has no hover — thumbnail videos play by default instead of the static image
-    if (window.innerWidth <= 767) {
-      Array.prototype.slice.call(document.querySelectorAll('.card-video')).forEach(function (video) {
-        video.play().catch(function () {});
-      });
-    }
   })();
   </script>
 

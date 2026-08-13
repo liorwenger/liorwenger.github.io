@@ -92,9 +92,11 @@
       .hero-title { padding-right: clamp(140px,20vw,280px); }
     }
     @media (max-width: 900px) {
-      .scribble-note { top: calc(clamp(10px,2vh,28px) + 40px); right: clamp(12px,3vw,24px); }
-      .scribble-arrow { width: 30px; height: 48px; }
-      .scribble-text { font-size: 16px; white-space: normal; }
+      .scribble-note { display: none; }
+      .title-break { display: none; }
+    }
+    @media (max-width: 700px) {
+      .hero-title { padding-right: 0; font-size: clamp(30px,8vw,36px); }
     }
     .marquee-banner {
       background: #1CFF33; overflow: hidden; white-space: nowrap;
@@ -596,13 +598,13 @@
             <p class="body-text">Overview charts show the shape of the trend by default - hover reveals the exact figures behind it.</p>
           </div>
           <div class="placeholder" style="grid-column:2; grid-row:1; aspect-ratio:1316/1080;padding:0;background:none;overflow:hidden;border-radius:8px;">
-            <video src="assets/case_study2_design1.1.new.mp4" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" class="sharpen-video" autoplay loop muted playsinline></video>
+            <video src="assets/case_study2_design1.1.new.mp4" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" class="sharpen-video lazy-video" preload="none" loop muted playsinline></video>
           </div>
           <div class="approach-text" style="grid-column:1; grid-row:2; align-self:start;">
             <p class="body-text" style="margin-top:-6px;">Reciprocity (whether you're sending back as many cases as you receive) works the same way - click on the matrix to see more information.</p>
           </div>
           <div class="placeholder" style="grid-column:2; grid-row:2; aspect-ratio:1712/1080;padding:0;background:none;overflow:hidden;">
-            <video src="assets/case_study2_design1.%202.new.mp4" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" class="sharpen-video" autoplay loop muted playsinline></video>
+            <video src="assets/case_study2_design1.%202.new.mp4" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" class="sharpen-video lazy-video" preload="none" loop muted playsinline></video>
           </div>
         </div>
 
@@ -613,7 +615,7 @@
           </div>
           <div class="approach-imgs">
             <div class="placeholder" style="aspect-ratio:1736/1080;padding:0;background:none;overflow:hidden;">
-              <video src="assets/case_study2_design1.1.mp4" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" class="sharpen-video" autoplay loop muted playsinline></video>
+              <video src="assets/case_study2_design1.1.mp4" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" class="sharpen-video lazy-video" preload="none" loop muted playsinline></video>
             </div>
           </div>
         </div>
@@ -625,7 +627,7 @@
           </div>
           <div class="approach-imgs">
             <div class="placeholder" style="height:528px;padding:0;background:none;overflow:hidden;border-radius:16px;">
-              <video src="assets/case_study2_design3.1.new.mp4" style="width:100%;height:100%;object-fit:cover;border-radius:16px;" class="sharpen-video" autoplay loop muted playsinline></video>
+              <video src="assets/case_study2_design3.1.new.mp4" style="width:100%;height:100%;object-fit:cover;border-radius:16px;" class="sharpen-video lazy-video" preload="none" loop muted playsinline></video>
             </div>
           </div>
         </div>
@@ -637,7 +639,7 @@
           </div>
           <div class="approach-imgs">
             <div class="placeholder" style="aspect-ratio:1540/1080;padding:0;background:none;overflow:hidden;">
-              <video src="assets/case_study2_design3.2.mp4" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" class="sharpen-video" autoplay loop muted playsinline></video>
+              <video src="assets/case_study2_design3.2.mp4" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" class="sharpen-video lazy-video" preload="none" loop muted playsinline></video>
             </div>
           </div>
         </div>
@@ -761,6 +763,24 @@
       btn.addEventListener('click', function(){
         window.scrollTo({top:0, behavior:'smooth'});
       });
+    })();
+  </script>
+
+  <script>
+    // Below-the-fold demo videos load only as they approach the viewport,
+    // instead of every video on the page downloading at once.
+    (function () {
+      var videos = document.querySelectorAll('.lazy-video');
+      if (!videos.length || !('IntersectionObserver' in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.play().catch(function () {});
+            io.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '200px' });
+      videos.forEach(function (v) { io.observe(v); });
     })();
   </script>
 

@@ -550,7 +550,7 @@
         <h2 class="section-title">The Redesigned Experience</h2>
         <p class="body-text" style="max-width:760px;">The full flow - from domain search to results - as shipped.</p>
         <div class="placeholder tall" style="padding:0; background:none; overflow:hidden;">
-          <video src="assets/final-design.mov" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" autoplay loop muted playsinline></video>
+          <video src="assets/final-design.mov" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" class="lazy-video" preload="none" loop muted playsinline></video>
         </div>
       </div>
     </section>
@@ -704,6 +704,24 @@
       document.addEventListener('keydown', function(e){
         if (e.key === 'Escape') close();
       });
+    })();
+  </script>
+
+  <script>
+    // Below-the-fold demo videos load only as they approach the viewport,
+    // instead of every video on the page downloading at once.
+    (function () {
+      var videos = document.querySelectorAll('.lazy-video');
+      if (!videos.length || !('IntersectionObserver' in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.play().catch(function () {});
+            io.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '200px' });
+      videos.forEach(function (v) { io.observe(v); });
     })();
   </script>
 

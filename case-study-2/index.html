@@ -394,6 +394,7 @@
     }
     @media (max-width: 700px) {
       .kpi-grid { grid-template-columns: repeat(2,1fr); }
+      .hide-on-mobile { display: none; }
     }
     .back-to-top {
       position: fixed; bottom: 32px; right: 32px; z-index: 200;
@@ -656,8 +657,8 @@
       </div>
     </section>
 
-    <!-- ── FINAL DESIGN ── -->
-    <section class="section" id="live-prototype" style="padding-top:200px;">
+    <!-- ── FINAL DESIGN (desktop only - embedded prototype isn't usable on mobile) ── -->
+    <section class="section hide-on-mobile" id="live-prototype" style="padding-top:200px;">
       <div class="col" style="max-width:min(1600px,94vw);">
         <p class="section-label" style="margin-bottom:32px;">Final Design</p>
         <div class="marquee-banner">

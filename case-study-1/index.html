@@ -70,8 +70,8 @@
     }
     .hero-title {
       font-family: 'Familjen Grotesk', sans-serif;
-      font-size: 80px; font-weight: 700;
-      letter-spacing: -0.03em; line-height: 1.0;
+      font-size: clamp(38px,7.5vw,80px); font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.05;
       margin-bottom: clamp(8px,1.2vh,14px);
     }
     .hero-footnote {
@@ -113,7 +113,7 @@
 
     .section-title {
       font-family: 'Familjen Grotesk', sans-serif;
-      font-size: 60px;
+      font-size: clamp(30px,6vw,60px);
       font-weight: 700; letter-spacing: -0.025em; line-height: 1.08;
       margin-top: 0; margin-bottom: clamp(20px,3vh,32px);
     }
@@ -134,7 +134,7 @@
     }
     .approach-text { padding-top: 0; margin-top: 0; }
     .approach-title {
-      font-size: 25px; font-weight: 700;
+      font-size: clamp(19px,2.4vw,25px); font-weight: 700;
       letter-spacing: -0.02em; line-height: 1.2;
       margin-bottom: clamp(10px,1.5vh,16px);
       margin-top: 0;
@@ -270,6 +270,7 @@
       margin-top: 14px; text-align: center;
     }
     .chart-col.is-peak .chart-label { font-weight: 700; color: var(--ink); }
+    .chart-label-short { display: none; }
     .chart-caption {
       font-family: 'Martian Mono', monospace;
       font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
@@ -280,7 +281,9 @@
       .chart-bars { height: 160px; gap: 8px; }
       .chart-value { font-size: 12px; }
       .chart-col.is-peak .chart-value { font-size: 15px; }
-      .chart-label { font-size: 11px; margin-top: 10px; }
+      .chart-label { font-size: 11px; margin-top: 10px; white-space: nowrap; }
+      .chart-label-full { display: none; }
+      .chart-label-short { display: inline; }
       .chart-legend { gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
     }
     .back-to-top {
@@ -407,7 +410,7 @@
             <div class="chart-col">
               <span class="chart-value">5%</span>
               <div class="chart-bar is-low" style="height: 22px;"></div>
-              <span class="chart-label">Review &amp; Send</span>
+              <span class="chart-label"><span class="chart-label-full">Review &amp; Send</span><span class="chart-label-short">Review</span></span>
             </div>
           </div>
           <p class="chart-caption">Share of total drop-off attributed to each step</p>
